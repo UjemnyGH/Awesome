@@ -9,5 +9,5 @@ uniform sampler2D tex;
 
 void main()
 {
-    oCol = texture(tex, ioTex);
+    oCol = texture(tex, ioTex) * ioCol;
 }
