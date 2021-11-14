@@ -45,7 +45,7 @@ void AWS::Aws_Square::create(const std::string &vertName, const std::string &fra
     ebo.bind(indices, sizeof(indices));
 
     tex.create();
-    tex.bind(textureName, GL_REPEAT);
+    tex.bind({textureName}, GL_REPEAT, GL_TEXTURE_2D);
 
     sh.bind();
 
@@ -58,21 +58,36 @@ void AWS::Aws_Square::create(const std::string &vertName, const std::string &fra
 
 void AWS::Aws_Square::draw(const unsigned int &drawMode)
 {
-        tex.bind();
     sh.bind();
     vao.bind();
     if(textureOn)
     {
+        tex.bind();
     }
+
+    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(glm::mat4x4(1.0)));
 
     glDrawElements(drawMode, 6, GL_UNSIGNED_INT, NULL);
 
     sh.unbind();
     vao.unbind();
+}
+
+void AWS::Aws_Square::draw(const unsigned int &drawMode, glm::mat4x4 camera)
+{
+    sh.bind();
+    vao.bind();
     if(textureOn)
     {
-        //tex.unbind();
+        tex.bind();
     }
+
+    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(camera));
+
+    glDrawElements(drawMode, sizeof(vertices) / 4, GL_UNSIGNED_INT, NULL);
+
+    sh.unbind();
+    vao.unbind();
 }
 
 void AWS::Aws_Square::SetPSR(float px, float py, float pz, float sx, float sy, float sz, float rx, float ry, float rz)
@@ -163,7 +178,7 @@ void AWS::Aws_Square::SetTexture(const std::string textureName, const int wrappi
 {
     vao.bind();
 
-    tex.bind(textureName, wrapping);
+    tex.bind({textureName}, wrapping, GL_TEXTURE_2D);
 
     vao.unbind();
 }

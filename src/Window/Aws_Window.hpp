@@ -33,8 +33,8 @@ namespace AWS
          * @param title - window title
          * @param fullscreen - window fullscreen, NULL to windowed
          */
-
         void createWindow(int width, int height, std::string title, GLFWmonitor* fullscreen);
+
         /**
          * @brief Get the Window Pointer object
          * 

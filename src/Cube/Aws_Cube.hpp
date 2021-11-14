@@ -4,6 +4,9 @@
 #include <iostream>
 #define GLEW_STATIC
 #include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <math.h>
 
 namespace AWS
 {
@@ -30,37 +33,16 @@ namespace AWS
             -1.0f, -1.0f, -1.0f
         };
 
-        float position[3 * 8] = {
-            1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f
+        float position[3] = {
+            0.0f, 0.0f, 0.0f,
         };
 
-        float scale[3 * 8] = {
+        float scale[3] = {
             1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f
         };
 
-        float rotation[3 * 8] = {
-            1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f
+        float rotation[3] = {
+            1.0f, 1.0f, 1.0f
         };
 
         const float psrConst[3 * 8] = {
@@ -89,37 +71,76 @@ namespace AWS
             3, 6, 7
         };
 
-        float texture[2 * 16] = {
-            0.375f, 0.0f,
-            0.625f, 0.0f,
-            0.625f, 0.25f,
-            0.375f, 0.25f,
-            0.625f, 0.5f,
-            0.375f, 0.5f,
-            0.625f, 0.75f,
-            0.375f, 0.75f,
-            0.625f, 1.0f,
-            0.375f, 1.0f,
-            0.125f, 0.50f,
-            0.125f, 0.75f,
-            0.875f, 0.5f,
-            0.875f, 0.75f
+        float texture[2 * 8] = {
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f
         };
 
-        float cbColor[3 * 8] = {
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f
+        float cubemapTexture[3 * 36] = {
+            -1.0f,  1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f, -1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f,
+            -1.0f,  1.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f, -1.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f,
+
+            -1.0f,  1.0f, -1.0f,
+            1.0f,  1.0f, -1.0f,
+            1.0f,  1.0f,  1.0f,
+            1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f,
+            -1.0f,  1.0f, -1.0f,
+
+            -1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+            1.0f, -1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f,  1.0f,
+            1.0f, -1.0f,  1.0f
+        };
+
+        float cbColor[4 * 8] = {
+            1.0f, 1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 1.0f
         };
 
     public:
         /**
-         * @brief create square
+         * @brief create cube
          * 
          * @param vertName 
          * @param fragName 
@@ -127,7 +148,7 @@ namespace AWS
         void create(const std::string &vertName, const std::string &fragName);
 
         /**
-         * @brief create square
+         * @brief create cube
          * 
          * @param vertName 
          * @param fragName 
@@ -135,11 +156,28 @@ namespace AWS
         void create(const std::string &vertName, const std::string &fragName, const std::string textureName);
 
         /**
-         * @brief draw square
+         * @brief create cube
+         * 
+         * @param vertName 
+         * @param fragName 
+         * @param textureName 
+         */
+        void create(const std::string &vertName, const std::string &fragName, const std::vector<std::string> textureName);
+
+        /**
+         * @brief draw cube
          * 
          * @param drawMode 
          */
         void draw(const unsigned int &drawMode);
+
+        /**
+         * @brief 
+         * 
+         * @param drawMode 
+         * @param camera 
+         */
+        void draw(const unsigned int &drawMode, glm::mat4x4 camera);
 
         /**
          * @brief set position scale and rotation
@@ -163,6 +201,14 @@ namespace AWS
          * @param wrapping 
          */
         void SetTexture(const std::string textureName, const int wrapping);
+
+        /**
+         * @brief Set the Texture object
+         * 
+         * @param textureName 
+         * @param wrapping 
+         */
+        void SetTexture(const std::vector<std::string> textureName, const int wrapping);
 
         /**
          * @brief Set the Position object
@@ -196,10 +242,10 @@ namespace AWS
          * 
          * @param color 
          */
-        void SetColor(const float r, const float g, const float b);
+        void SetColor(const float r, const float g, const float b, float a);
 
         /**
-         * @brief delete square
+         * @brief delete cube
          * 
          */
         void terminate();

@@ -139,37 +139,67 @@ void AWS::Aws_Texture::create()
 
 void AWS::Aws_Texture::bind()
 {
-    glBindTexture(GL_TEXTURE_2D, ID);
+    glBindTexture(textureTypeL, ID);
 }
 
-void AWS::Aws_Texture::bind(const std::string path, int wrapping)
+void AWS::Aws_Texture::bind(const std::vector<std::string> path, int wrapping, int textureType)
 {
-    glBindTexture(GL_TEXTURE_2D, ID);
+    textureTypeL = textureType;
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapping);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapping);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    stbi_set_flip_vertically_on_load(1);
-
-    data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
-    if(data)
+    if(textureTypeL == GL_TEXTURE_CUBE_MAP)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        glBindTexture(textureTypeL, ID);
+
+        for(int i = 0; i < path.size(); i++)
+        {
+            data = stbi_load(path[i].c_str(), &width, &height, &nrChannels, 0);
+            if(data)
+            {
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                stbi_image_free(data);
+            }
+            else
+            {
+                std::cout << "Cube map tex fail" << path[i] << '\n';
+                stbi_image_free(data);
+            }
+        }
+
+        glTexParameteri(textureTypeL, GL_TEXTURE_WRAP_S, wrapping);
+        glTexParameteri(textureTypeL, GL_TEXTURE_WRAP_T, wrapping);
+        glTexParameteri(textureTypeL, GL_TEXTURE_WRAP_R, wrapping);
+        glTexParameteri(textureTypeL, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(textureTypeL, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     }
     else
     {
-        std::cout << "Error loading image\n";
-    }
+        glBindTexture(textureTypeL, ID);
 
-    stbi_image_free(data);
+        glTexParameteri(textureTypeL, GL_TEXTURE_WRAP_S, wrapping);
+        glTexParameteri(textureTypeL, GL_TEXTURE_WRAP_T, wrapping);
+        glTexParameteri(textureTypeL, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(textureTypeL, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_set_flip_vertically_on_load(1);
+
+        data = stbi_load(path[0].c_str(), &width, &height, &nrChannels, 0);
+        if(data)
+        {
+            glTexImage2D(textureTypeL, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(textureTypeL);
+        }
+        else
+        {
+            std::cout << "Error loading image\n";
+        }
+
+        stbi_image_free(data);
+    }
 }
 
 void AWS::Aws_Texture::unbind()
 {
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(textureTypeL, 0);
 }
 
 void AWS::Aws_Texture::terminate()

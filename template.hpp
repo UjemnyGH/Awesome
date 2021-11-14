@@ -8,3 +8,8 @@ public:
     virtual void mainLoop() override;
     virtual void initialize() override;
 };
+
+class PlayerCam : public AWS::Camera
+{
+
+};

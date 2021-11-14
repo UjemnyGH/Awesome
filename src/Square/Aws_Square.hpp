@@ -4,6 +4,8 @@
 #include <GL/glew.h>
 #include "../Buffers/Aws_Buffer.hpp"
 #include "../Aws_Engine.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace AWS
 {
@@ -27,24 +29,24 @@ namespace AWS
         };
 
         float position[3 * 4] = {
-            1.0f, 1.0f, 0.0f,
-            -1.0f, 1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            -1.0f, -1.0f, 0.0f
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f
         };
 
         float scale[3 * 4] = {
-            1.0f, 1.0f, 0.0f,
-            -1.0f, 1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            -1.0f, -1.0f, 0.0f
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f
         };
 
         float rotation[3 * 4] = {
-            1.0f, 1.0f, 0.0f,
-            -1.0f, 1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            -1.0f, -1.0f, 0.0f
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f
         };
 
         const float psrConst[3 * 4] = {
@@ -96,6 +98,14 @@ namespace AWS
          * @param drawMode 
          */
         void draw(const unsigned int &drawMode);
+
+        /**
+         * @brief 
+         * 
+         * @param drawMode 
+         * @param camera 
+         */
+        void draw(const unsigned int &drawMode, glm::mat4x4 camera);
 
         /**
          * @brief set position scale and rotation

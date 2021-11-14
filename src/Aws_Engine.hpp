@@ -4,6 +4,8 @@
 #include "Time/Aws_Time.hpp"
 #include "Buffers/Aws_Buffer.hpp"
 #include "Square/Aws_Square.hpp"
+#include "Cube/Aws_Cube.hpp"
+#include "Camera/Aws_Camera.hpp"
 #include <iostream>
 #include <glm/glm.hpp>
 
@@ -14,6 +16,9 @@ namespace AWS
 
     const std::string textureVS = "data/shaders/texture/textureVS.glsl";
     const std::string textureFS = "data/shaders/texture/textureFS.glsl";
+
+    const std::string cubeVS = "data/shaders/cube/cubeVS.glsl";
+    const std::string cubeFS = "data/shaders/cube/cubeFS.glsl";
 
     struct Aws_vec
     {

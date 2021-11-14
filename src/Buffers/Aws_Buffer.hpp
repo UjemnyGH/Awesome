@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 namespace AWS
 {
@@ -157,7 +158,7 @@ namespace AWS
     class Aws_Texture
     {
     private:
-        int width, height, nrChannels;
+        int width, height, nrChannels, textureTypeL;
 
         unsigned int ID;
 
@@ -182,7 +183,7 @@ namespace AWS
          * @param path - path to texture
          * @param wrapping - GL_REPEAT
          */
-        void bind(const std::string path, int wrapping);
+        void bind(const std::vector<std::string> path, int wrapping, int textureType);
 
         /**
          * @brief unbind texture
