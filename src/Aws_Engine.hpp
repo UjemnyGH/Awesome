@@ -7,6 +7,10 @@
 #include "Cube/Aws_Cube.hpp"
 #include "Camera/Aws_Camera.hpp"
 #include <iostream>
+#include <future>
+#include <thread>
+#include <random>
+#include <fstream>
 #include <glm/glm.hpp>
 
 namespace AWS

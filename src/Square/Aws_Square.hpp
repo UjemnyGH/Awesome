@@ -36,10 +36,10 @@ namespace AWS
         };
 
         float scale[3 * 4] = {
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f
+            1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f
         };
 
         float rotation[3 * 4] = {
@@ -82,7 +82,7 @@ namespace AWS
          * @param vertName 
          * @param fragName 
          */
-        void create(const std::string &vertName, const std::string &fragName);
+        void create(const std::string &vertName = "data/shaders/color/colorVS.glsl", const std::string &fragName = "data/shaders/color/colorFS.glsl");
 
         /**
          * @brief create square
@@ -90,7 +90,7 @@ namespace AWS
          * @param vertName 
          * @param fragName 
          */
-        void create(const std::string &vertName, const std::string &fragName, const std::string textureName);
+        void create(const std::string textureName, const std::string &vertName, const std::string &fragName);
 
         /**
          * @brief draw square

@@ -21,7 +21,7 @@ namespace AWS
         float GetTime() { return glfwGetTime(); }
         
         /**
-         * @brief Get the Delta Time object
+         * @brief Get the Delta Time object. USE ONE DELTA IN ALL PROGRAM!!!!!!!!!
          * 
          * @return float 
          */

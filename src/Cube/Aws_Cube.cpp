@@ -21,7 +21,7 @@ void AWS::Aws_Cube::create(const std::string &vertName, const std::string &fragN
     vao.unbind();
 }
 
-void AWS::Aws_Cube::create(const std::string &vertName, const std::string &fragName, const std::string textureName)
+void AWS::Aws_Cube::create(const std::string textureName, const int textureType, const std::string &vertName, const std::string &fragName)
 {
     texturesOn = true;
 
@@ -36,14 +36,22 @@ void AWS::Aws_Cube::create(const std::string &vertName, const std::string &fragN
     vbo[1].create();
     vbo[1].bind(cbColor, sizeof(cbColor), 1, 4);
 
-    vbo[2].create();
-    vbo[2].bind(cubemapTexture, sizeof(cubemapTexture), 2, 3);
+    if(textureType == CubeTexturing::cubemap)
+    {
+        vbo[2].create();
+        vbo[2].bind(cubemapTexture, sizeof(cubemapTexture), 2, 3);
+    }
+    else
+    {
+        vbo[2].create();
+        vbo[2].bind(texture, sizeof(texture), 2, 2);
+    }
 
     ebo.create();
     ebo.bind(indices, sizeof(indices));
 
     tex.create();
-    tex.bind({textureName}, GL_REPEAT, GL_TEXTURE_CUBE_MAP);
+    tex.bind({textureName}, GL_REPEAT, textureType);
 
     sh.bind();
 
@@ -54,7 +62,7 @@ void AWS::Aws_Cube::create(const std::string &vertName, const std::string &fragN
     vao.unbind();
 }
 
-void AWS::Aws_Cube::create(const std::string &vertName, const std::string &fragName, const std::vector<std::string> textureName)
+void AWS::Aws_Cube::create(const std::vector<std::string> textureName, const std::string &vertName, const std::string &fragName)
 {
     texturesOn = true;
 
@@ -196,11 +204,11 @@ void AWS::Aws_Cube::SetRotation(float x, float y, float z)
     vbo[0].bind(vertices, sizeof(vertices), 0, 3);
 }
 
-void AWS::Aws_Cube::SetTexture(const std::string textureName, const int wrapping)
+void AWS::Aws_Cube::SetTexture(const std::string textureName, const int wrapping, const int textureType)
 {
     vao.bind();
 
-    tex.bind({textureName}, wrapping, GL_TEXTURE_CUBE_MAP);
+    tex.bind({textureName}, wrapping, textureType);
 
     vao.unbind();
 }

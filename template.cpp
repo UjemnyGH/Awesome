@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include "src/stb_image/stb_image.h"
+#include <future>
+#include <thread>
 
 Game window;
 PlayerCam PC;
@@ -34,7 +36,7 @@ void reshape(GLFWwindow* gwindow, int w, int h)
 {
     glViewport(0, 0, w, h);
 
-    proj = glm::perspectiveFov(70.0f, (float)w, (float)h, 0.001f, 1000.0f);
+    proj = glm::perspectiveFov(70.0f, (float)w, (float)h, 0.001f, 100.0f);
 }
 
 void mouse(GLFWwindow* window, double xpos, double ypos)
@@ -100,15 +102,14 @@ void Game::initialize()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    sq.create(AWS::cubeVS, AWS::cubeFS, "data/texture/image3.png");
-    squa.create(AWS::textureVS, AWS::textureFS, "data/texture/image3.png");
-    background.create(AWS::colorVS, AWS::colorFS);
+    sq.create("data/texture/image3.png", AWS::CubeTexturing::texture2D);
+    squa.create("data/texture/image3.png", AWS::textureVS, AWS::textureFS);
 }
 
 void Game::mainLoop()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 
     glm::mat4x4 view = glm::lookAt(PC.GetPosition(), PC.GetPosition() + PC.GetFront(), PC.GetUp());
 
@@ -116,19 +117,12 @@ void Game::mainLoop()
 
     PC.SetPosition(pos.x, pos.y, pos.z);
 
-    sq.SetColor(1.0f, 1.0f, 1.0f, 0.1f);
-
-    sq.draw(GL_TRIANGLES, proj * glm::mat4x4(1.0) * view);
-
-    squa.SetPosition(2.0f, 0.0f, 0.0f);
-    squa.SetScale(1.0f, 1.0f, 1.0f);
+    squa.SetPosition(-0.9f, 0.9f, 0.0f);
+    squa.SetScale(0.1f, 0.1f, 0.1f);
     squa.SetColor(1.0f, 1.0f, 1.0f);
-    squa.draw(GL_TRIANGLES, proj * glm::mat4x4(1.0) * view);
 
-    glDepthFunc(GL_LEQUAL);
-    background.SetPosition(PC.GetPosition().x, PC.GetPosition().y, PC.GetPosition().z);
-    background.SetScale(50.0f, 50.0f, 50.0f);
-    background.SetColor(0.0f, 0.0f, 0.6f, 1.0f);
+    squa.draw(GL_TRIANGLES);
 
-    background.draw(GL_TRIANGLES, proj * glm::mat4x4(1.0) * view);
+    sq.SetColor(1.0f, 1.0f, 1.0f, 0.1f);
+    sq.draw(GL_TRIANGLES, proj * glm::mat4x4(1.0) * view);
 }

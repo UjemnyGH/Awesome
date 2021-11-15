@@ -23,7 +23,7 @@ void AWS::Aws_Square::create(const std::string &vertName, const std::string &fra
     vao.unbind();
 }
 
-void AWS::Aws_Square::create(const std::string &vertName, const std::string &fragName, const std::string textureName)
+void AWS::Aws_Square::create(const std::string textureName, const std::string &vertName, const std::string &fragName)
 {
     textureOn = true;
 

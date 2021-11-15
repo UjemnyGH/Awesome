@@ -10,6 +10,12 @@
 
 namespace AWS
 {
+    enum CubeTexturing
+    {
+        cubemap = GL_TEXTURE_CUBE_MAP,
+        texture2D = GL_TEXTURE_2D
+    };
+
     class Aws_Cube
     {
     private:
@@ -145,15 +151,16 @@ namespace AWS
          * @param vertName 
          * @param fragName 
          */
-        void create(const std::string &vertName, const std::string &fragName);
+        void create(const std::string &vertName = "data/shaders/color/colorVS.glsl", const std::string &fragName = "data/shaders/color/colorFS.glsl");
 
         /**
          * @brief create cube
          * 
          * @param vertName 
-         * @param fragName 
+         * @param fragName
+         * @param textureType
          */
-        void create(const std::string &vertName, const std::string &fragName, const std::string textureName);
+        void create(const std::string textureName, const int textureType = GL_TEXTURE_2D, const std::string &vertName = "data/shaders/texture/textureVS.glsl", const std::string &fragName = "data/shaders/texture/textureFS.glsl");
 
         /**
          * @brief create cube
@@ -162,7 +169,7 @@ namespace AWS
          * @param fragName 
          * @param textureName 
          */
-        void create(const std::string &vertName, const std::string &fragName, const std::vector<std::string> textureName);
+        void create(const std::vector<std::string> textureName, const std::string &vertName = "data/shaders/cube/cubeVS.glsl", const std::string &fragName = "data/shaders/cube/cubeFS.glsl");
 
         /**
          * @brief draw cube
@@ -199,8 +206,9 @@ namespace AWS
          * 
          * @param textureName 
          * @param wrapping 
+         * @param textureType
          */
-        void SetTexture(const std::string textureName, const int wrapping);
+        void SetTexture(const std::string textureName, const int wrapping, const int textureType);
 
         /**
          * @brief Set the Texture object
