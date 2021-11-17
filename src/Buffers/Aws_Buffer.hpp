@@ -140,6 +140,14 @@ namespace AWS
         void bind();
 
         /**
+         * @brief 
+         * 
+         * @param vertexShader 
+         * @param fragmentShader 
+         */
+        void bind(const std::string &vertexShader, const std::string &fragmentShader);
+
+        /**
          * @brief unbind shader program
          * 
          */
@@ -190,6 +198,13 @@ namespace AWS
          * 
          */
         void unbind();
+
+        /**
+         * @brief 
+         * 
+         * @return unsigned int 
+         */
+        unsigned int GetID() { return ID; }
 
         /**
          * @brief delete texture

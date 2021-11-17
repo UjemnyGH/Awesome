@@ -222,7 +222,7 @@ void AWS::Aws_Cube::SetTexture(const std::vector<std::string> textureName, const
     vao.unbind();
 }
 
-void AWS::Aws_Cube::SetColor(const float r, const float g, const float b, float a)
+void AWS::Aws_Cube::SetColor(const float r, const float g, const float b, const float a)
 {
     for(int i = 0; i < 8; i++)
     {

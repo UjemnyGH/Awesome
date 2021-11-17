@@ -127,6 +127,70 @@ void AWS::Aws_Shader::bind()
     glUseProgram(ID);
 }
 
+void AWS::Aws_Shader::bind(const std::string &vertexShader, const std::string &fragmentShader)
+{
+    std::ifstream f;
+
+    f.open(vertexShader, std::ios::binary);
+
+    if(f.bad())
+    {
+        vs = 0;
+    }
+
+    f.seekg(0, std::ios::end);
+
+    int len = static_cast<int>(f.tellg());
+
+    f.seekg(0, std::ios::beg);
+
+    char* srcBufferVS = new char[(len + 1) * sizeof(char)];
+    f.read(srcBufferVS, len);
+    srcBufferVS[len] = '\0';
+    f.close();
+
+    vs = glCreateShader(GL_VERTEX_SHADER);
+
+    glShaderSource(vs, 1, const_cast<char**>(&srcBufferVS), NULL);
+
+    delete[] srcBufferVS;
+
+    glCompileShader(vs);
+
+    f.open(fragmentShader, std::ios::binary);
+
+    if(f.bad())
+    {
+        fs = 0;
+    }
+
+    f.seekg(0, std::ios::end);
+
+    len = static_cast<int>(f.tellg());
+
+    f.seekg(0, std::ios::beg);
+
+    char* srcBufferFS = new char[(len + 1) * sizeof(char)];
+    f.read(srcBufferFS, len);
+    srcBufferFS[len] = '\0';
+    f.close();
+
+    fs = glCreateShader(GL_FRAGMENT_SHADER);
+
+    glShaderSource(fs, 1, const_cast<char**>(&srcBufferFS), NULL);
+
+    delete[] srcBufferFS;
+
+    glCompileShader(fs);
+
+    ID = glCreateProgram();
+    glAttachShader(ID, vs);
+    glAttachShader(ID, fs);
+    glLinkProgram(ID);
+
+    glUseProgram(ID);
+}
+
 void AWS::Aws_Shader::unbind()
 {
     glUseProgram(0);

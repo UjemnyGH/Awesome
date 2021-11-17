@@ -15,7 +15,7 @@ void AWS::Aws_Square::create(const std::string &vertName, const std::string &fra
     vbo[0].bind(vertices, sizeof(vertices), 0, 3);
 
     vbo[1].create();
-    vbo[1].bind(sqColor, sizeof(color), 1, 3);
+    vbo[1].bind(sqColor, sizeof(color), 1, 4);
 
     ebo.create();
     ebo.bind(indices, sizeof(indices));
@@ -36,7 +36,7 @@ void AWS::Aws_Square::create(const std::string textureName, const std::string &v
     vbo[0].bind(vertices, sizeof(vertices), 0, 3);
 
     vbo[1].create();
-    vbo[1].bind(sqColor, sizeof(color), 1, 3);
+    vbo[1].bind(sqColor, sizeof(color), 1, 4);
 
     vbo[2].create();
     vbo[2].bind(textureCoords, sizeof(textureCoords), 2, 2);
@@ -109,9 +109,9 @@ void AWS::Aws_Square::SetPSR(float px, float py, float pz, float sx, float sy, f
 
     for(int i = 0; i < 4; i++)
     {
-        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3];
-        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1];
-        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2];
+        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3] + (sin(glm::radians(rotation[i * 3])) * cos(glm::radians(rotation[i * 3])) * psrConst[i * 3]);
+        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1] + (sin(glm::radians(rotation[i * 3 + 1])) * cos(glm::radians(rotation[i * 3 + 1])) * psrConst[i * 3 + 1]);
+        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2] + (sin(glm::radians(rotation[i * 3 + 2])) * cos(glm::radians(rotation[i * 3 + 2])) * psrConst[i * 3 + 2]);
     }
 
     vbo[0].bind(vertices, sizeof(vertices), 0, 3);
@@ -128,9 +128,9 @@ void AWS::Aws_Square::SetPosition(float x, float y, float z)
 
     for(int i = 0; i < 4; i++)
     {
-        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3];
-        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1];
-        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2];
+        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3] + (sin(glm::radians(rotation[i * 3])) * cos(glm::radians(rotation[i * 3])) * psrConst[i * 3]);
+        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1] + (sin(glm::radians(rotation[i * 3 + 1])) * cos(glm::radians(rotation[i * 3 + 1])) * psrConst[i * 3 + 1]);
+        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2] + (sin(glm::radians(rotation[i * 3 + 2])) * cos(glm::radians(rotation[i * 3 + 2])) * psrConst[i * 3 + 2]);
     }
 
     vbo[0].bind(vertices, sizeof(vertices), 0, 3);
@@ -147,9 +147,9 @@ void AWS::Aws_Square::SetScale(float x, float y, float z)
 
     for(int i = 0; i < 4; i++)
     {
-        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3];
-        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1];
-        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2];
+        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3] + (sin(glm::radians(rotation[i * 3])) * cos(glm::radians(rotation[i * 3])) * psrConst[i * 3]);
+        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1] + (sin(glm::radians(rotation[i * 3 + 1])) * cos(glm::radians(rotation[i * 3 + 1])) * psrConst[i * 3 + 1]);
+        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2] + (sin(glm::radians(rotation[i * 3 + 2])) * cos(glm::radians(rotation[i * 3 + 2])) * psrConst[i * 3 + 2]);
     }
 
     vbo[0].bind(vertices, sizeof(vertices), 0, 3);
@@ -166,9 +166,9 @@ void AWS::Aws_Square::SetRotation(float x, float y, float z)
 
     for(int i = 0; i < 4; i++)
     {
-        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3];
-        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1];
-        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2];
+        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3] + (sin(glm::radians(rotation[i * 3 + 1])) + cos(glm::radians(rotation[i * 3 + 2])) * psrConst[i * 3]);
+        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1] + (sin(glm::radians(rotation[i * 3 + 1])) + cos(glm::radians(rotation[i * 3 + 2])) * psrConst[i * 3 + 1]);
+        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2] + (sin(glm::radians(rotation[i * 3])) + cos(glm::radians(rotation[i * 3 + 1])) * psrConst[i * 3 + 2]);
     }
 
     vbo[0].bind(vertices, sizeof(vertices), 0, 3);
@@ -183,16 +183,17 @@ void AWS::Aws_Square::SetTexture(const std::string textureName, const int wrappi
     vao.unbind();
 }
 
-void AWS::Aws_Square::SetColor(const float r, const float g, const float b)
+void AWS::Aws_Square::SetColor(const float r, const float g, const float b, const float a)
 {
     for(int i = 0; i < 4; i++)
     {
-        sqColor[i * 3] = r;
-        sqColor[i * 3 + 1] = g;
-        sqColor[i * 3 + 2] = b;
+        sqColor[i * 4] = r;
+        sqColor[i * 4 + 1] = g;
+        sqColor[i * 4 + 2] = b;
+        sqColor[i * 4 + 3] = a;
     }
 
-    vbo[1].bind(sqColor, sizeof(sqColor), 1, 3);
+    vbo[1].bind(sqColor, sizeof(sqColor), 1, 4);
 }
 
 void AWS::Aws_Square::terminate()

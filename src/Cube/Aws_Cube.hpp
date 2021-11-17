@@ -250,7 +250,63 @@ namespace AWS
          * 
          * @param color 
          */
-        void SetColor(const float r, const float g, const float b, float a);
+        void SetColor(const float r, const float g, const float b, const float a);
+
+        /**
+         * @brief Get the Position object
+         * 
+         * @return float* 
+         */
+        float* GetPosition() { return position; }
+
+        /**
+         * @brief Get the Scale object
+         * 
+         * @return float* 
+         */
+        float* GetScale() { return scale; }
+
+        /**
+         * @brief Get the Rotation object
+         * 
+         * @return float* 
+         */
+        float* GetRotation() { return rotation; }
+
+        /**
+         * @brief Get the Indices object
+         * 
+         * @return unsigned* 
+         */
+        unsigned int* GetIndices() { return indices; }
+
+        /**
+         * @brief Get the Vertices Const object
+         * 
+         * @return const float* 
+         */
+        const float* GetVerticesConst() { return psrConst; }
+
+        /**
+         * @brief Get the Color object
+         * 
+         * @return float* 
+         */
+        float* GetColor() { return cbColor; }
+
+        /**
+         * @brief Get the Vertices object
+         * 
+         * @return float* 
+         */
+        float* GetVertices() { return vertices; }
+
+        /**
+         * @brief Get the Texturte Coords object
+         * 
+         * @return float* 
+         */
+        float* GetTexturteCoords() { return texture; }
 
         /**
          * @brief delete cube

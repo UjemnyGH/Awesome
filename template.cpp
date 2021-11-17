@@ -12,6 +12,7 @@ PlayerCam PC;
 AWS::Cube sq;
 AWS::Cube background;
 AWS::Square squa;
+//AWS::TextRenderer text;
 AWS::Time gtime;
 glm::mat4x4 proj;
 
@@ -99,12 +100,17 @@ void Game::initialize()
     glfwSetFramebufferSizeCallback(Game::getWindowPointer(), reshape);
     glfwSetCursorPosCallback(Game::getWindowPointer(), mouse);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
     sq.create("data/texture/image3.png", AWS::CubeTexturing::texture2D);
     squa.create("data/texture/image3.png", AWS::textureVS, AWS::textureFS);
+    //text.create();
 }
+
+float w = 0.0f;
 
 void Game::mainLoop()
 {
@@ -117,12 +123,23 @@ void Game::mainLoop()
 
     PC.SetPosition(pos.x, pos.y, pos.z);
 
-    squa.SetPosition(-0.9f, 0.9f, 0.0f);
+    /*text.Text("Hello world");
+    text.SetScale(0.1f, 0.1f, 0.1f);
+    text.SetPosition(0.6f, 0.0f, 0.0f);
+    text.draw();*/
+
     squa.SetScale(0.1f, 0.1f, 0.1f);
-    squa.SetColor(1.0f, 1.0f, 1.0f);
+    squa.SetColor(1.0f, 1.0f, 1.0f, 0.5f);
+
+    w += 0.1f;
+
+    if(w > 360.0f)
+    {
+        w = 0.0f;
+    }
 
     squa.draw(GL_TRIANGLES);
 
-    sq.SetColor(1.0f, 1.0f, 1.0f, 0.1f);
+    sq.SetColor(1.0f, 1.0f, 1.0f, 0.5f);
     sq.draw(GL_TRIANGLES, proj * glm::mat4x4(1.0) * view);
 }
