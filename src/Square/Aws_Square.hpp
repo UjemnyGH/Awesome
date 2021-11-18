@@ -3,7 +3,7 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include "../Buffers/Aws_Buffer.hpp"
-#include "../Aws_Engine.hpp"
+#include "../Aws_Types.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -28,26 +28,7 @@ namespace AWS
             -1.0f, -1.0f, 0.0f
         };
 
-        float position[3 * 4] = {
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f
-        };
-
-        float scale[3 * 4] = {
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f
-        };
-
-        float rotation[3 * 4] = {
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f
-        };
+        Transform squareTransform;
 
         const float psrConst[3 * 4] = {
             1.0f, 1.0f, 1.0f,
@@ -169,21 +150,21 @@ namespace AWS
          * 
          * @return float* 
          */
-        float* GetPosition() { return position; }
+        float* GetPosition() { return squareTransform.GetPosition(); }
 
         /**
          * @brief Get the Scale object
          * 
          * @return float* 
          */
-        float* GetScale() { return scale; }
+        float* GetScale() { return squareTransform.GetScale(); }
 
         /**
          * @brief Get the Rotation object
          * 
          * @return float* 
          */
-        float* GetRotation() { return rotation; }
+        float* GetRotation() { return squareTransform.GetOrientation(); }
 
         /**
          * @brief Get the Indices object

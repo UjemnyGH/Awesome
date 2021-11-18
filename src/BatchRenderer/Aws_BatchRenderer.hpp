@@ -4,7 +4,6 @@
 #include "../Cube/Aws_Cube.hpp"
 #include "../Buffers/Aws_Buffer.hpp"
 #include <iostream>
-#include <vector>
 
 namespace AWS
 {
@@ -25,11 +24,10 @@ namespace AWS
 
         Texture tex;
 
-        std::vector <float*> vertices;
-        std::vector <float*> texture;
-        std::vector <float*> bcolor;
-        std::vector <unsigned int*> indices;
-        std::vector <size_t> index;
+        float* vertices;
+        float* texture;
+        float* bcolor;
+        unsigned int* indices;
 
         std::string texturePath;
 
@@ -40,7 +38,7 @@ namespace AWS
         void create(const std::string texturePathC = "data/texture/dvd.png");
         void redisplay();
         void drawBROCube(int shaderType, std::vector<AWS::Aws_Cube> object, glm::mat4x4 camera);
-        //void drawBROSquare(int shaderType, std::vector<AWS::Aws_Square> object, glm::mat4x4 camera);
+        void drawBROSquare(int shaderType, std::vector<AWS::Aws_Square> object, glm::mat4x4 camera);
         void terminate();
     };
 

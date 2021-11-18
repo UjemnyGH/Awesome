@@ -92,26 +92,15 @@ void AWS::Aws_Square::draw(const unsigned int &drawMode, glm::mat4x4 camera)
 
 void AWS::Aws_Square::SetPSR(float px, float py, float pz, float sx, float sy, float sz, float rx, float ry, float rz)
 {
-    for(int i = 0; i < 4; i++)
-    {
-        position[i * 3] = px;
-        position[i * 3 + 1] = py;
-        position[i * 3 + 2] = pz;
-
-        scale[i * 3] = sx;
-        scale[i * 3 + 1] = sy;
-        scale[i * 3 + 2] = sz;
-
-        rotation[i * 3] = rx;
-        rotation[i * 3 + 1] = ry;
-        rotation[i * 3 + 2] = rz;
-    }
+    squareTransform.position = vec(px, py, pz);
+    squareTransform.scale = vec(sx, sy, sz);
+    squareTransform.orientation = vec(rx, ry, rz);
 
     for(int i = 0; i < 4; i++)
     {
-        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3] + (sin(glm::radians(rotation[i * 3])) * cos(glm::radians(rotation[i * 3])) * psrConst[i * 3]);
-        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1] + (sin(glm::radians(rotation[i * 3 + 1])) * cos(glm::radians(rotation[i * 3 + 1])) * psrConst[i * 3 + 1]);
-        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2] + (sin(glm::radians(rotation[i * 3 + 2])) * cos(glm::radians(rotation[i * 3 + 2])) * psrConst[i * 3 + 2]);
+        vertices[i * 3] = ((psrConst[i * 3] * squareTransform.scale.vx) + squareTransform.position.vx);// + cos(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
+        vertices[i * 3 + 1] = ((psrConst[i * 3 + 1] * squareTransform.scale.vy) + squareTransform.position.vy);// + sin(glm::degrees(squareTransform.orientation.vx));
+        vertices[i * 3 + 2] = ((psrConst[i * 3 + 2] * squareTransform.scale.vz) + squareTransform.position.vz);// + sin(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
     }
 
     vbo[0].bind(vertices, sizeof(vertices), 0, 3);
@@ -119,18 +108,13 @@ void AWS::Aws_Square::SetPSR(float px, float py, float pz, float sx, float sy, f
 
 void AWS::Aws_Square::SetPosition(float x, float y, float z)
 {
-    for(int i = 0; i < 4; i++)
-    {
-        position[i * 3] = x;
-        position[i * 3 + 1] = y;
-        position[i * 3 + 2] = z;
-    }
+    squareTransform.position = vec(x, y, z);
 
     for(int i = 0; i < 4; i++)
     {
-        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3] + (sin(glm::radians(rotation[i * 3])) * cos(glm::radians(rotation[i * 3])) * psrConst[i * 3]);
-        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1] + (sin(glm::radians(rotation[i * 3 + 1])) * cos(glm::radians(rotation[i * 3 + 1])) * psrConst[i * 3 + 1]);
-        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2] + (sin(glm::radians(rotation[i * 3 + 2])) * cos(glm::radians(rotation[i * 3 + 2])) * psrConst[i * 3 + 2]);
+        vertices[i * 3] = ((psrConst[i * 3] * squareTransform.scale.vx) + squareTransform.position.vx);// + cos(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
+        vertices[i * 3 + 1] = ((psrConst[i * 3 + 1] * squareTransform.scale.vy) + squareTransform.position.vy);// + sin(glm::degrees(squareTransform.orientation.vx));
+        vertices[i * 3 + 2] = ((psrConst[i * 3 + 2] * squareTransform.scale.vz) + squareTransform.position.vz);// + sin(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
     }
 
     vbo[0].bind(vertices, sizeof(vertices), 0, 3);
@@ -138,18 +122,13 @@ void AWS::Aws_Square::SetPosition(float x, float y, float z)
 
 void AWS::Aws_Square::SetScale(float x, float y, float z)
 {
-    for(int i = 0; i < 4; i++)
-    {
-        scale[i * 3] = x;
-        scale[i * 3 + 1] = y;
-        scale[i * 3 + 2] = z;
-    }
+    squareTransform.scale = vec(x, y, z);
 
     for(int i = 0; i < 4; i++)
     {
-        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3] + (sin(glm::radians(rotation[i * 3])) * cos(glm::radians(rotation[i * 3])) * psrConst[i * 3]);
-        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1] + (sin(glm::radians(rotation[i * 3 + 1])) * cos(glm::radians(rotation[i * 3 + 1])) * psrConst[i * 3 + 1]);
-        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2] + (sin(glm::radians(rotation[i * 3 + 2])) * cos(glm::radians(rotation[i * 3 + 2])) * psrConst[i * 3 + 2]);
+        vertices[i * 3] = ((psrConst[i * 3] * squareTransform.scale.vx) + squareTransform.position.vx);// + cos(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
+        vertices[i * 3 + 1] = ((psrConst[i * 3 + 1] * squareTransform.scale.vy) + squareTransform.position.vy);// + sin(glm::degrees(squareTransform.orientation.vx));
+        vertices[i * 3 + 2] = ((psrConst[i * 3 + 2] * squareTransform.scale.vz) + squareTransform.position.vz);// + sin(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
     }
 
     vbo[0].bind(vertices, sizeof(vertices), 0, 3);
@@ -157,18 +136,13 @@ void AWS::Aws_Square::SetScale(float x, float y, float z)
 
 void AWS::Aws_Square::SetRotation(float x, float y, float z)
 {
-    for(int i = 0; i < 4; i++)
-    {
-        rotation[i * 3] = x;
-        rotation[i * 3 + 1] = y;
-        rotation[i * 3 + 2] = z;
-    }
+    squareTransform.orientation = vec(x, y, z);
 
     for(int i = 0; i < 4; i++)
     {
-        vertices[i * 3] = psrConst[i * 3] * scale[i * 3] + position[i * 3] + (sin(glm::radians(rotation[i * 3 + 1])) + cos(glm::radians(rotation[i * 3 + 2])) * psrConst[i * 3]);
-        vertices[i * 3 + 1] = psrConst[i * 3 + 1] * scale[i * 3 + 1] + position[i * 3 + 1] + (sin(glm::radians(rotation[i * 3 + 1])) + cos(glm::radians(rotation[i * 3 + 2])) * psrConst[i * 3 + 1]);
-        vertices[i * 3 + 2] = psrConst[i * 3 + 2] * scale[i * 3 + 2] + position[i * 3 + 2] + (sin(glm::radians(rotation[i * 3])) + cos(glm::radians(rotation[i * 3 + 1])) * psrConst[i * 3 + 2]);
+        vertices[i * 3] = ((psrConst[i * 3] * squareTransform.scale.vx) + squareTransform.position.vx);// + cos(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
+        vertices[i * 3 + 1] = ((psrConst[i * 3 + 1] * squareTransform.scale.vy) + squareTransform.position.vy);// + sin(glm::degrees(squareTransform.orientation.vx));
+        vertices[i * 3 + 2] = ((psrConst[i * 3 + 2] * squareTransform.scale.vz) + squareTransform.position.vz);// + sin(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
     }
 
     vbo[0].bind(vertices, sizeof(vertices), 0, 3);

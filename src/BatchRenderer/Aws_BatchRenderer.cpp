@@ -32,11 +32,33 @@ void AWS::Aws_BatchRenderer::drawBROCube(int shaderType, std::vector<AWS::Aws_Cu
 
             for(int i = 0; i < object.size(); i++)
             {
-                vertices[i] = object[i].GetVertices();
-                indices[i] = object[i].GetIndices();
-                bcolor[i] = object[i].GetColor();
+                for(int j = 0; j < sizeof(object[0].GetVertices()) / 2; j++)
+                {
+                    vertices[j * 3] = object[i].GetVertices()[j * 3];
+                    vertices[j * 3 + 1] = object[i].GetVertices()[j * 3 + 1];
+                    vertices[j * 3 + 2] = object[i].GetVertices()[j * 3 + 2];
+                }
 
-                index[i] = i;
+                for(int j = 0; j < sizeof(object[0].GetIndices()) / 4; j++)
+                {
+                    indices[j * 3] = object[i].GetIndices()[j * 3];
+                    indices[j * 3 + 1] = object[i].GetIndices()[j * 3 + 1];
+                    indices[j * 3 + 2] = object[i].GetIndices()[j * 3 + 2];
+                }
+
+                for(int j = 0; j < sizeof(object[0].GetTexturteCoords()) / 2; j++)
+                {
+                    texture[j * 2] = object[i].GetTexturteCoords()[j * 2];
+                    texture[j * 2 + 1] = object[i].GetTexturteCoords()[j * 2 + 1];
+                }
+
+                for(int j = 0; j < sizeof(object[0].GetColor()) / 2; j++)
+                {
+                    bcolor[j * 4] = object[i].GetColor()[j * 4];
+                    bcolor[j * 4 + 1] = object[i].GetColor()[j * 4 + 1];
+                    bcolor[j * 4 + 2] = object[i].GetColor()[j * 4 + 1];
+                    bcolor[j * 4 + 3] = object[i].GetColor()[j * 4 + 1];
+                }
             }
         }
         else if(shaderType == ShaderType::textureShader)
@@ -46,20 +68,41 @@ void AWS::Aws_BatchRenderer::drawBROCube(int shaderType, std::vector<AWS::Aws_Cu
 
             for(int i = 0; i < object.size(); i++)
             {
-                vertices[i] = object[i].GetVertices();
-                indices[i] = object[i].GetIndices();
-                texture[i] = object[i].GetTexturteCoords();
-                bcolor[i] = object[i].GetColor();
+                for(int j = 0; j < sizeof(object[0].GetVertices()) / 2; j++)
+                {
+                    vertices[j * 3] = object[i].GetVertices()[j * 3];
+                    vertices[j * 3 + 1] = object[i].GetVertices()[j * 3 + 1];
+                    vertices[j * 3 + 2] = object[i].GetVertices()[j * 3 + 2];
+                }
 
-                index[i] = i;
+                for(int j = 0; j < sizeof(object[0].GetIndices()) / 4; j++)
+                {
+                    indices[j * 3] = object[i].GetIndices()[j * 3];
+                    indices[j * 3 + 1] = object[i].GetIndices()[j * 3 + 1];
+                    indices[j * 3 + 2] = object[i].GetIndices()[j * 3 + 2];
+                }
+
+                for(int j = 0; j < sizeof(object[0].GetTexturteCoords()) / 2; j++)
+                {
+                    texture[j * 2] = object[i].GetTexturteCoords()[j * 2];
+                    texture[j * 2 + 1] = object[i].GetTexturteCoords()[j * 2 + 1];
+                }
+
+                for(int j = 0; j < sizeof(object[0].GetColor()) / 2; j++)
+                {
+                    bcolor[j * 4] = object[i].GetColor()[j * 4];
+                    bcolor[j * 4 + 1] = object[i].GetColor()[j * 4 + 1];
+                    bcolor[j * 4 + 2] = object[i].GetColor()[j * 4 + 1];
+                    bcolor[j * 4 + 3] = object[i].GetColor()[j * 4 + 1];
+                }
             }
         }
         vao.bind();
-        vbo[0].bind(*vertices.data(), vertices.size() * sizeof(float), 0, 3); 
-        vbo[1].bind(*bcolor.data(), bcolor.size() * sizeof(float), 1, 3); 
-        vbo[2].bind(*texture.data(), texture.size() * sizeof(float), 2, 2);
+        vbo[0].bind(vertices, sizeof(vertices), 0, 3); 
+        vbo[1].bind(bcolor, sizeof(bcolor), 1, 3); 
+        vbo[2].bind(texture, sizeof(texture), 2, 2);
 
-        ebo.bind(*indices.data(), indices.size() * sizeof(unsigned int));
+        ebo.bind(indices, sizeof(indices));
         vao.unbind();
 
         binded = true;
@@ -78,7 +121,7 @@ void AWS::Aws_BatchRenderer::drawBROCube(int shaderType, std::vector<AWS::Aws_Cu
     sh.unbind();
 }
 
-/*void AWS::Aws_BatchRenderer::drawBROSquare(int shaderType, std::vector<AWS::Aws_Square> object, glm::mat4x4 camera)
+void AWS::Aws_BatchRenderer::drawBROSquare(int shaderType, std::vector<AWS::Aws_Square> object, glm::mat4x4 camera)
 {
     if(!binded)
     {
@@ -89,11 +132,33 @@ void AWS::Aws_BatchRenderer::drawBROCube(int shaderType, std::vector<AWS::Aws_Cu
 
             for(int i = 0; i < object.size(); i++)
             {
-                vertices[i] = object[i].GetVertices();
-                indices[i] = object[i].GetIndices();
-                bcolor[i] = object[i].GetColor();
+                for(int j = 0; j < sizeof(object[0].GetVertices()) / 2; j++)
+                {
+                    vertices[j * 3] = object[i].GetVertices()[j * 3];
+                    vertices[j * 3 + 1] = object[i].GetVertices()[j * 3 + 1];
+                    vertices[j * 3 + 2] = object[i].GetVertices()[j * 3 + 2];
+                }
 
-                index[i] = i;
+                for(int j = 0; j < sizeof(object[0].GetIndices()) / 4; j++)
+                {
+                    indices[j * 3] = object[i].GetIndices()[j * 3];
+                    indices[j * 3 + 1] = object[i].GetIndices()[j * 3 + 1];
+                    indices[j * 3 + 2] = object[i].GetIndices()[j * 3 + 2];
+                }
+
+                for(int j = 0; j < sizeof(object[0].GetTexturteCoords()) / 2; j++)
+                {
+                    texture[j * 2] = object[i].GetTexturteCoords()[j * 2];
+                    texture[j * 2 + 1] = object[i].GetTexturteCoords()[j * 2 + 1];
+                }
+
+                for(int j = 0; j < sizeof(object[0].GetColor()) / 2; j++)
+                {
+                    bcolor[j * 4] = object[i].GetColor()[j * 4];
+                    bcolor[j * 4 + 1] = object[i].GetColor()[j * 4 + 1];
+                    bcolor[j * 4 + 2] = object[i].GetColor()[j * 4 + 1];
+                    bcolor[j * 4 + 3] = object[i].GetColor()[j * 4 + 1];
+                }
             }
         }
         else if(shaderType == ShaderType::textureShader)
@@ -103,20 +168,42 @@ void AWS::Aws_BatchRenderer::drawBROCube(int shaderType, std::vector<AWS::Aws_Cu
 
             for(int i = 0; i < object.size(); i++)
             {
-                vertices[i] = object[i].GetVertices();
-                indices[i] = object[i].GetIndices();
-                texture[i] = object[i].GetTexturteCoords();
-                bcolor[i] = object[i].GetColor();
+                for(int j = 0; j < sizeof(object[0].GetVertices()) / 2; j++)
+                {
+                    vertices[j * 3] = object[i].GetVertices()[j * 3];
+                    vertices[j * 3 + 1] = object[i].GetVertices()[j * 3 + 1];
+                    vertices[j * 3 + 2] = object[i].GetVertices()[j * 3 + 2];
+                }
 
-                index[i] = i;
+                for(int j = 0; j < sizeof(object[0].GetIndices()) / 4; j++)
+                {
+                    indices[j * 3] = object[i].GetIndices()[j * 3];
+                    indices[j * 3 + 1] = object[i].GetIndices()[j * 3 + 1];
+                    indices[j * 3 + 2] = object[i].GetIndices()[j * 3 + 2];
+                }
+
+                for(int j = 0; j < sizeof(object[0].GetTexturteCoords()) / 2; j++)
+                {
+                    texture[j * 2] = object[i].GetTexturteCoords()[j * 2];
+                    texture[j * 2 + 1] = object[i].GetTexturteCoords()[j * 2 + 1];
+                }
+
+                for(int j = 0; j < sizeof(object[0].GetColor()) / 2; j++)
+                {
+                    bcolor[j * 4] = object[i].GetColor()[j * 4];
+                    bcolor[j * 4 + 1] = object[i].GetColor()[j * 4 + 1];
+                    bcolor[j * 4 + 2] = object[i].GetColor()[j * 4 + 1];
+                    bcolor[j * 4 + 3] = object[i].GetColor()[j * 4 + 1];
+                }
             }
         }
-        vao.bind();
-        vbo[0].bind(*vertices.data(), vertices.size() * sizeof(float), 0, 3); 
-        vbo[1].bind(*bcolor.data(), bcolor.size() * sizeof(float), 1, 3); 
-        vbo[2].bind(*texture.data(), texture.size() * sizeof(float), 2, 2);
 
-        ebo.bind(*indices.data(), indices.size() * sizeof(unsigned int));
+        vao.bind();
+        vbo[0].bind(vertices, sizeof(vertices), 0, 3); 
+        vbo[1].bind(bcolor, sizeof(bcolor), 1, 3); 
+        vbo[2].bind(texture, sizeof(texture), 2, 2);
+
+        ebo.bind(indices, sizeof(indices));
         vao.unbind();
 
         binded = true;
@@ -133,7 +220,7 @@ void AWS::Aws_BatchRenderer::drawBROCube(int shaderType, std::vector<AWS::Aws_Cu
 
     vao.unbind();
     sh.unbind();
-}*/
+}
 
 void AWS::Aws_BatchRenderer::terminate()
 {

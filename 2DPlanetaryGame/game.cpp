@@ -65,7 +65,14 @@ void Window::mainLoop()
     ground.SetColor(0.0f, 0.3f, 0.0f, 1.0f);
     ground.draw(GL_TRIANGLES, projection * glm::mat4x4(1.0) * view);
 
-    player.SetScale(0.1f, 0.1f, 0.0f);
+    scr += 0.001f;
+
+    if(scr > 3.6f)
+    {
+        scr = 0.0f;
+    }
+
+    player.SetScale(0.5f, 0.5f, 0.5f);
     player.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     player.draw(GL_TRIANGLES);
 
@@ -84,10 +91,10 @@ void Window::mainLoop()
     {
         trees[i].SetPosition(treePosX[i], treePosY[i], 0.0f);
         trees[i].SetScale(0.05f, 0.05f, 0.0f);
-        trees[i].SetColor(1.0f, 1.0f, 1.0f);
+        trees[i].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
-    /*treesBatch.drawBROSquare(AWS::ShaderType::textureShader, {
+    treesBatch.drawBROSquare(AWS::ShaderType::textureShader, {
         trees[0],
         trees[1],
         trees[2],
@@ -104,7 +111,7 @@ void Window::mainLoop()
         trees[13],
         trees[14],
         trees[15]
-    }, projection * glm::mat4x4(1.0) * view);*/
+    }, projection * glm::mat4x4(1.0) * view);
 } 
 
 void reshape(GLFWwindow* window, int w, int h)
