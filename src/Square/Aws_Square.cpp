@@ -65,7 +65,7 @@ void AWS::Aws_Square::draw(const unsigned int &drawMode)
         tex.bind();
     }
 
-    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(glm::mat4x4(1.0)));
+    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(glm::mat4x4(1.0) * transform));
 
     glDrawElements(drawMode, 6, GL_UNSIGNED_INT, NULL);
 
@@ -82,7 +82,7 @@ void AWS::Aws_Square::draw(const unsigned int &drawMode, glm::mat4x4 camera)
         tex.bind();
     }
 
-    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(camera));
+    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(camera * transform));
 
     glDrawElements(drawMode, sizeof(vertices) / 4, GL_UNSIGNED_INT, NULL);
 
@@ -92,7 +92,13 @@ void AWS::Aws_Square::draw(const unsigned int &drawMode, glm::mat4x4 camera)
 
 void AWS::Aws_Square::SetPSR(float px, float py, float pz, float sx, float sy, float sz, float rx, float ry, float rz)
 {
-    squareTransform.position = vec(px, py, pz);
+    transform = glm::translate(transform, glm::vec3(px, py, pz));
+    transform = glm::scale(transform, glm::vec3(sx, sy, sz));
+    transform = glm::rotate(transform, glm::radians(rx), glm::vec3(1.0f, 0.0f, 0.0f));
+    transform = glm::rotate(transform, glm::radians(ry), glm::vec3(0.0f, 1.0f, 0.0f));
+    transform = glm::rotate(transform, glm::radians(rz), glm::vec3(0.0f, 0.0f, 1.0f));
+    
+    /*squareTransform.position = vec(px, py, pz);
     squareTransform.scale = vec(sx, sy, sz);
     squareTransform.orientation = vec(rx, ry, rz);
 
@@ -103,12 +109,14 @@ void AWS::Aws_Square::SetPSR(float px, float py, float pz, float sx, float sy, f
         vertices[i * 3 + 2] = ((psrConst[i * 3 + 2] * squareTransform.scale.vz) + squareTransform.position.vz);// + sin(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
     }
 
-    vbo[0].bind(vertices, sizeof(vertices), 0, 3);
+    vbo[0].bind(vertices, sizeof(vertices), 0, 3);*/
 }
 
 void AWS::Aws_Square::SetPosition(float x, float y, float z)
 {
-    squareTransform.position = vec(x, y, z);
+    transform = glm::translate(transform, glm::vec3(x, y, z));
+
+    /*squareTransform.position = vec(x, y, z);
 
     for(int i = 0; i < 4; i++)
     {
@@ -117,12 +125,14 @@ void AWS::Aws_Square::SetPosition(float x, float y, float z)
         vertices[i * 3 + 2] = ((psrConst[i * 3 + 2] * squareTransform.scale.vz) + squareTransform.position.vz);// + sin(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
     }
 
-    vbo[0].bind(vertices, sizeof(vertices), 0, 3);
+    vbo[0].bind(vertices, sizeof(vertices), 0, 3);*/
 }
 
 void AWS::Aws_Square::SetScale(float x, float y, float z)
 {
-    squareTransform.scale = vec(x, y, z);
+    transform = glm::scale(transform, glm::vec3(x, y, z));
+
+    /*squareTransform.scale = vec(x, y, z);
 
     for(int i = 0; i < 4; i++)
     {
@@ -131,12 +141,16 @@ void AWS::Aws_Square::SetScale(float x, float y, float z)
         vertices[i * 3 + 2] = ((psrConst[i * 3 + 2] * squareTransform.scale.vz) + squareTransform.position.vz);// + sin(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
     }
 
-    vbo[0].bind(vertices, sizeof(vertices), 0, 3);
+    vbo[0].bind(vertices, sizeof(vertices), 0, 3);*/
 }
 
 void AWS::Aws_Square::SetRotation(float x, float y, float z)
 {
-    squareTransform.orientation = vec(x, y, z);
+    transform = glm::rotate(transform, glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
+    transform = glm::rotate(transform, glm::radians(y), glm::vec3(0.0f, 1.0f, 0.0f));
+    transform = glm::rotate(transform, glm::radians(z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    /*squareTransform.orientation = vec(x, y, z);
 
     for(int i = 0; i < 4; i++)
     {
@@ -145,7 +159,7 @@ void AWS::Aws_Square::SetRotation(float x, float y, float z)
         vertices[i * 3 + 2] = ((psrConst[i * 3 + 2] * squareTransform.scale.vz) + squareTransform.position.vz);// + sin(glm::degrees(squareTransform.orientation.vy)) * cos(glm::degrees(squareTransform.orientation.vx));
     }
 
-    vbo[0].bind(vertices, sizeof(vertices), 0, 3);
+    vbo[0].bind(vertices, sizeof(vertices), 0, 3);*/
 }
 
 void AWS::Aws_Square::SetTexture(const std::string textureName, const int wrapping)

@@ -94,7 +94,7 @@ void Window::mainLoop()
         trees[i].SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
-    treesBatch.drawBROSquare(AWS::ShaderType::textureShader, {
+    /*treesBatch.drawBROSquare(AWS::ShaderType::textureShader, {
         trees[0],
         trees[1],
         trees[2],
@@ -111,7 +111,7 @@ void Window::mainLoop()
         trees[13],
         trees[14],
         trees[15]
-    }, projection * glm::mat4x4(1.0) * view);
+    }, projection * glm::mat4x4(1.0) * view);*/
 } 
 
 void reshape(GLFWwindow* window, int w, int h)

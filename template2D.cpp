@@ -16,10 +16,11 @@ float playerYPos = -0.5f;
 const float c_playerYPos = -0.7f;
 bool playerCanJump = true;
 bool gameOv = false;
+int score = 0;
 
 int main()
 {
-    window.createWindow(1280, 1080, "Game 2D", NULL);
+    window.createWindow(800, 600, "Game 2D", NULL);
 
     return 0;
 }
@@ -65,7 +66,7 @@ void Game::mainLoop()
 
     ground.SetScale(1.0f, 0.1f, 1.0f);
     ground.SetPosition(0.0f, -0.9f, 0.0f);
-    ground.SetColor(0.0f, 0.6f, 0.0f);
+    ground.SetColor(0.0f, 0.6f, 0.0f, 1.0f);
     ground.draw(GL_TRIANGLES);
 
     posx[1] -= 2.0f * delta;
@@ -74,9 +75,11 @@ void Game::mainLoop()
     if(posx[1] < -1.2f)
     {
         posx[1] = 1.2f;
+        score++;
     }
 
     obsticle->SetScale(0.1f, 0.1f, 0.1f);
+    obsticle->SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     obsticle->draw(GL_TRIANGLES);
 
     if(playerYPos < c_playerYPos)
@@ -92,9 +95,11 @@ void Game::mainLoop()
 
     playerYPos += gravity * acceleration * delta;
 
+    std::cout << score << std::endl;
+
     player.SetScale(0.1f, 0.1f, 0.1f);
     player.SetPosition(-0.8f, playerYPos, 0.0f);
-    player.SetColor(1.0f, 1.0f, 1.0f);
+    player.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     player.draw(GL_TRIANGLES);
 
     if(playerYPos < -0.6f && posx[1] < -0.7f && posx[1] > -0.9f)
@@ -105,12 +110,13 @@ void Game::mainLoop()
     if(gameOv)
     {
         gameOver.SetScale(0.5f, 0.2f, 0.2f);
+        score = 0;
     }
     else
     {
         gameOver.SetScale(0.0f, 0.0f, 0.0f);
     }
 
-    gameOver.SetColor(0.0f, 0.0f, 0.5f);
+    gameOver.SetColor(0.0f, 0.0f, 0.5f, 1.0f);
     gameOver.draw(GL_TRIANGLES);
 }

@@ -6,14 +6,57 @@
 #include "src/stb_image/stb_image.h"
 #include <future>
 #include <thread>
+#include <random>
 
 Game window;
 PlayerCam PC;
 AWS::Cube sq;
 AWS::Cube background;
 AWS::Square squa;
+AWS::Square terrain;
 //AWS::TextRenderer text;
 AWS::Time gtime;
+
+AWS::Shader sh;
+AWS::VAO vao;
+AWS::VBO vbo[3];
+AWS::EBO ebo;
+AWS::Texture tex;
+
+float position[3 * 5] = {
+    0.0f + 3.0f, 0.5f, 0.0f,
+    0.5f + 3.0f, -0.5f, 0.5f,
+    -0.5f + 3.0f, -0.5f, 0.5f,
+    0.5f + 3.0f, -0.5f, -0.5f,
+    -0.5f + 3.0f, -0.5f, -0.5f
+};
+
+unsigned int indices[] = {
+    0, 2, 3,
+    0, 2, 4,
+    0, 1, 2,
+    0, 1, 4,
+    0, 1, 3,
+    0, 3, 4,
+    1, 2, 3,
+    2, 3, 4
+};
+
+float texture[] = {
+    1.0f, 1.0f,
+    1.0f, 0.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f
+};
+
+float color[] = {
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f,
+    1.0f, 1.0f, 1.0f
+};
+
 glm::mat4x4 proj;
 
 glm::vec3 right;
@@ -22,12 +65,8 @@ float lastX = 400, lastY = 300;
 bool firstMouse = false;
 float yaw, pitch;
 float posx, posy, posz;
+std::random_device rd;
 
-/**
- * @brief 
- * 
- * @return int 
- */
 int main()
 {
     window.createWindow(1280, 1080, "Window", NULL);
@@ -107,6 +146,32 @@ void Game::initialize()
 
     sq.create("data/texture/image3.png", AWS::CubeTexturing::texture2D);
     squa.create("data/texture/image3.png", AWS::textureVS, AWS::textureFS);
+    terrain.create();
+
+    sh.create(AWS::textureVS, AWS::textureFS);
+
+    vao.create();
+    vao.bind();
+
+    vbo->create();
+
+    vbo[0].bind(position, sizeof(position), 0, 3);
+    vbo[1].bind(color, sizeof(color), 1, 3);
+    vbo[2].bind(texture, sizeof(texture), 2, 2);
+
+    tex.create();
+    tex.bind({"data/texture/obama.png"}, GL_REPEAT, GL_TEXTURE_2D);
+
+    ebo.create();
+    ebo.bind(indices, sizeof(indices));
+
+    sh.bind();
+
+    glUniform1f(glGetUniformLocation(sh.GetID(), "tex"), 0);
+
+    sh.unbind();
+
+    vao.unbind();
     //text.create();
 }
 
@@ -115,7 +180,7 @@ float w = 0.0f;
 void Game::mainLoop()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.8f, 0.0f);
 
     glm::mat4x4 view = glm::lookAt(PC.GetPosition(), PC.GetPosition() + PC.GetFront(), PC.GetUp());
 
@@ -128,10 +193,10 @@ void Game::mainLoop()
     text.SetPosition(0.6f, 0.0f, 0.0f);
     text.draw();*/
 
-    squa.SetScale(0.1f, 0.1f, 0.1f);
+    squa.SetScale(0.01f, 0.01f, 0.01f);
     squa.SetColor(1.0f, 1.0f, 1.0f, 0.5f);
 
-    w += 0.1f;
+    w += 0.5f;
 
     if(w > 360.0f)
     {
@@ -140,6 +205,23 @@ void Game::mainLoop()
 
     squa.draw(GL_TRIANGLES);
 
-    sq.SetColor(1.0f, 1.0f, 1.0f, 0.5f);
-    sq.draw(GL_TRIANGLES, proj * glm::mat4x4(1.0) * view);
+    sq.SetColor(1.0f, 1.0f, 0.0f, 1.0f);
+    sq.SetPosition(0.0f, 0.0f, 0.0f);
+    sq.SetRotation(w, w, 0.0f);
+    sq.draw(GL_TRIANGLES, proj * view);
+
+    terrain.SetScale(10.0f, 10.0f, 1.0f);
+    terrain.SetColor(0.0f, 0.6f, 0.0f, 1.0f);
+    terrain.draw(GL_TRIANGLES, proj * view);
+
+    vao.bind();
+    sh.bind();
+    tex.bind();
+
+    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(proj * glm::mat4x4(1.0) * view));
+
+    glDrawElements(GL_TRIANGLES, sizeof(position) / 2, GL_UNSIGNED_INT, NULL);
+
+    vao.unbind();
+    sh.unbind();
 }

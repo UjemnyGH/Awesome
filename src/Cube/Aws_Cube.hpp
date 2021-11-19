@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <math.h>
 
 namespace AWS
@@ -39,17 +40,7 @@ namespace AWS
             -1.0f, -1.0f, -1.0f
         };
 
-        float position[3] = {
-            0.0f, 0.0f, 0.0f,
-        };
-
-        float scale[3] = {
-            1.0f, 1.0f, 1.0f,
-        };
-
-        float rotation[3] = {
-            1.0f, 1.0f, 1.0f
-        };
+        glm::mat4x4 transform = glm::mat4x4(1.0);
 
         const float psrConst[3 * 8] = {
             1.0f, 1.0f, 1.0f,
@@ -251,27 +242,6 @@ namespace AWS
          * @param color 
          */
         void SetColor(const float r, const float g, const float b, const float a);
-
-        /**
-         * @brief Get the Position object
-         * 
-         * @return float* 
-         */
-        float* GetPosition() { return position; }
-
-        /**
-         * @brief Get the Scale object
-         * 
-         * @return float* 
-         */
-        float* GetScale() { return scale; }
-
-        /**
-         * @brief Get the Rotation object
-         * 
-         * @return float* 
-         */
-        float* GetRotation() { return rotation; }
 
         /**
          * @brief Get the Indices object

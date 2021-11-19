@@ -104,7 +104,7 @@ void AWS::Aws_Cube::draw(const unsigned int &drawMode)
         tex.bind();
     }
 
-    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(glm::mat4x4(1.0)));
+    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(glm::mat4x4(1.0) * transform));
 
     glDrawElements(drawMode, sizeof(vertices) / 2, GL_UNSIGNED_INT, NULL);
 
@@ -121,7 +121,7 @@ void AWS::Aws_Cube::draw(const unsigned int &drawMode, glm::mat4x4 camera)
         tex.bind();
     }
 
-    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(camera));
+    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(camera * transform));
 
     glDrawElements(drawMode, sizeof(vertices) / 2, GL_UNSIGNED_INT, NULL);
 
@@ -131,7 +131,13 @@ void AWS::Aws_Cube::draw(const unsigned int &drawMode, glm::mat4x4 camera)
 
 void AWS::Aws_Cube::SetPSR(float px, float py, float pz, float sx, float sy, float sz, float rx, float ry, float rz)
 {
-    for(int i = 0; i < 8; i++)
+    transform = glm::translate(transform, glm::vec3(px, py, pz));
+    transform = glm::scale(transform, glm::vec3(sx, sy, sz));
+    transform = glm::rotate(transform, glm::radians(rx), glm::vec3(1.0f, 0.0f, 0.0f));
+    transform = glm::rotate(transform, glm::radians(ry), glm::vec3(0.0f, 1.0f, 0.0f));
+    transform = glm::rotate(transform, glm::radians(rz), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    /*for(int i = 0; i < 8; i++)
     {
         position[0] = px;
         position[1] = py;
@@ -153,12 +159,14 @@ void AWS::Aws_Cube::SetPSR(float px, float py, float pz, float sx, float sy, flo
         vertices[i * 3 + 2] = (psrConst[i * 3 + 2] * scale[2]) + position[2];
     }
 
-    vbo[0].bind(vertices, sizeof(vertices), 0, 3);
+    vbo[0].bind(vertices, sizeof(vertices), 0, 3);*/
 }
 
 void AWS::Aws_Cube::SetPosition(float x, float y, float z)
 {
-    position[0] = x;
+    transform = glm::translate(transform, glm::vec3(x, y, z));
+    
+    /*position[0] = x;
     position[1] = y;
     position[2] = z;
 
@@ -169,12 +177,14 @@ void AWS::Aws_Cube::SetPosition(float x, float y, float z)
         vertices[i * 3 + 2] = (psrConst[i * 3 + 2] * scale[2]) + position[2];
     }
 
-    vbo[0].bind(vertices, sizeof(vertices), 0, 3);
+    vbo[0].bind(vertices, sizeof(vertices), 0, 3);*/
 }
 
 void AWS::Aws_Cube::SetScale(float x, float y, float z)
 {
-    scale[0] = x;
+    transform = glm::scale(transform, glm::vec3(x, y, z));
+    
+    /*scale[0] = x;
     scale[1] = y;
     scale[2] = z;
 
@@ -185,12 +195,16 @@ void AWS::Aws_Cube::SetScale(float x, float y, float z)
         vertices[i * 3 + 2] = (psrConst[i * 3 + 2] * scale[2]) + position[2];
     }
 
-    vbo[0].bind(vertices, sizeof(vertices), 0, 3);
+    vbo[0].bind(vertices, sizeof(vertices), 0, 3);*/
 }
 
 void AWS::Aws_Cube::SetRotation(float x, float y, float z)
 {
-    rotation[0] = x;
+    transform = glm::rotate(transform, glm::radians(x), glm::vec3(1.0f, 0.0f, 0.0f));
+    transform = glm::rotate(transform, glm::radians(y), glm::vec3(0.0f, 1.0f, 0.0f));
+    transform = glm::rotate(transform, glm::radians(z), glm::vec3(0.0f, 0.0f, 1.0f));
+    
+    /*rotation[0] = x;
     rotation[1] = y;
     rotation[2] = z;
 
@@ -201,7 +215,7 @@ void AWS::Aws_Cube::SetRotation(float x, float y, float z)
         vertices[i * 3 + 2] = (psrConst[i * 3 + 2] * scale[2]) + position[2];
     }
 
-    vbo[0].bind(vertices, sizeof(vertices), 0, 3);
+    vbo[0].bind(vertices, sizeof(vertices), 0, 3);*/
 }
 
 void AWS::Aws_Cube::SetTexture(const std::string textureName, const int wrapping, const int textureType)

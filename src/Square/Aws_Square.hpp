@@ -6,6 +6,7 @@
 #include "../Aws_Types.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace AWS
 {
@@ -28,7 +29,7 @@ namespace AWS
             -1.0f, -1.0f, 0.0f
         };
 
-        Transform squareTransform;
+        glm::mat4x4 transform = glm::mat4x4(1.0);
 
         const float psrConst[3 * 4] = {
             1.0f, 1.0f, 1.0f,
@@ -144,27 +145,6 @@ namespace AWS
          * @param color 
          */
         void SetColor(const float r, const float g, const float b, const float a);
-
-        /**
-         * @brief Get the Position object
-         * 
-         * @return float* 
-         */
-        float* GetPosition() { return squareTransform.GetPosition(); }
-
-        /**
-         * @brief Get the Scale object
-         * 
-         * @return float* 
-         */
-        float* GetScale() { return squareTransform.GetScale(); }
-
-        /**
-         * @brief Get the Rotation object
-         * 
-         * @return float* 
-         */
-        float* GetRotation() { return squareTransform.GetOrientation(); }
 
         /**
          * @brief Get the Indices object
