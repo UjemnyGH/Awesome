@@ -10,52 +10,13 @@
 
 Game window;
 PlayerCam PC;
-AWS::Cube sq;
+AWS::Cube sq[10];
 AWS::Cube background;
 AWS::Square squa;
 AWS::Square terrain;
+AWS::Square visRepColorValues[4];
 //AWS::TextRenderer text;
 AWS::Time gtime;
-
-AWS::Shader sh;
-AWS::VAO vao;
-AWS::VBO vbo[3];
-AWS::EBO ebo;
-AWS::Texture tex;
-
-float position[3 * 5] = {
-    0.0f + 3.0f, 0.5f, 0.0f,
-    0.5f + 3.0f, -0.5f, 0.5f,
-    -0.5f + 3.0f, -0.5f, 0.5f,
-    0.5f + 3.0f, -0.5f, -0.5f,
-    -0.5f + 3.0f, -0.5f, -0.5f
-};
-
-unsigned int indices[] = {
-    0, 2, 3,
-    0, 2, 4,
-    0, 1, 2,
-    0, 1, 4,
-    0, 1, 3,
-    0, 3, 4,
-    1, 2, 3,
-    2, 3, 4
-};
-
-float texture[] = {
-    1.0f, 1.0f,
-    1.0f, 0.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f
-};
-
-float color[] = {
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f
-};
 
 glm::mat4x4 proj;
 
@@ -66,6 +27,10 @@ bool firstMouse = false;
 float yaw, pitch;
 float posx, posy, posz;
 std::random_device rd;
+
+float color1[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+float w = 0.0f;
 
 int main()
 {
@@ -131,6 +96,66 @@ void processInput(GLFWwindow *window)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
+    if(glfwGetKey(window, GLFW_KEY_KP_1) == GLFW_PRESS)
+    {
+        if(color1[0] > 0.0f)
+        {
+            color1[0] -= 0.01f;
+        }
+    }
+    else if(glfwGetKey(window, GLFW_KEY_KP_4) == GLFW_PRESS)
+    {
+        if(color1[0] < 1.0f)
+        {
+            color1[0] += 0.01f;
+        }
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_KP_2) == GLFW_PRESS)
+    {
+        if(color1[1] > 0.0f)
+        {
+            color1[1] -= 0.01f;
+        }
+    }
+    else if(glfwGetKey(window, GLFW_KEY_KP_5) == GLFW_PRESS)
+    {
+        if(color1[1] < 1.0f)
+        {
+            color1[1] += 0.01f;
+        }
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_KP_3) == GLFW_PRESS)
+    {
+        if(color1[2] > 0.0f)
+        {
+            color1[2] -= 0.01f;
+        }
+    }
+    else if(glfwGetKey(window, GLFW_KEY_KP_6) == GLFW_PRESS)
+    {
+        if(color1[2] < 1.0f)
+        {
+            color1[2] += 0.01f;
+        }
+    }
+
+    if(glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS)
+    {
+        if(color1[3] > 0.0f)
+        {
+            color1[3] -= 0.01f;
+        }
+    }
+    else if(glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
+    {
+        if(color1[3] < 1.0f)
+        {
+            color1[3] += 0.01f;
+        }
+    }
+
     right = glm::normalize(glm::cross(PC.GetFront(), PC.GetUp()));
 }
 
@@ -141,41 +166,20 @@ void Game::initialize()
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    sq.create("data/texture/image3.png", AWS::CubeTexturing::texture2D);
+    for(int i = 0; i < sizeof(sq) / 1128; i++)
+        sq[i].create("data/texture/image3.png", AWS::CubeTexturing::texture2D);
+
     squa.create("data/texture/image3.png", AWS::textureVS, AWS::textureFS);
-    terrain.create();
 
-    sh.create(AWS::textureVS, AWS::textureFS);
+    terrain.create(AWS::colorVS, AWS::colorFS);
 
-    vao.create();
-    vao.bind();
-
-    vbo->create();
-
-    vbo[0].bind(position, sizeof(position), 0, 3);
-    vbo[1].bind(color, sizeof(color), 1, 3);
-    vbo[2].bind(texture, sizeof(texture), 2, 2);
-
-    tex.create();
-    tex.bind({"data/texture/obama.png"}, GL_REPEAT, GL_TEXTURE_2D);
-
-    ebo.create();
-    ebo.bind(indices, sizeof(indices));
-
-    sh.bind();
-
-    glUniform1f(glGetUniformLocation(sh.GetID(), "tex"), 0);
-
-    sh.unbind();
-
-    vao.unbind();
-    //text.create();
+    for(int i = 0; i < sizeof(visRepColorValues) / 384; i++)
+        visRepColorValues[i].create("data/texture/image3.png", AWS::textureVS, AWS::textureFS);
 }
-
-float w = 0.0f;
 
 void Game::mainLoop()
 {
@@ -188,40 +192,42 @@ void Game::mainLoop()
 
     PC.SetPosition(pos.x, pos.y, pos.z);
 
-    /*text.Text("Hello world");
-    text.SetScale(0.1f, 0.1f, 0.1f);
-    text.SetPosition(0.6f, 0.0f, 0.0f);
-    text.draw();*/
-
-    squa.SetScale(0.01f, 0.01f, 0.01f);
+    squa.SetScale(0.1f, 0.1f, 0.1f);
     squa.SetColor(1.0f, 1.0f, 1.0f, 0.5f);
 
-    w += 0.5f;
+    w += 5.0f;
 
     if(w > 360.0f)
     {
         w = 0.0f;
     }
 
-    squa.draw(GL_TRIANGLES);
+    squa.draw(GL_TRIANGLES, proj, view);
 
-    sq.SetColor(1.0f, 1.0f, 0.0f, 1.0f);
-    sq.SetPosition(0.0f, 0.0f, 0.0f);
-    sq.SetRotation(w, w, 0.0f);
-    sq.draw(GL_TRIANGLES, proj * view);
+    for(int i = 0; i < sizeof(sq) / 1128; i++)
+    {
+        sq[i].SetRotation(0.0f, w, w);
+        sq[i].SetColor(color1[0], color1[1], color1[2], color1[3]);
+        sq[i].SetPosition(0.0f + (float)i * 2.0f, 0.0f, 0.0f);
+
+        sq[i].draw(GL_TRIANGLES, proj, view);
+    }
 
     terrain.SetScale(10.0f, 10.0f, 1.0f);
     terrain.SetColor(0.0f, 0.6f, 0.0f, 1.0f);
-    terrain.draw(GL_TRIANGLES, proj * view);
+    terrain.SetPosition(0.0f, 0.0f, 0.0f);
+    terrain.SetRotation(90.0f, 0.0f, 0.0f);
+    terrain.draw(GL_TRIANGLES, proj, view);
 
-    vao.bind();
-    sh.bind();
-    tex.bind();
+    visRepColorValues[0].SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+    visRepColorValues[1].SetColor(0.0f, 1.0f, 0.0f, 1.0f);
+    visRepColorValues[2].SetColor(0.0f, 0.0f, 1.0f, 1.0f);
+    visRepColorValues[3].SetColor(0.5f, 0.5f, 0.5f, 1.0f);
 
-    glUniformMatrix4fv(glGetUniformLocation(sh.GetID(), "camera"), 1, GL_FALSE, glm::value_ptr(proj * glm::mat4x4(1.0) * view));
-
-    glDrawElements(GL_TRIANGLES, sizeof(position) / 2, GL_UNSIGNED_INT, NULL);
-
-    vao.unbind();
-    sh.unbind();
+    for(int i = 0; i < sizeof(visRepColorValues) / 384; i++)
+    {
+        visRepColorValues[i].SetScale(0.01f, color1[i] / 5.0f, 0.1f);
+        visRepColorValues[i].SetPosition(-1.0f + i * 0.02f, -0.8f, 0.0f);
+        visRepColorValues[i].draw(GL_TRIANGLES);
+    }
 }

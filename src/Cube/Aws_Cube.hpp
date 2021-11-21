@@ -40,7 +40,13 @@ namespace AWS
             -1.0f, -1.0f, -1.0f
         };
 
-        glm::mat4x4 transform = glm::mat4x4(1.0);
+        glm::mat4 transform = glm::mat4x4(1.0);
+
+        float psr[3][3] = {
+            {   0.0f, 0.0f, 0.0f    },
+            {   1.0f, 1.0f, 1.0f    },
+            {   0.0f, 0.0f, 0.0f    }
+        };
 
         const float psrConst[3 * 8] = {
             1.0f, 1.0f, 1.0f,
@@ -175,7 +181,7 @@ namespace AWS
          * @param drawMode 
          * @param camera 
          */
-        void draw(const unsigned int &drawMode, glm::mat4x4 camera);
+        void draw(const unsigned int &drawMode, glm::mat4x4 projection, glm::mat4x4 view);
 
         /**
          * @brief set position scale and rotation
