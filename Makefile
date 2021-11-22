@@ -10,8 +10,8 @@ compile:
 	echo "Other files compiling with engine (OTHER= to change): ${OTHER}"
 	echo ""
 
-	g++ -o ${NAME} src/Window/${PR}Window.cpp src/Buffers/${PR}Buffer.cpp src/Square/${PR}Square.cpp src/Cube/${PR}Cube.cpp src/Camera/${PR}Camera.cpp src/BatchRenderer/${PR}BatchRenderer.cpp ${OTHER} -lGL -lGLEW -lglut -lglfw -lpthread
-
+	g++ -o ${NAME} src/Window/${PR}Window.cpp src/Buffers/${PR}Buffer.cpp src/Square/${PR}Square.cpp src/Cube/${PR}Cube.cpp src/Camera/${PR}Camera.cpp  ${OTHER} -lGL -lGLEW -lglut -lglfw -lpthread
+#src/BatchRenderer/${PR}BatchRenderer.cpp
 	echo ">-- Compilation end --<"
 
 	./${NAME}

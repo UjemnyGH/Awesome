@@ -219,7 +219,7 @@ void AWS::Aws_Texture::bind(const std::vector<std::string> path, int wrapping, i
             data = stbi_load(path[i].c_str(), &width, &height, &nrChannels, 0);
             if(data)
             {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
                 stbi_image_free(data);
             }
             else
@@ -249,7 +249,7 @@ void AWS::Aws_Texture::bind(const std::vector<std::string> path, int wrapping, i
         data = stbi_load(path[0].c_str(), &width, &height, &nrChannels, 0);
         if(data)
         {
-            glTexImage2D(textureTypeL, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glTexImage2D(textureTypeL, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(textureTypeL);
         }
         else

@@ -24,6 +24,8 @@ namespace AWS
 
         Texture tex;
 
+        glm::mat4* transform;
+
         float* vertices;
         float* texture;
         float* bcolor;
@@ -35,10 +37,10 @@ namespace AWS
         bool texBind;
 
     public:
-        void create(const std::string texturePathC = "data/texture/dvd.png");
+        void create(const std::string texturePathC);
         void redisplay();
-        void drawBROCube(int shaderType, std::vector<AWS::Aws_Cube> object, glm::mat4x4 camera);
-        void drawBROSquare(int shaderType, std::vector<AWS::Aws_Square> object, glm::mat4x4 camera);
+        template<class T>
+        void drawBRO(int shaderType, std::vector<T> object, glm::mat4 projection, glm::mat4 view);
         void terminate();
     };
 

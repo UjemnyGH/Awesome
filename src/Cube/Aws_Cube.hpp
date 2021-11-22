@@ -11,6 +11,13 @@
 
 namespace AWS
 {
+    enum ShadeType
+    {
+        solid,
+        shade,
+        light
+    };
+
     enum CubeTexturing
     {
         cubemap = GL_TEXTURE_CUBE_MAP,
@@ -22,11 +29,12 @@ namespace AWS
     private:
         Shader sh;
         VAO vao;
-        VBO vbo[3];
+        VBO vbo[4];
         EBO ebo;
 
         Texture tex;
 
+        int cshadeType = 0;
         bool texturesOn = false;
 
         float vertices[3 * 8] = {
@@ -72,6 +80,50 @@ namespace AWS
             1, 4, 5,
             2, 3, 6,
             3, 6, 7
+        };
+
+        float normals[3 * 36] = {
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f
         };
 
         float texture[2 * 8] = {
@@ -148,7 +200,7 @@ namespace AWS
          * @param vertName 
          * @param fragName 
          */
-        void create(const std::string &vertName = "data/shaders/color/colorVS.glsl", const std::string &fragName = "data/shaders/color/colorFS.glsl");
+        void create(const int shadeType, const std::string &vertName = "data/shaders/color/colorVS.glsl", const std::string &fragName = "data/shaders/color/colorFS.glsl");
 
         /**
          * @brief create cube
@@ -157,7 +209,7 @@ namespace AWS
          * @param fragName
          * @param textureType
          */
-        void create(const std::string textureName, const int textureType = GL_TEXTURE_2D, const std::string &vertName = "data/shaders/texture/textureVS.glsl", const std::string &fragName = "data/shaders/texture/textureFS.glsl");
+        void create(const int shadeType, const std::string textureName, const int textureType = GL_TEXTURE_2D, const std::string &vertName = "data/shaders/texture/textureVS.glsl", const std::string &fragName = "data/shaders/texture/textureFS.glsl");
 
         /**
          * @brief create cube
@@ -166,7 +218,7 @@ namespace AWS
          * @param fragName 
          * @param textureName 
          */
-        void create(const std::vector<std::string> textureName, const std::string &vertName = "data/shaders/cube/cubeVS.glsl", const std::string &fragName = "data/shaders/cube/cubeFS.glsl");
+        void create(const int shadeType, const std::vector<std::string> textureName, const std::string &vertName = "data/shaders/cube/cubeVS.glsl", const std::string &fragName = "data/shaders/cube/cubeFS.glsl");
 
         /**
          * @brief draw cube
@@ -248,6 +300,35 @@ namespace AWS
          * @param color 
          */
         void SetColor(const float r, const float g, const float b, const float a);
+
+        /**
+         * @brief Set the Light Color object
+         * 
+         * @param r 
+         * @param g 
+         * @param b 
+         */
+        void SetLightColor(const float r, const float g, const float b);
+
+        /**
+         * @brief Set the Light Position object
+         * 
+         * @param x 
+         * @param y 
+         * @param z 
+         */
+        void SetLightPosition(const float x, const float y, const float z);
+
+        /**
+         * @brief Set the Camera Position object
+         * 
+         * @param x 
+         * @param y 
+         * @param z 
+         */
+        void SetCameraPosition(const float x, const float y, const float z);
+
+        void SetAmbientSpecular(const float ambient, const float specular);
 
         /**
          * @brief Get the Indices object

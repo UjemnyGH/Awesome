@@ -6,7 +6,7 @@
 #include "Square/Aws_Square.hpp"
 #include "Cube/Aws_Cube.hpp"
 #include "Camera/Aws_Camera.hpp"
-#include "BatchRenderer/Aws_BatchRenderer.hpp"
+//#include "BatchRenderer/Aws_BatchRenderer.hpp"
 //#include "Text/Aws_Text.hpp"
 #include "Aws_Types.hpp"
 

@@ -30,8 +30,7 @@ float angle = 0.0f;
 
 void Game::mainLoop()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
-
+    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
     angle += 0.1f;
 
@@ -75,7 +74,7 @@ void Game::mainLoop()
 
     debugImage.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     debugImage.SetPosition(currentBombPosX, currentBombPosY, 0.0f);
-    debugImage.SetScale(0.01f, 0.1f, 0.1f);
+    debugImage.SetScale(0.02f, 0.1f, 0.1f);
 
     debugImage.draw(GL_TRIANGLES);
 }

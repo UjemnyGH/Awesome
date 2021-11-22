@@ -32,10 +32,18 @@ void AWS::Aws_Window::createWindow(int width, int height, std::string title, GLF
         glfwTerminate();
     }
 
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     initialize();
 
     while(!glfwWindowShouldClose(window))
     {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         mainLoop();
 
         glfwPollEvents();
