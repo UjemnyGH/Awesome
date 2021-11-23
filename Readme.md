@@ -5,7 +5,7 @@
 https://github.com/UjemnyGH/Awesome
 
 
-**Engine_use_GLFW,_GLEW,_GLM_to_work_properly**
+**Engine use GLFW, GLEW, GLM to work properly**
 
 ### To shader:
     - location = 0 --- Position
