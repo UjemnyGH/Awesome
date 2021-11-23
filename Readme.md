@@ -7,11 +7,11 @@ https://github.com/UjemnyGH/Awesome
 
 ** Engine use GLFW, GLEW, GLM to work properly **
 
-To shader:
-    location = 0 --- Position
-    location = 1 --- Color
-    location = 2 --- Texture Coordinates
-    location = 3 --- Shade Normals
+### To shader:
+    - location = 0 --- Position
+    - location = 1 --- Color
+    - location = 2 --- Texture Coordinates
+    - location = 3 --- Shade Normals
 
 ### REPAIR:
 > Cube texturing
@@ -19,5 +19,5 @@ To shader:
 > Batch rendering
 
 ### TODO:
-> Mesh loading
-> Write more shaders
+> [ ] Mesh loading
+> [ ] Write more shaders
