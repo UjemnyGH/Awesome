@@ -14,10 +14,10 @@ https://github.com/UjemnyGH/Awesome
     - location = 3 --- Shade Normals
 
 ### REPAIR:
-> Cube texturing
-> Text
+> Cube texturing,
+> Text,
 > Batch rendering
 
 ### TODO:
-> Mesh loading
+> Mesh loading,
 > Write more shaders
