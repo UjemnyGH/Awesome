@@ -19,5 +19,5 @@ https://github.com/UjemnyGH/Awesome
 > Batch rendering
 
 ### TODO:
-> [ ] Mesh loading
-> [ ] Write more shaders
+> Mesh loading
+> Write more shaders
