@@ -9,6 +9,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <math.h>
 
+/**
+ * c_ - cube variable
+ * ct_ - cube table
+ * cf_ - cube function variable
+ * cc_ - cube const
+ * 
+ */
+
 namespace AWS
 {
     enum ShadeType
@@ -27,17 +35,17 @@ namespace AWS
     class Aws_Cube
     {
     private:
-        Shader sh;
-        VAO vao;
-        VBO vbo[4];
-        EBO ebo;
+        Shader c_sh;
+        VAO c_vao;
+        VBO c_vbo[4];
+        EBO c_ebo;
 
-        Texture tex;
+        Texture c_tex;
 
-        int cshadeType = 0;
-        bool texturesOn = false;
+        int cc_shadeType = 0;
+        bool c_texturesOn = false;
 
-        float vertices[3 * 8] = {
+        float ct_vertices[3 * 8] = {
             1.0f, 1.0f, 1.0f,
             -1.0f, 1.0f, 1.0f,
             1.0f, -1.0f, 1.0f,
@@ -48,26 +56,15 @@ namespace AWS
             -1.0f, -1.0f, -1.0f
         };
 
-        glm::mat4 transform = glm::mat4x4(1.0);
+        glm::mat4 c_transform = glm::mat4x4(1.0);
 
-        float psr[3][3] = {
+        float ct_psr[3][3] = {
             {   0.0f, 0.0f, 0.0f    },
             {   1.0f, 1.0f, 1.0f    },
             {   0.0f, 0.0f, 0.0f    }
         };
 
-        const float psrConst[3 * 8] = {
-            1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f
-        };
-
-        unsigned int indices[3 * 12] = {
+        unsigned int ct_indices[3 * 12] = {
             0, 1, 2,
             1, 2, 3,
             4, 5, 6,
@@ -82,7 +79,7 @@ namespace AWS
             3, 6, 7
         };
 
-        float normals[3 * 36] = {
+        float ct_normals[3 * 36] = {
             0.0f, 0.0f, 1.0f,
             0.0f, 0.0f, 1.0f,
             0.0f, 0.0f, 1.0f,
@@ -126,7 +123,7 @@ namespace AWS
             0.0f, -1.0f, 0.0f
         };
 
-        float texture[2 * 8] = {
+        float ct_texture[2 * 8] = {
             1.0f, 1.0f,
             0.0f, 1.0f,
             1.0f, 0.0f,
@@ -138,7 +135,7 @@ namespace AWS
             0.0f, 0.0f
         };
 
-        float cubemapTexture[3 * 36] = {
+        float ct_cubemapTexture[3 * 36] = {
             -1.0f,  1.0f, -1.0f,
             -1.0f, -1.0f, -1.0f,
             1.0f, -1.0f, -1.0f,
@@ -182,7 +179,7 @@ namespace AWS
             1.0f, -1.0f,  1.0f
         };
 
-        float cbColor[4 * 8] = {
+        float ct_color[4 * 8] = {
             1.0f, 1.0f, 1.0f, 1.0f,
             1.0f, 1.0f, 1.0f, 1.0f,
             1.0f, 1.0f, 1.0f, 1.0f,
@@ -195,182 +192,411 @@ namespace AWS
 
     public:
         /**
-         * @brief create cube
+         * @brief Create cube
          * 
-         * @param vertName 
-         * @param fragName 
+         * @param cf_shadeType type of shade (AWS::ShadeType::solid)
+         * @param cf_vertName vertex shader
+         * @param cf_fragName fragment shader
          */
-        void create(const int shadeType, const std::string &vertName = "data/shaders/color/colorVS.glsl", const std::string &fragName = "data/shaders/color/colorFS.glsl");
+        void Create(const int cf_shadeType, const std::string &cf_vertName = "data/shaders/color/colorVS.glsl", const std::string &cf_fragName = "data/shaders/color/colorFS.glsl");
 
         /**
-         * @brief create cube
+         * @brief Create cube
          * 
-         * @param vertName 
-         * @param fragName
-         * @param textureType
+         * @param cf_shadeType type of shade (AWS::ShadeType::solid)
+         * @param cf_textureName path to folder with texture
+         * @param cf_textureType type of texture (default is GL_TEXTURE_2D)
+         * @param cf_vertName vertex shader
+         * @param cf_fragName fragment shader
          */
-        void create(const int shadeType, const std::string textureName, const int textureType = GL_TEXTURE_2D, const std::string &vertName = "data/shaders/texture/textureVS.glsl", const std::string &fragName = "data/shaders/texture/textureFS.glsl");
+        void Create(const int cf_shadeType, const std::string cf_textureName, const int cf_textureType = GL_TEXTURE_2D, const std::string &cf_vertName = "data/shaders/ct_texture/textureVS.glsl", const std::string &cf_fragName = "data/shaders/ct_texture/textureFS.glsl");
 
         /**
-         * @brief create cube
+         * @brief Create cube
          * 
-         * @param vertName 
-         * @param fragName 
-         * @param textureName 
+         * @param cf_shadeType type of shade (AWS::ShadeType::solid)
+         * @param cf_textureName path to folder with texture (can be more than one)
+         * @param cf_vertName vertex shader
+         * @param cf_fragName fragment shader
          */
-        void create(const int shadeType, const std::vector<std::string> textureName, const std::string &vertName = "data/shaders/cube/cubeVS.glsl", const std::string &fragName = "data/shaders/cube/cubeFS.glsl");
+        void Create(const int cf_shadeType, const std::vector<std::string> cf_textureName, const std::string &cf_vertName = "data/shaders/cube/cubeVS.glsl", const std::string &cf_fragName = "data/shaders/cube/cubeFS.glsl");
+        
+        /**
+         * @brief Draw call
+         * 
+         * @param cf_drawMode draw mode (GL_POINTS, GL_LINES, GL_TRIANGLES ...)
+         */
+        void DrawCube(const unsigned int &cf_drawMode);
 
         /**
-         * @brief draw cube
+         * @brief Draw call
          * 
-         * @param drawMode 
+         * @param cf_drawMode draw mode (GL_POINTS, GL_LINES, GL_TRIANGLES)
+         * @param cf_projection glm::perspective
+         * @param cf_view glm::lookAt
          */
-        void draw(const unsigned int &drawMode);
+        void DrawCube(const unsigned int &cf_drawMode, glm::mat4x4 cf_projection, glm::mat4x4 cf_view);
 
         /**
-         * @brief 
+         * @brief Get the Shader ID object
          * 
-         * @param drawMode 
-         * @param camera 
+         * @return unsigned int 
          */
-        void draw(const unsigned int &drawMode, glm::mat4x4 projection, glm::mat4x4 view);
-
-        /**
-         * @brief set position scale and rotation
-         * 
-         * @param px 
-         * @param py 
-         * @param pz 
-         * @param sx 
-         * @param sy 
-         * @param sz 
-         * @param rx 
-         * @param ry 
-         * @param rz 
-         */
-        void SetPSR(float px, float py, float pz, float sx, float sy, float sz, float rx, float ry, float rz);
-
-        /**
-         * @brief Set the Texture object
-         * 
-         * @param textureName 
-         * @param wrapping 
-         * @param textureType
-         */
-        void SetTexture(const std::string textureName, const int wrapping, const int textureType);
-
-        /**
-         * @brief Set the Texture object
-         * 
-         * @param textureName 
-         * @param wrapping 
-         */
-        void SetTexture(const std::vector<std::string> textureName, const int wrapping);
-
-        /**
-         * @brief Set the Position object
-         * 
-         * @param x 
-         * @param y 
-         * @param z 
-         */
-        void SetPosition(float x, float y, float z);
-
-        /**
-         * @brief Set the Scale object
-         * 
-         * @param x 
-         * @param y 
-         * @param z 
-         */
-        void SetScale(float x, float y, float z);
-
-        /**
-         * @brief Set the Rotation object
-         * 
-         * @param x 
-         * @param y 
-         * @param z 
-         */
-        void SetRotation(float x, float y, float z);
-
-        /**
-         * @brief Set the Color object
-         * 
-         * @param color 
-         */
-        void SetColor(const float r, const float g, const float b, const float a);
-
-        /**
-         * @brief Set the Light Color object
-         * 
-         * @param r 
-         * @param g 
-         * @param b 
-         */
-        void SetLightColor(const float r, const float g, const float b);
-
-        /**
-         * @brief Set the Light Position object
-         * 
-         * @param x 
-         * @param y 
-         * @param z 
-         */
-        void SetLightPosition(const float x, const float y, const float z);
-
-        /**
-         * @brief Set the Camera Position object
-         * 
-         * @param x 
-         * @param y 
-         * @param z 
-         */
-        void SetCameraPosition(const float x, const float y, const float z);
-
-        void SetAmbientSpecular(const float ambient, const float specular);
+        unsigned int GetShaderID() { return c_sh.GetID(); }
 
         /**
          * @brief Get the Indices object
          * 
          * @return unsigned* 
          */
-        unsigned int* GetIndices() { return indices; }
-
-        /**
-         * @brief Get the Vertices Const object
-         * 
-         * @return const float* 
-         */
-        const float* GetVerticesConst() { return psrConst; }
+        unsigned int* GetIndices() { return ct_indices; }
 
         /**
          * @brief Get the Color object
          * 
          * @return float* 
          */
-        float* GetColor() { return cbColor; }
+        float* GetColor() { return ct_color; }
 
         /**
          * @brief Get the Vertices object
          * 
          * @return float* 
          */
-        float* GetVertices() { return vertices; }
+        float* GetVertices() { return ct_vertices; }
 
         /**
          * @brief Get the Texturte Coords object
          * 
          * @return float* 
          */
-        float* GetTexturteCoords() { return texture; }
+        float* GetTexturteCoords() { return ct_texture; }
 
         /**
-         * @brief delete cube
+         * @brief Set the Position object
+         * 
+         * @param cf_x X axis
+         * @param cf_y Y axis
+         * @param cf_z Z axis
+         */
+        void SetPosition(float cf_x, float cf_y, float cf_z);
+
+        /**
+         * @brief Set the Scale object
+         * 
+         * @param cf_x X axis
+         * @param cf_y Y axis
+         * @param cf_z Z axis
+         */
+        void SetScale(float cf_x, float cf_y, float cf_z);
+
+        /**
+         * @brief Set the Rotation object
+         * 
+         * @param cf_x X axis
+         * @param cf_y Y axis
+         * @param cf_z Z axis
+         */
+        void SetRotation(float cf_x, float cf_y, float cf_z);
+
+        /**
+         * @brief Set the Color object
+         * 
+         * @param r red
+         * @param g green
+         * @param b blue
+         * @param a alpha
+         */
+        void SetColor(const float r, const float g, const float b, const float a);
+
+        /**
+         * @brief Set the Texture object
+         * 
+         * @param cf_textureName path to floder with texture
+         * @param cf_wrapping set this to GL_REPEAT (default)
+         * @param cf_textureType set this to GL_TEXTURE_2D (default) or GL_TEXTURE_CUBE_MAP
+         */
+        void SetTexture(const std::string cf_textureName, const int cf_wrapping = GL_REPEAT, const int cf_textureType = GL_TEXTURE_2D);
+
+        /**
+         * @brief Set the Texture object
+         * 
+         * @param cf_textureName path to folder with texture
+         * @param cf_wrapping set this to GL_REPEAT (default)
+         */
+        void SetTexture(const std::vector<std::string> cf_textureName, const int cf_wrapping = GL_REPEAT);
+
+        /**
+         * @brief terminate cube
          * 
          */
-        void terminate();
+        void Terminate();
     };
+
+    void Aws_Cube::Create(const int cf_shadeType, const std::string &cf_vertName, const std::string &cf_fragName)
+    {
+        c_texturesOn = false;
+        cc_shadeType = cf_shadeType;
+
+        c_sh.create(cf_vertName, cf_fragName);
+
+        c_vao.create();
+        c_vao.bind();
+
+        c_vbo[0].create();
+        c_vbo[0].bind(ct_vertices, sizeof(ct_vertices), 0, 3);
+
+        if(cc_shadeType == solid)
+        {
+            c_vbo[1].create();
+            c_vbo[1].bind(ct_color, sizeof(ct_color), 1, 4);
+        }
+        else if(cc_shadeType == shade)
+        {
+            c_vbo[3].create();
+            c_vbo[3].bind(ct_normals, sizeof(ct_normals), 3, 3);
+        }
+
+        c_ebo.create();
+        c_ebo.bind(ct_indices, sizeof(ct_indices));
+
+        c_vao.unbind();
+    }
+
+    void Aws_Cube::Create(const int cf_shadeType, const std::string cf_textureName, const int cf_textureType, const std::string &cf_vertName, const std::string &cf_fragName)
+    {
+        c_texturesOn = true;
+
+        cc_shadeType = cf_shadeType;
+
+        c_sh.create(cf_vertName, cf_fragName);
+
+        c_vao.create();
+        c_vao.bind();
+
+        c_vbo[0].create();
+        c_vbo[0].bind(ct_vertices, sizeof(ct_vertices), 0, 3);
+
+        if(cc_shadeType == solid)
+        {
+            c_vbo[1].create();
+            c_vbo[1].bind(ct_color, sizeof(ct_color), 1, 4);
+        }
+        else if(cc_shadeType == shade)
+        {
+            c_vbo[3].create();
+            c_vbo[3].bind(ct_normals, sizeof(ct_normals), 3, 3);
+        }
+
+        if(cf_textureType == CubeTexturing::cubemap)
+        {
+            c_vbo[2].create();
+            c_vbo[2].bind(ct_cubemapTexture, sizeof(ct_cubemapTexture), 2, 3);
+        }
+        else
+        {
+            c_vbo[2].create();
+            c_vbo[2].bind(ct_texture, sizeof(ct_texture), 2, 2);
+        }
+
+        c_ebo.create();
+        c_ebo.bind(ct_indices, sizeof(ct_indices));
+
+        c_tex.create();
+        c_tex.bind({cf_textureName}, GL_REPEAT, cf_textureType);
+
+        c_sh.bind();
+
+        glUniform1i(glGetUniformLocation(c_sh.GetID(), "tex"), 0);
+
+        c_sh.unbind();
+
+        c_vao.unbind();
+    }
+
+    void Aws_Cube::Create(const int cf_shadeType, const std::vector<std::string> cf_textureName, const std::string &cf_vertName, const std::string &cf_fragName)
+    {
+        c_texturesOn = true;
+        cc_shadeType = cf_shadeType;
+
+        c_sh.create(cf_vertName, cf_fragName);
+
+        c_vao.create();
+        c_vao.bind();
+
+        c_vbo[0].create();
+        c_vbo[0].bind(ct_vertices, sizeof(ct_vertices), 0, 3);
+
+        if(cc_shadeType == solid)
+        {
+            c_vbo[1].create();
+            c_vbo[1].bind(ct_color, sizeof(ct_color), 1, 4);
+        }
+        else if(cc_shadeType == shade)
+        {
+            c_vbo[3].create();
+            c_vbo[3].bind(ct_normals, sizeof(ct_normals), 3, 3);
+        }
+
+        c_vbo[2].create();
+        c_vbo[2].bind(ct_cubemapTexture, sizeof(ct_cubemapTexture), 2, 3);
+
+        c_ebo.create();
+        c_ebo.bind(ct_indices, sizeof(ct_indices));
+
+        c_tex.create();
+        c_tex.bind(cf_textureName, GL_REPEAT, GL_TEXTURE_CUBE_MAP);
+
+        c_sh.bind();
+
+        glUniform1i(glGetUniformLocation(c_sh.GetID(), "tex"), 0);
+
+        c_sh.unbind();
+
+        c_vao.unbind();
+    }
+
+    void Aws_Cube::DrawCube(const unsigned int &cf_drawMode)
+    {
+        c_sh.bind();
+        c_vao.bind();
+        if(c_texturesOn)
+        {
+            c_tex.bind();
+        }
+
+        if(cc_shadeType == solid)
+        {
+            glUniformMatrix4fv(glGetUniformLocation(c_sh.GetID(), "transform"), 1, GL_FALSE, glm::value_ptr(c_transform));
+        }
+        else if(cc_shadeType == shade)
+        {
+            glUniformMatrix4fv(glGetUniformLocation(c_sh.GetID(), "projectionTransform"), 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0)));
+            glUniformMatrix4fv(glGetUniformLocation(c_sh.GetID(), "viewTransform"), 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0)));
+            glUniformMatrix4fv(glGetUniformLocation(c_sh.GetID(), "modelTransform"), 1, GL_FALSE, glm::value_ptr(c_transform));
+        }
+
+        glDrawElements(cf_drawMode, sizeof(ct_vertices) / 2, GL_UNSIGNED_INT, NULL);
+
+        c_sh.unbind();
+        c_vao.unbind();
+    }
+
+    void Aws_Cube::DrawCube(const unsigned int &cf_drawMode, glm::mat4x4 cf_projection, glm::mat4x4 cf_view)
+    {
+        c_sh.bind();
+        c_vao.bind();
+        if(c_texturesOn)
+        {
+            c_tex.bind();
+        }
+
+        if(cc_shadeType == solid)
+        {
+            glUniformMatrix4fv(glGetUniformLocation(c_sh.GetID(), "transform"), 1, GL_FALSE, glm::value_ptr(cf_projection * cf_view * c_transform));
+        }
+        else if(cc_shadeType == shade)
+        {
+            glUniformMatrix4fv(glGetUniformLocation(c_sh.GetID(), "projectionTransform"), 1, GL_FALSE, glm::value_ptr(cf_projection));
+            glUniformMatrix4fv(glGetUniformLocation(c_sh.GetID(), "viewTransform"), 1, GL_FALSE, glm::value_ptr(cf_view));
+            glUniformMatrix4fv(glGetUniformLocation(c_sh.GetID(), "modelTransform"), 1, GL_FALSE, glm::value_ptr(c_transform));
+        }
+
+        glDrawElements(cf_drawMode, sizeof(ct_vertices) / 2, GL_UNSIGNED_INT, NULL);
+
+        c_sh.unbind();
+        c_vao.unbind();
+    }
+
+    void Aws_Cube::SetPosition(float cf_x, float cf_y, float cf_z)
+    {
+        ct_psr[0][0] = cf_x;
+        ct_psr[0][1] = cf_y;
+        ct_psr[0][2] = cf_z;
+
+        c_transform = glm::translate(glm::mat4(1.0), glm::vec3(ct_psr[0][0], ct_psr[0][1], ct_psr[0][2]));
+        c_transform = glm::rotate(c_transform, glm::radians(ct_psr[2][0]), glm::vec3(1.0f, 0.0f, 0.0f));
+        c_transform = glm::rotate(c_transform, glm::radians(ct_psr[2][1]), glm::vec3(0.0f, 1.0f, 0.0f));
+        c_transform = glm::rotate(c_transform, glm::radians(ct_psr[2][2]), glm::vec3(0.0f, 0.0f, 1.0f));
+        c_transform = glm::scale(c_transform, glm::vec3(ct_psr[1][0], ct_psr[1][1], ct_psr[1][2]));
+    }
+
+    void Aws_Cube::SetScale(float cf_x, float cf_y, float cf_z)
+    {
+        ct_psr[1][0] = cf_x;
+        ct_psr[1][1] = cf_y;
+        ct_psr[1][2] = cf_z;
+
+        c_transform = glm::translate(glm::mat4(1.0), glm::vec3(ct_psr[0][0], ct_psr[0][1], ct_psr[0][2]));
+        c_transform = glm::rotate(c_transform, glm::radians(ct_psr[2][0]), glm::vec3(1.0f, 0.0f, 0.0f));
+        c_transform = glm::rotate(c_transform, glm::radians(ct_psr[2][1]), glm::vec3(0.0f, 1.0f, 0.0f));
+        c_transform = glm::rotate(c_transform, glm::radians(ct_psr[2][2]), glm::vec3(0.0f, 0.0f, 1.0f));
+        c_transform = glm::scale(c_transform, glm::vec3(ct_psr[1][0], ct_psr[1][1], ct_psr[1][2]));
+    }
+
+    void Aws_Cube::SetRotation(float cf_x, float cf_y, float cf_z)
+    {
+        ct_psr[2][0] = cf_x;
+        ct_psr[2][1] = cf_y;
+        ct_psr[2][2] = cf_z;
+
+        c_transform = glm::translate(glm::mat4(1.0), glm::vec3(ct_psr[0][0], ct_psr[0][1], ct_psr[0][2]));
+        c_transform = glm::rotate(c_transform, glm::radians(ct_psr[2][0]), glm::vec3(1.0f, 0.0f, 0.0f));
+        c_transform = glm::rotate(c_transform, glm::radians(ct_psr[2][1]), glm::vec3(0.0f, 1.0f, 0.0f));
+        c_transform = glm::rotate(c_transform, glm::radians(ct_psr[2][2]), glm::vec3(0.0f, 0.0f, 1.0f));
+        c_transform = glm::scale(c_transform, glm::vec3(ct_psr[1][0], ct_psr[1][1], ct_psr[1][2]));
+    }
+
+    void Aws_Cube::SetTexture(const std::string cf_textureName, const int cf_wrapping, const int cf_textureType)
+    {
+        c_vao.bind();
+
+        c_tex.bind({cf_textureName}, cf_wrapping, cf_textureType);
+
+        c_vao.unbind();
+    }
+
+    void Aws_Cube::SetTexture(const std::vector<std::string> cf_textureName, const int cf_wrapping)
+    {
+        c_vao.bind();
+
+        c_tex.bind(cf_textureName, cf_wrapping, GL_TEXTURE_CUBE_MAP);
+
+        c_vao.unbind();
+    }
+
+    void Aws_Cube::SetColor(const float r, const float g, const float b, const float a)
+    {
+        if(cc_shadeType == solid)
+        {
+            for(int i = 0; i < 8; i++)
+            {
+                ct_color[i * 4] = r;
+                ct_color[i * 4 + 1] = g;
+                ct_color[i * 4 + 2] = b;
+                ct_color[i * 4 + 3] = a;
+            }
+
+            c_vbo[1].bind(ct_color, sizeof(ct_color), 1, 4);
+        }
+        else if(cc_shadeType == shade)
+        {
+            c_sh.bind();
+
+            glUniform3f(glGetUniformLocation(c_sh.GetID(), "objectColor"), r, g, b);
+            glUniform1f(glGetUniformLocation(c_sh.GetID(), "alpha"), a);
+
+            c_sh.unbind();
+        }
+    }
+
+    void Aws_Cube::Terminate()
+    {
+        c_vao.terminate();
+        c_vbo->terminate();
+        c_ebo.terminate();
+        c_tex.terminate();
+    }
 
     typedef Aws_Cube Cube;
 }

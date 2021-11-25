@@ -7,12 +7,16 @@
 #include <future>
 #include <thread>
 #include <random>
+#include <sstream>
+#define SFML_STATIC
+#include <SFML/Audio.hpp>
 
 Game window;
 PlayerCam PC;
 AWS::Cube sq;
-AWS::Cube sq2;
+AWS::Square sq2;
 AWS::Time gtime;
+//AWS::Mesh mesh;
 
 glm::mat4x4 proj;
 
@@ -23,11 +27,25 @@ float lastX = 400, lastY = 300;
 float yaw, pitch;
 bool firstMouse = false;
 
+sf::SoundBuffer buffer;
+sf::Sound sound;
+
 int main()
 {
+    if(!buffer.loadFromFile("data/audio/GTA_III.wav"))
+    {
+        printf("LOad error");
+    }
+
+    sound.setBuffer(buffer);
+
+    sound.setLoop(true);
+    sound.setVolume(70.0f);
+    sound.play();
+
     window.createWindow(1280, 1080, "Window", NULL);
 
-    sq.terminate();
+    sq.Terminate();
 
     return 0;
 }
@@ -61,14 +79,14 @@ void mouse(GLFWwindow* window, double xpos, double ypos)
             pitch = 89.0f;
         if(pitch < -89.0f)
             pitch = -89.0f;
-    }
 
-    PC.SetRotation(yaw, pitch, 0.0f);
+        PC.SetRotation(yaw, pitch, 0.0f);
+    }
 }
 
 void processInput(GLFWwindow *window)
 {
-    const float cameraSpeed = 3.0f * gtime.GetDeltaTime(); // adjust accordingly
+    const float cameraSpeed = 3.0f * gtime.GetDeltaTime();
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         pos += PC.GetFront() * cameraSpeed;
@@ -100,9 +118,12 @@ void Game::initialize()
     glfwSetFramebufferSizeCallback(Game::getWindowPointer(), reshape);
     glfwSetCursorPosCallback(Game::getWindowPointer(), mouse);
 
-    sq.create(AWS::ShadeType::shade, AWS::shadeColorVS, AWS::shadeColorFS);
-    sq2.create(AWS::ShadeType::solid, AWS::colorVS, AWS::colorFS);
+    sq.Create(AWS::ShadeType::solid, AWS::colorVS, AWS::colorFS);
+    sq2.Create("data/texture/awesome.png", AWS::textureVS, AWS::textureFS);
+    //mesh.Create("data/models/cube.obj");
 }
+
+float w = 0.0f;
 
 void Game::mainLoop()
 {
@@ -115,14 +136,23 @@ void Game::mainLoop()
     PC.SetPosition(pos.x, pos.y, pos.z);
 
     sq.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-    sq.SetCameraPosition(PC.GetPosition().x, PC.GetPosition().y, PC.GetPosition().z);
-    sq.SetLightPosition(2.0f, 2.0f, 2.0f);
-    sq.SetLightColor(1.0f, 1.0f, 1.0f);
-    sq.SetAmbientSpecular(0.1f, 0.5f);
-    sq.SetPSR(0.0f, 0.0f, 10.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
-    sq.draw(GL_TRIANGLES, proj, view);
+    sq.DrawCube(GL_TRIANGLES, proj, view);
+
+    w += 1.0f;
+
+    if(w > 360.0f)
+    {
+        w = 0.0f;
+    }
 
     sq2.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     sq2.SetScale(1.0f, 1.0f, 1.0f);
-    sq2.draw(GL_TRIANGLES, proj, view);
+    sq2.SetPosition(3.0f, 3.0f, 0.0f);
+    sq2.SetRotation(w, w, w);
+    sq2.DrawSquare(GL_TRIANGLES, proj, view);
+
+    /*mesh.SetPosition(0.0f, 4.0f, 0.0f);
+    mesh.SetScale(1.0f, 1.0f, 1.0f);
+    mesh.SetColor(1.0f, 1.0f, 0.0f, 1.0f);
+    mesh.DrawMesh(GL_TRIANGLES, proj, view);*/
 }

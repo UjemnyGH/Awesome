@@ -9,6 +9,7 @@
 //#include "BatchRenderer/Aws_BatchRenderer.hpp"
 //#include "Text/Aws_Text.hpp"
 #include "Aws_Types.hpp"
+#include "Mesh/Aws_Mesh.hpp"
 
 #include <iostream>
 #include <future>
@@ -16,3 +17,5 @@
 #include <random>
 #include <fstream>
 #include <glm/glm.hpp>
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tinyobjloader/tine_obj_loader.h"
