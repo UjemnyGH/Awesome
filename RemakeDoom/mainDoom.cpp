@@ -2,7 +2,7 @@
 
 DoomWindow dw;
 
-AWS::Square player
+AWS::Square player;
 
 int main()
 {
