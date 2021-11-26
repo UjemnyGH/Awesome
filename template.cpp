@@ -14,9 +14,10 @@
 Game window;
 PlayerCam PC;
 AWS::Cube sq;
+AWS::Cube sq3;
 AWS::Square sq2;
 AWS::Time gtime;
-//AWS::Mesh mesh;
+AWS::Mesh mesh;
 
 glm::mat4x4 proj;
 
@@ -54,7 +55,7 @@ void reshape(GLFWwindow* gwindow, int w, int h)
 {
     glViewport(0, 0, w, h);
 
-    proj = glm::perspectiveFov(70.0f, (float)w, (float)h, 0.001f, 100.0f);
+    proj = glm::perspectiveFov(70.0f, (float)w, (float)h, 0.001f, 1000.0f);
 }
 
 void mouse(GLFWwindow* window, double xpos, double ypos)
@@ -118,24 +119,25 @@ void Game::initialize()
     glfwSetFramebufferSizeCallback(Game::getWindowPointer(), reshape);
     glfwSetCursorPosCallback(Game::getWindowPointer(), mouse);
 
-    sq.Create(AWS::ShadeType::solid, AWS::colorVS, AWS::colorFS);
+    sq.Create(AWS::ShadeType::solid, "data/texture/awesome.png", GL_TEXTURE_2D, AWS::textureVS, AWS::textureFS);
     sq2.Create("data/texture/awesome.png", AWS::textureVS, AWS::textureFS);
-    //mesh.Create("data/models/cube.obj");
+    sq3.Create(AWS::ShadeType::solid);
+    mesh.Create("data/models/cube.obj");
 }
 
 float w = 0.0f;
 
 void Game::mainLoop()
 {
-    glClearColor(0.0f, 0.0f, 0.8f, 0.0f);
-
     glm::mat4x4 view = glm::lookAt(PC.GetPosition(), PC.GetPosition() + PC.GetFront(), PC.GetUp());
+
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     processInput(Game::getWindowPointer());
 
     PC.SetPosition(pos.x, pos.y, pos.z);
 
-    sq.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
+    sq.SetColor(1.0f, 1.0f, 1.0f, 0.1f);
     sq.DrawCube(GL_TRIANGLES, proj, view);
 
     w += 1.0f;
@@ -146,13 +148,18 @@ void Game::mainLoop()
     }
 
     sq2.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-    sq2.SetScale(1.0f, 1.0f, 1.0f);
-    sq2.SetPosition(3.0f, 3.0f, 0.0f);
+    sq2.SetScale(0.05f, 0.1f, 0.1f);
+    sq2.SetPosition(-0.8f, -0.8f, 0.0f);
     sq2.SetRotation(w, w, w);
-    sq2.DrawSquare(GL_TRIANGLES, proj, view);
+    sq2.DrawSquare(GL_TRIANGLES);
 
-    /*mesh.SetPosition(0.0f, 4.0f, 0.0f);
+    sq3.SetPosition(PC.GetPosition().x, PC.GetPosition().y, PC.GetPosition().z);
+    sq3.SetScale(100.0f, 100.0f, 100.0f);
+    sq3.SetColor(tan(PC.GetPosition().x), sin(PC.GetPosition().y), cos(PC.GetPosition().z), 1.0f);
+    sq3.DrawCube(GL_TRIANGLES, proj, view);
+
+    mesh.SetPosition(0.0f, 4.0f, 0.0f);
     mesh.SetScale(1.0f, 1.0f, 1.0f);
     mesh.SetColor(1.0f, 1.0f, 0.0f, 1.0f);
-    mesh.DrawMesh(GL_TRIANGLES, proj, view);*/
+    mesh.DrawMesh(GL_TRIANGLES, proj, view);
 }

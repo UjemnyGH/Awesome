@@ -164,6 +164,14 @@ namespace AWS
         void SetTexture(const std::string sf_textureName, const int sf_wrapping = GL_REPEAT);
 
         /**
+         * @brief Set the Texture Coordinates object 
+         * 
+         * @param sf_x coordinates x
+         * @param sf_y coordinates y
+         */
+        void SetTextureCoordinates(float sf_x, float sf_y);
+
+        /**
          * @brief Set the Color object
          * 
          * @param r red
@@ -314,6 +322,16 @@ namespace AWS
         s_tex.bind({st_textureName}, wrapping, GL_TEXTURE_2D);
 
         s_vao.unbind();
+    }
+
+    void Aws_Square::SetTextureCoordinates(float sf_x, float sf_y)
+    {
+        st_textureCoords[0] = sf_x;
+        st_textureCoords[1] = sf_y;
+        st_textureCoords[3] = sf_y;
+        st_textureCoords[4] = sf_x;
+
+        s_vbo[2].bind(st_textureCoords, sizeof(st_textureCoords), 2, 2);
     }
 
     void Aws_Square::SetColor(const float r, const float g, const float b, const float a)

@@ -23,4 +23,5 @@ https://github.com/UjemnyGH/Awesome
 > Mesh loading
 
 ### TODO:
-> Write more shaders
+> Write more shaders,
+> Reposing texture coords

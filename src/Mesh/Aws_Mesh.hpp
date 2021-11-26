@@ -301,10 +301,10 @@ namespace AWS
 
     void Aws_Mesh::Create(const std::string & mf_meshPath, const unsigned int & mf_shadeType, const std::string & mf_vertex, const std::string & mf_fragment)
     {
+        ReadMesh(mf_meshPath);
+
         m_isTexture = false;
         mc_shadeType = mf_shadeType;
-
-        ReadMesh(mf_meshPath);
 
         m_sh.create(mf_vertex, mf_fragment);
 
@@ -331,10 +331,10 @@ namespace AWS
 
     void Aws_Mesh::Create(const std::string & mf_meshPath, const std::string & mf_textureName, const unsigned int & mf_textureType, const unsigned int & mf_shadeType, const std::string & mf_vertex, const std::string & mf_fragment)
     {
+        ReadMesh(mf_meshPath);
+
         m_isTexture = true;
         mc_shadeType = mf_shadeType;
-
-        ReadMesh(mf_meshPath);
 
         m_sh.create(mf_vertex, mf_fragment);
 
@@ -472,7 +472,7 @@ namespace AWS
             glUniformMatrix4fv(glGetUniformLocation(m_sh.GetID(), "modelTransform"), 1, GL_FALSE, glm::value_ptr(m_transform));
         }
 
-        glDrawElements(mf_drawType, mv_vertices.size(), GL_UNSIGNED_INT, NULL);
+        glDrawElements(mf_drawType, mv_vertices.size() * 2, GL_UNSIGNED_INT, NULL);
 
         m_sh.unbind();
         m_vao.unbind();
@@ -496,7 +496,7 @@ namespace AWS
             glUniformMatrix4fv(glGetUniformLocation(m_sh.GetID(), "modelTransform"), 1, GL_FALSE, glm::value_ptr(m_transform));
         }
 
-        glDrawElements(mf_drawType, mv_vertices.size(), GL_UNSIGNED_INT, NULL);
+        glDrawElements(mf_drawType, mv_vertices.size() * 2, GL_UNSIGNED_INT, NULL);
 
         m_sh.unbind();
         m_vao.unbind();
