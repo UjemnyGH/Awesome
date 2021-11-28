@@ -9,7 +9,7 @@
 #include <random>
 #include <sstream>
 #define SFML_STATIC
-#include <SFML/Audio.hpp>
+//#include <SFML/Audio.hpp>
 
 Game window;
 PlayerCam PC;
@@ -17,8 +17,7 @@ AWS::Cube sq;
 AWS::Cube sq3;
 AWS::Square sq2;
 AWS::Time gtime;
-AWS::Mesh mes;
-AWS::Object test1;
+AWS::Object object;
 
 glm::mat4x4 proj;
 
@@ -27,14 +26,13 @@ glm::vec3 pos;
 
 float lastX = 400, lastY = 300;
 float yaw, pitch;
-bool firstMouse = false;
 
-sf::SoundBuffer buffer;
-sf::Sound sound;
+//sf::SoundBuffer buffer;
+//sf::Sound sound;
 
 int main()
 {
-    if(!buffer.loadFromFile("data/audio/GTA_III.wav"))
+    /*if(!buffer.loadFromFile("data/audio/GTA_III.wav"))
     {
         printf("LOad error");
     }
@@ -43,7 +41,7 @@ int main()
 
     sound.setLoop(true);
     sound.setVolume(70.0f);
-    sound.play();
+    sound.play();*/
 
     window.createWindow(1280, 1080, "Window", NULL);
 
@@ -61,14 +59,13 @@ void reshape(GLFWwindow* gwindow, int w, int h)
 
 void mouse(GLFWwindow* window, double xpos, double ypos)
 {
-    if(firstMouse)
+    if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
     {
         float xoffset = xpos - lastX;
         float yoffset = lastY - ypos; 
 
         lastX = xpos;
         lastY = ypos;
-        firstMouse = false;
 
         float sensitivity = 0.15f;
         xoffset *= sensitivity;
@@ -105,7 +102,6 @@ void processInput(GLFWwindow *window)
     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
     {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        firstMouse = true;
     }
     else
     {
@@ -123,28 +119,23 @@ void Game::initialize()
     sq.Create(AWS::ShadeType::solid, "data/texture/awesome.png", GL_TEXTURE_2D, AWS::textureVS, AWS::textureFS);
     sq2.Create("data/texture/awesome.png", AWS::textureVS, AWS::textureFS);
     sq3.Create(AWS::ShadeType::solid);
-    test1.Create(AWS::ShadeType::solid, AWS::textureVS, AWS::textureFS);
-    test1.SetObjectData(AWS::cube/*LoadMesh("data/models/cube.obj")*/);
-    test1.SetTexture("data/texture/awesome.png");
-    mes.Create("data/models/cube.obj");
-
-    for(int i = 0; i < 10; i++)
-        std::cout << AWS::LoadMesh("data/models/cube.obj").od_vertices[i] << std::endl;
+    object.Create();
+    object.SetObjectData(AWS::LoadMesh("data/models/cubeAndBallobj.obj"));
 }
 
 float w = 0.0f;
 
 void Game::mainLoop()
 {
+    processInput(Game::getWindowPointer());
+
     glm::mat4x4 view = glm::lookAt(PC.GetPosition(), PC.GetPosition() + PC.GetFront(), PC.GetUp());
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    processInput(Game::getWindowPointer());
-
     PC.SetPosition(pos.x, pos.y, pos.z);
 
-    sq.SetColor(1.0f, 1.0f, 1.0f, 0.1f);
+    sq.SetColor(1.0f, 1.0f, 1.0f, 0.5f);
     sq.SetPosition(5.0f, 5.0f, 5.0f);
     sq.DrawCube(GL_TRIANGLES, proj, view);
 
@@ -153,7 +144,7 @@ void Game::mainLoop()
     if(w > 360.0f)
     {
         w = 0.0f;
-    }
+    } 
 
     sq2.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     sq2.SetScale(0.05f, 0.1f, 0.1f);
@@ -166,8 +157,8 @@ void Game::mainLoop()
     sq3.SetColor(tan(PC.GetPosition().x), sin(PC.GetPosition().y), cos(PC.GetPosition().z), 1.0f);
     sq3.DrawCube(GL_TRIANGLES, proj, view);
 
-    test1.SetColor(1.0f, 1.0, 1.0f, 1.0f);
-    test1.DrawObject(GL_TRIANGLES, proj, view);
-
-    mes.DrawMesh(GL_TRIANGLES, proj, view);
+    object.SetPosition(0.0f, 0.0f, 0.0f);
+    object.SetScale(1.0f, 1.0f, 1.0f);
+    object.SetColor(w / 360.0f, w / 360.0f, w / 360.0f, 1.0f);
+    object.DrawObject(GL_TRIANGLES, proj, view);
 }

@@ -1,7 +1,11 @@
+#pragma once
+
 #include "../src/Aws_Engine.hpp"
 #include "../src/Aws_Types.hpp"
 
-class DoomWindow : public AWS::Window
+AWS::Time gTime;
+
+class GTAWindow : public AWS::Window
 {
 public:
     virtual void mainLoop() override;

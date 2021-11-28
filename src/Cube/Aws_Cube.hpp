@@ -423,6 +423,7 @@ namespace AWS
 
         c_sh.bind();
 
+        glUniform4f(glGetUniformLocation(c_sh.GetID(), "iCol"), 1.0f, 1.0f, 1.0f, 1.0f);
         glUniform1i(glGetUniformLocation(c_sh.GetID(), "tex"), 0);
 
         c_sh.unbind();
@@ -465,6 +466,7 @@ namespace AWS
 
         c_sh.bind();
 
+        glUniform4f(glGetUniformLocation(c_sh.GetID(), "iCol"), 1.0f, 1.0f, 1.0f, 1.0f);
         glUniform1i(glGetUniformLocation(c_sh.GetID(), "tex"), 0);
 
         c_sh.unbind();
@@ -585,15 +587,13 @@ namespace AWS
     {
         if(cc_shadeType == solid)
         {
-            for(int i = 0; i < 8; i++)
-            {
-                ct_color[i * 4] = r;
-                ct_color[i * 4 + 1] = g;
-                ct_color[i * 4 + 2] = b;
-                ct_color[i * 4 + 3] = a;
-            }
+            c_sh.bind();
+            c_vao.bind();
 
-            c_vbo[1].bind(ct_color, sizeof(ct_color), 1, 4);
+            glUniform4f(glGetUniformLocation(c_sh.GetID(), "iCol"), r, g, b, a);
+
+            c_vao.unbind();
+            c_sh.unbind();
         }
         else if(cc_shadeType == shade)
         {

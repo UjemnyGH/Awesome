@@ -256,6 +256,7 @@ namespace AWS
 
         s_sh.bind();
 
+        glUniform4f(glGetUniformLocation(s_sh.GetID(), "iCol"), 1.0f, 1.0f, 1.0f, 1.0f);
         glUniform1i(glGetUniformLocation(s_sh.GetID(), "tex"), 0);
 
         s_sh.unbind();
@@ -357,15 +358,13 @@ namespace AWS
 
     void Aws_Square::SetColor(const float r, const float g, const float b, const float a)
     {
-        for(int i = 0; i < 4; i++)
-        {
-            st_color[i * 4] = r;
-            st_color[i * 4 + 1] = g;
-            st_color[i * 4 + 2] = b;
-            st_color[i * 4 + 3] = a;
-        }
+        s_sh.bind();
+        s_vao.bind();
 
-        s_vbo[1].bind(st_color, sizeof(st_color), 1, 4);
+        glUniform4f(glGetUniformLocation(s_sh.GetID(), "iCol"), r, g, b, a);
+
+        s_vao.unbind();
+        s_sh.unbind();
     }
 
     void Aws_Square::Terminate()

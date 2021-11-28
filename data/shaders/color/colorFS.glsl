@@ -2,9 +2,9 @@
 
 out vec4 oCol;
 
-in vec4 ioCol;
+uniform vec4 iCol;
 
 void main()
 {
-    oCol = ioCol;
+    oCol = iCol;
 }

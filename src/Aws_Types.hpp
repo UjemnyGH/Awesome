@@ -53,6 +53,14 @@ namespace AWS
 
         Aws_ObjectData(const std::vector<float> & odf_vertices, const std::vector<float> & odf_color, const std::vector<unsigned int> & odf_indices, const std::vector<float> & odf_textureCoords, const std::vector<float> & odf_normals, const std::vector<unsigned int> & odf_indicesTexture, const std::vector<unsigned int> & odf_indicesNormal)
         {
+            this->od_vertices.clear();
+            this->od_color.clear();
+            this->od_indices.clear();
+            this->od_textureCoordinates.clear();
+            this->od_normals.clear();
+            this->od_indicesTex.clear();
+            this->od_indicesNor.clear();
+
             od_vertices.resize(odf_vertices.size());
             od_vertices = odf_vertices;
             od_color.resize(odf_color.size());
@@ -71,20 +79,28 @@ namespace AWS
 
         Aws_ObjectData& operator=(const Aws_ObjectData & objData)
         {
-            od_vertices.resize(objData.od_vertices.size());
-            od_vertices = objData.od_vertices;
-            od_color.resize(objData.od_color.size());
-            od_color = objData.od_color;
-            od_indices.resize(objData.od_indices.size());
-            od_indices = objData.od_indices;
-            od_textureCoordinates.resize(objData.od_textureCoordinates.size());
-            od_textureCoordinates = objData.od_textureCoordinates;
-            od_normals.resize(objData.od_normals.size());
-            od_normals = objData.od_normals;
-            od_indicesTex.resize(objData.od_indicesTex.size());
-            od_indicesTex = objData.od_indicesTex;
-            od_indicesNor.resize(objData.od_indicesNor.size());
-            od_indicesNor = objData.od_indicesNor;
+            this->od_vertices.clear();
+            this->od_color.clear();
+            this->od_indices.clear();
+            this->od_textureCoordinates.clear();
+            this->od_normals.clear();
+            this->od_indicesTex.clear();
+            this->od_indicesNor.clear();
+
+            this->od_vertices.resize(objData.od_vertices.size());
+            this->od_vertices = objData.od_vertices;
+            this->od_color.resize(objData.od_color.size());
+            this->od_color = objData.od_color;
+            this->od_indices.resize(objData.od_indices.size());
+            this->od_indices = objData.od_indices;
+            this->od_textureCoordinates.resize(objData.od_textureCoordinates.size());
+            this->od_textureCoordinates = objData.od_textureCoordinates;
+            this->od_normals.resize(objData.od_normals.size());
+            this->od_normals = objData.od_normals;
+            this->od_indicesTex.resize(objData.od_indicesTex.size());
+            this->od_indicesTex = objData.od_indicesTex;
+            this->od_indicesNor.resize(objData.od_indicesNor.size());
+            this->od_indicesNor = objData.od_indicesNor;
 
             return *this;
         }

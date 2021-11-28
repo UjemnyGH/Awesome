@@ -3,6 +3,7 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include "../Buffers/Aws_Buffer.hpp"
+#include "../MeshLoader/Aws_MeshLoader.hpp"
 #include "../Aws_Types.hpp"
 #include <vector>
 #include <glm/gtc/matrix_transform.hpp>
@@ -28,108 +29,24 @@ namespace AWS
      * @param meshPath path to mesh
      * @return ObjectData 
      */
-    ObjectData LoadMesh(const std::string & meshPath)
+    ObjectData LoadMesh(const std::string & meshPath, bool quads = false)
     {
         ObjectData mesh_objectData;
 
-        mesh_objectData.od_color.clear();
-        mesh_objectData.od_indices.clear();
-        mesh_objectData.od_indicesNor.clear();
-        mesh_objectData.od_indicesTex.clear();
-        mesh_objectData.od_normals.clear();
-        mesh_objectData.od_textureCoordinates.clear();
-        mesh_objectData.od_vertices.clear();
+        MeshLoader mesh;
 
-        std::ifstream f;
-    
-        f.open(meshPath, std::ios::binary);
+        if(!quads)
+            mesh.LoadMesh(meshPath);
+        else
+            mesh.LoadMeshQuads(meshPath);
 
-        if(!f)
-        {
-            std::cout << "No file";
-        }
-
-        std::string line;
-
-        while(!f.eof())
-        {
-            std::getline(f, line);
-
-            if(line.find("v ") == 0)
-            {
-                std::stringstream ss(line.c_str() + 2);
-                float x, y, z;
-                ss >> x >> y >> z;
-
-                mesh_objectData.od_vertices.push_back(x);
-                mesh_objectData.od_color.push_back(y);
-                mesh_objectData.od_color.push_back(z);
-            }
-            else if(line.find("vt ") == 0)
-            {
-                std::stringstream ss(line.c_str() + 3);
-                float u, v, w;
-                ss >> u >> v >> w;
-
-                mesh_objectData.od_textureCoordinates.push_back(u);
-                mesh_objectData.od_textureCoordinates.push_back(v);
-                mesh_objectData.od_textureCoordinates.push_back(w);
-            }
-            else if(line.find("vn ") == 0)
-            {
-                std::stringstream ss(line.c_str() + 3);
-                float x, y, z;
-                ss >> x >> y >> z;
-
-                mesh_objectData.od_normals.push_back(x);
-                mesh_objectData.od_normals.push_back(y);
-                mesh_objectData.od_normals.push_back(z);
-            }
-            else if(line.find("f ") == 0)
-            {
-                int slashNum = 0;
-                size_t lastSlashIX = 0;
-                bool doubleSlash = false;
-
-                for(size_t i = 0; i < line.size(); i++)
-                {
-                    if(line[i] == '/')
-                    {
-                        line[i] = ' ';
-
-                        lastSlashIX = i;
-                        slashNum++;
-                    }
-                }
-
-                std::stringstream ss(line.c_str() + 2);
-
-                unsigned int indX = 0, texX = 0, norX = 0, indY = 0, texY = 0, norY = 0, indZ = 0, texZ = 0, norZ = 0, indW = 0, texW = 0, norW = 0;
-
-                ss >> indX >> texX >> norX >> indY >> texY >> norY >> indZ >> texZ >> norZ >> indW >> texW >> norW;
-
-                mesh_objectData.od_indices.push_back(indX - 1);
-                mesh_objectData.od_indices.push_back(indY - 1);
-                mesh_objectData.od_indices.push_back(indZ - 1);
-
-                mesh_objectData.od_indices.push_back(indX - 1);
-                mesh_objectData.od_indices.push_back(indZ - 1);
-                mesh_objectData.od_indices.push_back(indW - 1);
-
-                mesh_objectData.od_indicesTex.push_back(texX - 1);
-                mesh_objectData.od_indicesTex.push_back(texY - 1);
-                mesh_objectData.od_indicesTex.push_back(texZ - 1);
-                mesh_objectData.od_indicesTex.push_back(texW - 1);
-
-                mesh_objectData.od_indicesNor.push_back(norX - 1);
-                mesh_objectData.od_indicesNor.push_back(norY - 1);
-                mesh_objectData.od_indicesNor.push_back(norZ - 1);
-
-                mesh_objectData.od_indicesNor.push_back(norX - 1);
-                mesh_objectData.od_indicesNor.push_back(norZ - 1);
-                mesh_objectData.od_indicesNor.push_back(norW - 1);
-            }
-        }
+        mesh_objectData.od_indices = mesh.GetData().modv_indices;
+        mesh_objectData.od_indicesNor = mesh.GetData().modv_indicesNormal;
+        mesh_objectData.od_indicesTex = mesh.GetData().modv_indicesTexture;
+        mesh_objectData.od_normals = mesh.GetData().modv_normal;
+        mesh_objectData.od_textureCoordinates = mesh.GetData().modv_textureCoords;
+        mesh_objectData.od_vertices = mesh.GetData().modv_vertices;
+        mesh_objectData.od_color = mesh.GetData().modv_vertices;
 
         return mesh_objectData;
     }
@@ -252,7 +169,7 @@ namespace AWS
          * 
          * @param of_objectData - class represents data to draw object (you can define your own AWS::ObjectData class if you want)
          */
-        void SetObjectData(const ObjectData & of_objectData);
+        void SetObjectData(ObjectData of_objectData);
 
         /**
          * @brief Set the Position object
@@ -340,6 +257,7 @@ namespace AWS
         o_sh.bind();
 
         glUniform1i(glGetUniformLocation(o_sh.GetID(), "tex"), 0);
+        glUniform4f(glGetUniformLocation(o_sh.GetID(), "iCol"), 1.0f, 1.0f, 1.0f, 1.0f);
 
         o_sh.unbind();
 
@@ -400,7 +318,7 @@ namespace AWS
         o_vao.unbind();
     }
 
-    void Aws_Object::SetObjectData(const ObjectData & of_objectData)
+    void Aws_Object::SetObjectData(ObjectData of_objectData)
     {
         o_objectData = of_objectData;
 
@@ -418,9 +336,9 @@ namespace AWS
         ot_psr[0][2] = of_z;
 
         o_transform = glm::translate(glm::mat4(1.0), glm::vec3(ot_psr[0][0], ot_psr[0][1], ot_psr[0][2]));
-        o_transform = glm::rotate(o_transform, ot_psr[2][0], glm::vec3(1.0f, 0.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, ot_psr[2][1], glm::vec3(0.0f, 1.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, ot_psr[2][2], glm::vec3(0.0f, 0.0f, 1.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][0]), glm::vec3(1.0f, 0.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][1]), glm::vec3(0.0f, 1.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][2]), glm::vec3(0.0f, 0.0f, 1.0f));
         o_transform = glm::scale(o_transform, glm::vec3(ot_psr[1][0], ot_psr[1][1], ot_psr[1][2]));
     }
 
@@ -431,9 +349,9 @@ namespace AWS
         ot_psr[1][2] = of_z;
 
         o_transform = glm::translate(glm::mat4(1.0), glm::vec3(ot_psr[0][0], ot_psr[0][1], ot_psr[0][2]));
-        o_transform = glm::rotate(o_transform, ot_psr[2][0], glm::vec3(1.0f, 0.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, ot_psr[2][1], glm::vec3(0.0f, 1.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, ot_psr[2][2], glm::vec3(0.0f, 0.0f, 1.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][0]), glm::vec3(1.0f, 0.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][1]), glm::vec3(0.0f, 1.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][2]), glm::vec3(0.0f, 0.0f, 1.0f));
         o_transform = glm::scale(o_transform, glm::vec3(ot_psr[1][0], ot_psr[1][1], ot_psr[1][2]));
     }
 
@@ -444,15 +362,23 @@ namespace AWS
         ot_psr[2][2] = of_z;
 
         o_transform = glm::translate(glm::mat4(1.0), glm::vec3(ot_psr[0][0], ot_psr[0][1], ot_psr[0][2]));
-        o_transform = glm::rotate(o_transform, ot_psr[2][0], glm::vec3(1.0f, 0.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, ot_psr[2][1], glm::vec3(0.0f, 1.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, ot_psr[2][2], glm::vec3(0.0f, 0.0f, 1.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][0]), glm::vec3(1.0f, 0.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][1]), glm::vec3(0.0f, 1.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][2]), glm::vec3(0.0f, 0.0f, 1.0f));
         o_transform = glm::scale(o_transform, glm::vec3(ot_psr[1][0], ot_psr[1][1], ot_psr[1][2]));
     }
 
     void Aws_Object::SetColor(float of_r, float of_g, float of_b, float of_a)
     {
-        for(unsigned int i = 0; i < o_objectData.od_color.size() / 4; i++)
+        o_sh.bind();
+        o_vao.bind();
+
+        glUniform4f(glGetUniformLocation(o_sh.GetID(), "iCol"), of_r, of_g, of_b, of_a);
+
+        o_vao.unbind();
+        o_sh.unbind();
+
+        /*for(unsigned int i = 0; i < (1 * o_objectData.od_vertices.size()) / 3; i++)
         {
             o_objectData.od_color[i * 4] = of_r;
             o_objectData.od_color[i * 4 + 1] = of_g;
@@ -460,7 +386,7 @@ namespace AWS
             o_objectData.od_color[i * 4 + 3] = of_a;
         }
 
-        o_vbo[1].bind(o_objectData.od_color.data(), sizeof(float) * o_objectData.od_color.size(), 1, 4);
+        o_vbo[1].bind(o_objectData.od_color.data(), sizeof(float) * o_objectData.od_color.size(), 1, 4);*/
     }
 
     void Aws_Object::SetTexture(const std::string & texturePath, int of_wrapping)

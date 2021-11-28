@@ -11,6 +11,7 @@
 #include "Aws_Types.hpp"
 #include "Mesh/Aws_Mesh.hpp"
 #include "Object/Aws_Object.hpp"
+#include "MeshLoader/Aws_MeshLoader.hpp"
 
 #include <iostream>
 #include <future>
@@ -18,5 +19,3 @@
 #include <random>
 #include <fstream>
 #include <glm/glm.hpp>
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "tinyobjloader/tine_obj_loader.h"

@@ -9,7 +9,7 @@ https://github.com/UjemnyGH/Awesome
 
 ### To shader:
     - location = 0 --- Position
-    - location = 1 --- Color
+    - location = 1 --- Color (not working)
     - location = 2 --- Texture Coordinates
     - location = 3 --- Shade Normals
 
@@ -19,9 +19,7 @@ https://github.com/UjemnyGH/Awesome
 ### REPAIR:
 > Cube texturing,
 > Text,
-> Batch rendering,
-> Mesh loading
+> Batch rendering
 
 ### TODO:
-> Write more shaders,
-> Reposing texture coords
+> Write more shaders
