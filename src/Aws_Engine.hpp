@@ -10,6 +10,7 @@
 //#include "Text/Aws_Text.hpp"
 #include "Aws_Types.hpp"
 #include "Mesh/Aws_Mesh.hpp"
+#include "Object/Aws_Object.hpp"
 
 #include <iostream>
 #include <future>

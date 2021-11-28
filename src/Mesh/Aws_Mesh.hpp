@@ -2,10 +2,10 @@
 
 #include "../Buffers/Aws_Buffer.hpp"
 #include "../Aws_Types.hpp"
-#include "../Aws_Engine.hpp"
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <array>
 #include <sstream>
 
 /**
@@ -52,6 +52,8 @@ namespace AWS
         std::vector<unsigned int> mv_indicesNormal;
         std::vector<unsigned int> mv_indicesTexture;
 
+        ObjectData m_objectData;
+
         /**
          * @brief ReadMesh
          * 
@@ -82,6 +84,20 @@ namespace AWS
          */
         void Create(const std::string & mf_meshPath, const std::string & mf_textureName, const unsigned int & mf_textureType = GL_TEXTURE_2D, const unsigned int & mf_shadeType = 0, const std::string & mf_vertex = AWS::textureVS, const std::string & mf_fragment = AWS::textureFS);
         
+        /**
+         * @brief Load mesh
+         * 
+         * @param mf_meshPath mesh path
+         */
+        void LoadOnlyMesh(const std::string & mf_meshPath);
+
+        /**
+         * @brief Get the Object object
+         * 
+         * @return ObjectData 
+         */
+        ObjectData GetObject() { return m_objectData; }
+
         /**
          * @brief Get the Vertices object
          * 
@@ -303,6 +319,8 @@ namespace AWS
     {
         ReadMesh(mf_meshPath);
 
+        //m_objectData = ObjectData(mv_vertices, mv_color, mv_indices, mv_textureCoordinates, mv_normals, {1}, {1});
+
         m_isTexture = false;
         mc_shadeType = mf_shadeType;
 
@@ -312,10 +330,10 @@ namespace AWS
         m_vao.bind();
 
         m_vbo[0].create();
-        m_vbo[0].bind(mv_vertices.data(), mv_vertices.size() * sizeof(float), 0, 3);
+        m_vbo[0].bind(mv_vertices.data(), sizeof(float) * mv_vertices.size(), 0, 3);
 
         m_vbo[1].create();
-        m_vbo[1].bind(mv_color.data(), mv_color.size() * sizeof(float), 1, 4);
+        m_vbo[1].bind(mv_color.data(), sizeof(float) * mv_color.size(), 1, 4);
 
         /**
          * 
@@ -324,7 +342,7 @@ namespace AWS
          */
 
         m_ebo.create();
-        m_ebo.bind(mv_indices.data(), mv_indices.size() * sizeof(unsigned int));
+        m_ebo.bind(mv_indices.data(), sizeof(unsigned int) * mv_indices.size());
 
         m_vao.unbind();
     }
@@ -332,6 +350,8 @@ namespace AWS
     void Aws_Mesh::Create(const std::string & mf_meshPath, const std::string & mf_textureName, const unsigned int & mf_textureType, const unsigned int & mf_shadeType, const std::string & mf_vertex, const std::string & mf_fragment)
     {
         ReadMesh(mf_meshPath);
+
+        //m_objectData = ObjectData(mv_vertices, mv_color, mv_indicesTexture, mv_textureCoordinates, mv_normals, {1}, {1});
 
         m_isTexture = true;
         mc_shadeType = mf_shadeType;
@@ -342,16 +362,16 @@ namespace AWS
         m_vao.bind();
 
         m_vbo[0].create();
-        m_vbo[0].bind(mv_vertices.data(), mv_vertices.size() * sizeof(float), 0, 3);
+        m_vbo[0].bind(mv_vertices.data(), sizeof(float) * mv_vertices.size(), 0, 3);
 
         m_vbo[1].create();
-        m_vbo[1].bind(mv_color.data(), mv_color.size() * sizeof(float), 1, 4);
+        m_vbo[1].bind(mv_color.data(), sizeof(float) * mv_color.size(), 1, 4);
 
         m_vbo[2].create();
-        m_vbo[2].bind(mv_textureCoordinates.data(), mv_textureCoordinates.size() * sizeof(float), 2, 2);
+        m_vbo[2].bind(mv_textureCoordinates.data(), sizeof(float) * mv_textureCoordinates.size(), 2, 2);
 
         m_vbo[3].create();
-        m_vbo[3].bind(mv_normals.data(), mv_normals.size() * sizeof(float), 3, 3);
+        m_vbo[3].bind(mv_normals.data(), sizeof(float) * mv_normals.size(), 3, 3);
 
         /**
          * 
@@ -366,7 +386,7 @@ namespace AWS
         }
 
         m_ebo.create();
-        m_ebo.bind(mv_indicesTexture.data(), mv_indicesTexture.size() * sizeof(unsigned int));
+        m_ebo.bind(mv_indicesTexture.data(), sizeof(unsigned int) * mv_indicesTexture.size());
 
         m_sh.bind();
 
@@ -375,6 +395,100 @@ namespace AWS
         m_sh.unbind();
 
         m_vao.unbind();
+    }
+
+    void Aws_Mesh::LoadOnlyMesh(const std::string & mf_meshPath)
+    {
+        std::ifstream f;
+    
+        f.open(mf_meshPath, std::ios::binary);
+
+        if(!f)
+        {
+            std::cout << "No file";
+        }
+
+        std::string line;
+
+        while(!f.eof())
+        {
+            std::getline(f, line);
+
+            if(line.find("v ") == 0)
+            {
+                std::stringstream ss(line.c_str() + 2);
+                float x, y, z;
+                ss >> x >> y >> z;
+
+                m_objectData.od_vertices.push_back(x);
+                m_objectData.od_color.push_back(y);
+                m_objectData.od_color.push_back(z);
+            }
+            else if(line.find("vt ") == 0)
+            {
+                std::stringstream ss(line.c_str() + 3);
+                float u, v, w;
+                ss >> u >> v >> w;
+
+                m_objectData.od_textureCoordinates.push_back(u);
+                m_objectData.od_textureCoordinates.push_back(v);
+                m_objectData.od_textureCoordinates.push_back(w);
+            }
+            else if(line.find("vn ") == 0)
+            {
+                std::stringstream ss(line.c_str() + 3);
+                float x, y, z;
+                ss >> x >> y >> z;
+
+                m_objectData.od_normals.push_back(x);
+                m_objectData.od_normals.push_back(y);
+                m_objectData.od_normals.push_back(z);
+            }
+            else if(line.find("f ") == 0)
+            {
+                int slashNum = 0;
+                size_t lastSlashIX = 0;
+                bool doubleSlash = false;
+
+                for(size_t i = 0; i < line.size(); i++)
+                {
+                    if(line[i] == '/')
+                    {
+                        line[i] = ' ';
+
+                        lastSlashIX = i;
+                        slashNum++;
+                    }
+                }
+
+                std::stringstream ss(line.c_str() + 2);
+
+                unsigned int indX = 0, texX = 0, norX = 0, indY = 0, texY = 0, norY = 0, indZ = 0, texZ = 0, norZ = 0, indW = 0, texW = 0, norW = 0;
+
+                ss >> indX >> texX >> norX >> indY >> texY >> norY >> indZ >> texZ >> norZ >> indW >> texW >> norW;
+
+                m_objectData.od_indices.push_back(indX - 1);
+                m_objectData.od_indices.push_back(indY - 1);
+                m_objectData.od_indices.push_back(indZ - 1);
+
+                m_objectData.od_indices.push_back(indX - 1);
+                m_objectData.od_indices.push_back(indZ - 1);
+                m_objectData.od_indices.push_back(indW - 1);
+
+                m_objectData.od_indicesTex.push_back(texX - 1);
+                m_objectData.od_indicesTex.push_back(texY - 1);
+                m_objectData.od_indicesTex.push_back(texZ - 1);
+                m_objectData.od_indicesTex.push_back(texW - 1);
+
+                m_objectData.od_indicesNor.push_back(norX - 1);
+                m_objectData.od_indicesNor.push_back(norY - 1);
+                m_objectData.od_indicesNor.push_back(norZ - 1);
+
+                m_objectData.od_indicesNor.push_back(norX - 1);
+                m_objectData.od_indicesNor.push_back(norZ - 1);
+                m_objectData.od_indicesNor.push_back(norW - 1);
+            }
+        }
     }
 
     void Aws_Mesh::SetPosition(float mf_x, float mf_y, float mf_z)
@@ -431,9 +545,9 @@ namespace AWS
     {
         ReadMesh(mf_meshPath);
 
-        m_vbo[0].bind(mv_vertices.data(), mv_vertices.size() * sizeof(float), 0, 3);
-        m_vbo[2].bind(mv_textureCoordinates.data(), mv_textureCoordinates.size() * sizeof(float), 2, 2);
-        m_vbo[3].bind(mv_normals.data(), mv_normals.size() * sizeof(float), 3, 3);
+        m_vbo[0].bind(mv_vertices.data(), sizeof(float) * mv_vertices.size(), 0, 3);
+        m_vbo[2].bind(mv_textureCoordinates.data(), sizeof(float) * mv_textureCoordinates.size(), 2, 2);
+        m_vbo[3].bind(mv_normals.data(), sizeof(float) * mv_normals.size(), 3, 3);
     }
 
     void Aws_Mesh::SetColor(float r, float g, float b, float a)
@@ -451,7 +565,7 @@ namespace AWS
             mv_color[i * 4 + 3] = mt_color[3];
         }
 
-        m_vbo[1].bind(mv_color.data(), mv_color.size() * sizeof(float), 1, 4);
+        m_vbo[1].bind(mv_color.data(), sizeof(float) * mv_color.size(), 1, 4);
     }
 
     void Aws_Mesh::DrawMesh(const unsigned int & mf_drawType)
@@ -472,7 +586,7 @@ namespace AWS
             glUniformMatrix4fv(glGetUniformLocation(m_sh.GetID(), "modelTransform"), 1, GL_FALSE, glm::value_ptr(m_transform));
         }
 
-        glDrawElements(mf_drawType, mv_vertices.size() * 2, GL_UNSIGNED_INT, NULL);
+        glDrawElements(mf_drawType, 2 * mv_vertices.size(), GL_UNSIGNED_INT, NULL);
 
         m_sh.unbind();
         m_vao.unbind();
@@ -496,7 +610,7 @@ namespace AWS
             glUniformMatrix4fv(glGetUniformLocation(m_sh.GetID(), "modelTransform"), 1, GL_FALSE, glm::value_ptr(m_transform));
         }
 
-        glDrawElements(mf_drawType, mv_vertices.size() * 2, GL_UNSIGNED_INT, NULL);
+        glDrawElements(mf_drawType, 2 * mv_vertices.size(), GL_UNSIGNED_INT, NULL);
 
         m_sh.unbind();
         m_vao.unbind();

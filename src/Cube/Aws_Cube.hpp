@@ -19,19 +19,6 @@
 
 namespace AWS
 {
-    enum ShadeType
-    {
-        solid,
-        shade,
-        light
-    };
-
-    enum CubeTexturing
-    {
-        cubemap = GL_TEXTURE_CUBE_MAP,
-        texture2D = GL_TEXTURE_2D
-    };
-
     class Aws_Cube
     {
     private:
@@ -127,12 +114,12 @@ namespace AWS
             1.0f, 1.0f,
             0.0f, 1.0f,
             1.0f, 0.0f,
-            0.0f, 0.0f,
+            0.0f, 1.0f,
 
             1.0f, 1.0f,
             0.0f, 1.0f,
             1.0f, 0.0f,
-            0.0f, 0.0f
+            0.0f, 0.0f,
         };
 
         float ct_cubemapTexture[3 * 36] = {
@@ -238,6 +225,27 @@ namespace AWS
         void DrawCube(const unsigned int &cf_drawMode, glm::mat4x4 cf_projection, glm::mat4x4 cf_view);
 
         /**
+         * @brief Get the Position object
+         * 
+         * @return float* 
+         */
+        float* GetPosition() { return ct_psr[0]; }
+
+        /**
+         * @brief Get the Scale object
+         * 
+         * @return float* 
+         */
+        float* GetScale() { return ct_psr[1]; }
+
+        /**
+         * @brief Get the Rotation object
+         * 
+         * @return float* 
+         */
+        float* GetRotation() { return ct_psr[2]; }
+
+        /**
          * @brief Get the Shader ID object
          * 
          * @return unsigned int 
@@ -325,6 +333,14 @@ namespace AWS
          * @param cf_wrapping set this to GL_REPEAT (default)
          */
         void SetTexture(const std::vector<std::string> cf_textureName, const int cf_wrapping = GL_REPEAT);
+
+        /**
+         * @brief Set the Texture Coordinates object
+         * 
+         * @param cf_x texture x
+         * @param cf_y texture y
+         */
+        void SetTextureCoordinates(float cf_x, float cf_y);
 
         /**
          * @brief terminate cube
@@ -587,6 +603,27 @@ namespace AWS
             glUniform1f(glGetUniformLocation(c_sh.GetID(), "alpha"), a);
 
             c_sh.unbind();
+        }
+    }
+
+    void Aws_Cube::SetTextureCoordinates(float cf_x, float cf_y)
+    {
+        if(cf_x != 0.0f || cf_y != 0.0f)
+        {
+            for(int i = 0; i < 8; i++)
+            {
+                if(ct_texture[i * 2] > 0.0f)
+                {
+                    ct_texture[i * 2] = cf_x;
+                }
+
+                if(ct_texture[i * 2 + 1] > 0.0f)
+                {
+                    ct_texture[i * 2 + 1] = cf_y;
+                }
+            }
+
+            c_vbo[2].bind(ct_texture, sizeof(ct_texture), 2, 2);
         }
     }
 

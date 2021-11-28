@@ -17,7 +17,8 @@ AWS::Cube sq;
 AWS::Cube sq3;
 AWS::Square sq2;
 AWS::Time gtime;
-AWS::Mesh mesh;
+AWS::Mesh mes;
+AWS::Object test1;
 
 glm::mat4x4 proj;
 
@@ -122,7 +123,13 @@ void Game::initialize()
     sq.Create(AWS::ShadeType::solid, "data/texture/awesome.png", GL_TEXTURE_2D, AWS::textureVS, AWS::textureFS);
     sq2.Create("data/texture/awesome.png", AWS::textureVS, AWS::textureFS);
     sq3.Create(AWS::ShadeType::solid);
-    mesh.Create("data/models/cube.obj");
+    test1.Create(AWS::ShadeType::solid, AWS::textureVS, AWS::textureFS);
+    test1.SetObjectData(AWS::cube/*LoadMesh("data/models/cube.obj")*/);
+    test1.SetTexture("data/texture/awesome.png");
+    mes.Create("data/models/cube.obj");
+
+    for(int i = 0; i < 10; i++)
+        std::cout << AWS::LoadMesh("data/models/cube.obj").od_vertices[i] << std::endl;
 }
 
 float w = 0.0f;
@@ -138,6 +145,7 @@ void Game::mainLoop()
     PC.SetPosition(pos.x, pos.y, pos.z);
 
     sq.SetColor(1.0f, 1.0f, 1.0f, 0.1f);
+    sq.SetPosition(5.0f, 5.0f, 5.0f);
     sq.DrawCube(GL_TRIANGLES, proj, view);
 
     w += 1.0f;
@@ -158,8 +166,8 @@ void Game::mainLoop()
     sq3.SetColor(tan(PC.GetPosition().x), sin(PC.GetPosition().y), cos(PC.GetPosition().z), 1.0f);
     sq3.DrawCube(GL_TRIANGLES, proj, view);
 
-    mesh.SetPosition(0.0f, 4.0f, 0.0f);
-    mesh.SetScale(1.0f, 1.0f, 1.0f);
-    mesh.SetColor(1.0f, 1.0f, 0.0f, 1.0f);
-    mesh.DrawMesh(GL_TRIANGLES, proj, view);
+    test1.SetColor(1.0f, 1.0, 1.0f, 1.0f);
+    test1.DrawObject(GL_TRIANGLES, proj, view);
+
+    mes.DrawMesh(GL_TRIANGLES, proj, view);
 }

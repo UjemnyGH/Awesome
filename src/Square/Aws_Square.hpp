@@ -94,6 +94,27 @@ namespace AWS
         void DrawSquare(const unsigned int &sf_drawMode, glm::mat4x4 sf_projection, glm::mat4x4 sf_view);
 
         /**
+         * @brief Get the Position object
+         * 
+         * @return float* 
+         */
+        float* GetPosition() { return st_psr[0]; }
+
+        /**
+         * @brief Get the Scale object
+         * 
+         * @return float* 
+         */
+        float* GetScale() { return st_psr[1]; }
+
+        /**
+         * @brief Get the Rotation object
+         * 
+         * @return float* 
+         */
+        float* GetRotation() { return st_psr[2]; }
+
+        /**
          * @brief Get the Shader I D object
          * 
          * @return unsigned int 

@@ -6,6 +6,7 @@ uniform vec3 cameraPosition;
 
 in vec4 ioCol;
 in vec4 ioPos;
+in vec3 ioNor;
 
 out vec4 oCol;
 

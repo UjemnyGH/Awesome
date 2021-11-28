@@ -83,13 +83,13 @@ void processInput(GLFWwindow* window)
     {
         if(lastCubeRecall + 1.0f < gTime.GetTime())
         {
-            sq->terminate();
+            sq->Terminate();
 
             delete sq;
 
             sq = new AWS::Cube;
 
-            sq->create(AWS::ShadeType::solid, "testVS.glsl", "testFS.glsl");
+            sq->Create(AWS::ShadeType::solid, "testVS.glsl", "testFS.glsl");
 
             lastCubeRecall = gTime.GetTime();
         }
@@ -151,8 +151,9 @@ void Window::initialize()
     glfwSetFramebufferSizeCallback(Window::getWindowPointer(), framebufferCall);
     glfwSetCursorPosCallback(Window::getWindowPointer(), CameraRotation);
 
-    sq->create(AWS::ShadeType::solid, AWS::colorVS, AWS::colorFS);
-    sq2.create(AWS::ShadeType::solid);
+    sq->Create(AWS::ShadeType::solid, AWS::colorVS, AWS::colorFS);
+    sq2.Create(AWS::ShadeType::solid);
+    //sq2.Create(AWS::ShadeType::shade, AWS::shadeColorVS, AWS::shadeColorFS);
 }
 
 void Window::mainLoop()
@@ -175,10 +176,19 @@ void Window::mainLoop()
 
     glUseProgram(0);
 
-    sq->draw(GL_TRIANGLES, projection, view);
+    sq->DrawCube(GL_TRIANGLES, projection, view);
 
     sq2.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     sq2.SetScale(0.5f, 0.5f, 0.5f);
     sq2.SetPosition(3.0f, 0.0f, 0.0f);
-    sq2.draw(GL_TRIANGLES, projection, view);
+
+    /*glUseProgram(sq2.GetShaderID());
+
+    glUniform3f(glGetUniformLocation(sq2.GetShaderID(), "lightPos"), 10.0f, 2.0f, 0.0f);
+    glUniform3f(glGetUniformLocation(sq2.GetShaderID(), "viewPos"), playerCam.GetPosition().x, playerCam.GetPosition().y, playerCam.GetPosition().z);
+    glUniform3f(glGetUniformLocation(sq2.GetShaderID(), "lightColor"), 1.0f, 1.0f, 1.0f);
+    glUniform3f(glGetUniformLocation(sq2.GetShaderID(), "objectColor"), 0.2f, 0.6f, 0.4f);
+
+    glUseProgram(0);*/
+    sq2.DrawCube(GL_TRIANGLES, projection, view);
 }
