@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Buffers/Aws_Buffer.hpp"
+#include "../Aws_Types.hpp"
 #include <iostream>
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -24,7 +25,7 @@ namespace AWS
     private:
         Shader c_sh;
         VAO c_vao;
-        VBO c_vbo[4];
+        VBO c_vbo[3];
         EBO c_ebo;
 
         Texture c_tex;
@@ -32,16 +33,225 @@ namespace AWS
         int cc_shadeType = 0;
         bool c_texturesOn = false;
 
-        float ct_vertices[3 * 8] = {
-            1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f
-        };
+        ObjectData c_objectData = ObjectData(
+            {
+                1.0f, 1.0f, 1.0f,
+                -1.0f, 1.0f, 1.0f,
+                1.0f, -1.0f, 1.0f,
+                -1.0f, -1.0f, 1.0f,
+                1.0f, 1.0f, -1.0f,
+                -1.0f, 1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f
+            },
+            {
+                0, 1, 2,
+                1, 2, 3,
+                4, 5, 6,
+                5, 6, 7,
+                0, 2, 4,
+                2, 4, 6,
+                1, 3, 5,
+                3, 5, 7,
+                0, 1, 4,
+                1, 4, 5,
+                2, 3, 6,
+                3, 6, 7
+            },
+            {
+                0.0f
+            },
+            {
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f
+            },
+            {
+                0
+            },
+            {
+                0
+            }
+        );
+
+        ObjectData c_textureObjectData = ObjectData(
+            {
+                //front
+                1.0f, 1.0f, 1.0f,
+                -1.0f, 1.0f, 1.0f,
+                1.0f, -1.0f, 1.0f,
+                //front 2
+                -1.0f, 1.0f, 1.0f,
+                1.0f, -1.0f, 1.0f,
+                -1.0f, -1.0f, 1.0f,
+
+                //back
+                1.0f, 1.0f, -1.0f,
+                -1.0f, 1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                //back 2
+                -1.0f, 1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+
+                //up
+                1.0f, 1.0f, 1.0f,
+                -1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, -1.0f,
+                //up 2
+                -1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, -1.0f,
+                -1.0f, 1.0f, -1.0f,
+
+                //down
+                1.0f, -1.0f, 1.0f,
+                -1.0f, -1.0f, 1.0f,
+                1.0f, -1.0f, -1.0f,
+                //down 2
+                -1.0f, -1.0f, 1.0f,
+                1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+
+                //right
+                1.0f, 1.0f, 1.0f,
+                1.0f, -1.0f, 1.0f,
+                1.0f, 1.0f, -1.0f,
+                //right 2
+                1.0f, -1.0f, 1.0f,
+                1.0f, 1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+
+                //left
+                -1.0f, 1.0f, 1.0f,
+                -1.0f, -1.0f, 1.0f,
+                -1.0f, 1.0f, -1.0f,
+                //left 2
+                -1.0f, -1.0f, 1.0f,
+                -1.0f, 1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+            },
+            {
+                0
+            },
+            {
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f,
+
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f,
+
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f,
+
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f,
+
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f,
+
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f
+            },
+            {
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f
+            },
+            {
+                0
+            },
+            {
+                0
+            }
+        );
 
         glm::mat4 c_transform = glm::mat4x4(1.0);
 
@@ -49,77 +259,6 @@ namespace AWS
             {   0.0f, 0.0f, 0.0f    },
             {   1.0f, 1.0f, 1.0f    },
             {   0.0f, 0.0f, 0.0f    }
-        };
-
-        unsigned int ct_indices[3 * 12] = {
-            0, 1, 2,
-            1, 2, 3,
-            4, 5, 6,
-            5, 6, 7,
-            0, 2, 4,
-            2, 4, 6,
-            1, 3, 5,
-            3, 5, 7,
-            0, 1, 4,
-            1, 4, 5,
-            2, 3, 6,
-            3, 6, 7
-        };
-
-        float ct_normals[3 * 36] = {
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f
-        };
-
-        float ct_texture[2 * 8] = {
-            1.0f, 1.0f,
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 1.0f,
-
-            1.0f, 1.0f,
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f,
         };
 
         float ct_cubemapTexture[3 * 36] = {
@@ -164,17 +303,6 @@ namespace AWS
             1.0f, -1.0f, -1.0f,
             -1.0f, -1.0f,  1.0f,
             1.0f, -1.0f,  1.0f
-        };
-
-        float ct_color[4 * 8] = {
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f
         };
 
     public:
@@ -257,28 +385,21 @@ namespace AWS
          * 
          * @return unsigned* 
          */
-        unsigned int* GetIndices() { return ct_indices; }
-
-        /**
-         * @brief Get the Color object
-         * 
-         * @return float* 
-         */
-        float* GetColor() { return ct_color; }
+        unsigned int* GetIndices() { return c_objectData.od_indices.data(); }
 
         /**
          * @brief Get the Vertices object
          * 
          * @return float* 
          */
-        float* GetVertices() { return ct_vertices; }
+        float* GetVertices(bool array = false) { if(array) return c_textureObjectData.od_vertices.data(); else return c_objectData.od_vertices.data(); }
 
         /**
          * @brief Get the Texturte Coords object
          * 
          * @return float* 
          */
-        float* GetTexturteCoords() { return ct_texture; }
+        float* GetTexturteCoords() { return c_textureObjectData.od_textureCoordinates.data(); }
 
         /**
          * @brief Set the Position object
@@ -360,21 +481,26 @@ namespace AWS
         c_vao.bind();
 
         c_vbo[0].create();
-        c_vbo[0].bind(ct_vertices, sizeof(ct_vertices), 0, 3);
+        c_vbo[0].bind(c_objectData.od_vertices.data(), sizeof(float) * c_objectData.od_vertices.size(), 0, 3);
 
         if(cc_shadeType == solid)
         {
-            c_vbo[1].create();
-            c_vbo[1].bind(ct_color, sizeof(ct_color), 1, 4);
+
         }
         else if(cc_shadeType == shade)
         {
-            c_vbo[3].create();
-            c_vbo[3].bind(ct_normals, sizeof(ct_normals), 3, 3);
+            c_vbo[2].create();
+            c_vbo[2].bind(c_objectData.od_normals.data(), sizeof(float) * c_objectData.od_normals.size(), 3, 3);
         }
 
         c_ebo.create();
-        c_ebo.bind(ct_indices, sizeof(ct_indices));
+        c_ebo.bind(c_objectData.od_indices.data(), sizeof(unsigned int) * c_objectData.od_indices.size());
+
+        c_sh.bind();
+
+        glUniform4f(glGetUniformLocation(c_sh.GetID(), "iCol"), 1.0f, 1.0f, 1.0f, 1.0f);
+
+        c_sh.unbind();
 
         c_vao.unbind();
     }
@@ -391,32 +517,31 @@ namespace AWS
         c_vao.bind();
 
         c_vbo[0].create();
-        c_vbo[0].bind(ct_vertices, sizeof(ct_vertices), 0, 3);
+        c_vbo[0].bind(c_textureObjectData.od_vertices.data(), sizeof(float) * c_textureObjectData.od_vertices.size(), 0, 3);
 
         if(cc_shadeType == solid)
         {
-            c_vbo[1].create();
-            c_vbo[1].bind(ct_color, sizeof(ct_color), 1, 4);
+
         }
         else if(cc_shadeType == shade)
         {
-            c_vbo[3].create();
-            c_vbo[3].bind(ct_normals, sizeof(ct_normals), 3, 3);
+            c_vbo[2].create();
+            c_vbo[2].bind(c_textureObjectData.od_normals.data(), sizeof(float) * c_textureObjectData.od_normals.size(), 3, 3);
         }
 
         if(cf_textureType == CubeTexturing::cubemap)
         {
-            c_vbo[2].create();
-            c_vbo[2].bind(ct_cubemapTexture, sizeof(ct_cubemapTexture), 2, 3);
+            c_vbo[1].create();
+            c_vbo[1].bind(ct_cubemapTexture, sizeof(ct_cubemapTexture), 2, 3);
         }
         else
         {
-            c_vbo[2].create();
-            c_vbo[2].bind(ct_texture, sizeof(ct_texture), 2, 2);
+            c_vbo[1].create();
+            c_vbo[1].bind(c_textureObjectData.od_textureCoordinates.data(), sizeof(float) * c_textureObjectData.od_textureCoordinates.size(), 2, 2);
         }
 
-        c_ebo.create();
-        c_ebo.bind(ct_indices, sizeof(ct_indices));
+        /*c_ebo.create();
+        c_ebo.bind(ct_indices, sizeof(ct_indices));*/
 
         c_tex.create();
         c_tex.bind({cf_textureName}, GL_REPEAT, cf_textureType);
@@ -442,24 +567,23 @@ namespace AWS
         c_vao.bind();
 
         c_vbo[0].create();
-        c_vbo[0].bind(ct_vertices, sizeof(ct_vertices), 0, 3);
+        c_vbo[0].bind(c_objectData.od_vertices.data(), sizeof(float) * c_objectData.od_vertices.size(), 0, 3);
 
         if(cc_shadeType == solid)
         {
-            c_vbo[1].create();
-            c_vbo[1].bind(ct_color, sizeof(ct_color), 1, 4);
+
         }
         else if(cc_shadeType == shade)
         {
-            c_vbo[3].create();
-            c_vbo[3].bind(ct_normals, sizeof(ct_normals), 3, 3);
+            c_vbo[2].create();
+            c_vbo[2].bind(c_objectData.od_normals.data(), sizeof(float) * c_objectData.od_normals.size(), 3, 3);
         }
 
-        c_vbo[2].create();
-        c_vbo[2].bind(ct_cubemapTexture, sizeof(ct_cubemapTexture), 2, 3);
+        c_vbo[1].create();
+        c_vbo[1].bind(ct_cubemapTexture, sizeof(ct_cubemapTexture), 2, 3);
 
         c_ebo.create();
-        c_ebo.bind(ct_indices, sizeof(ct_indices));
+        c_ebo.bind(c_objectData.od_indices.data(), sizeof(unsigned int) * c_objectData.od_indices.size());
 
         c_tex.create();
         c_tex.bind(cf_textureName, GL_REPEAT, GL_TEXTURE_CUBE_MAP);
@@ -494,7 +618,10 @@ namespace AWS
             glUniformMatrix4fv(glGetUniformLocation(c_sh.GetID(), "modelTransform"), 1, GL_FALSE, glm::value_ptr(c_transform));
         }
 
-        glDrawElements(cf_drawMode, sizeof(ct_vertices) / 2, GL_UNSIGNED_INT, NULL);
+        if(!c_texturesOn)
+            glDrawElements(cf_drawMode, (sizeof(float) * c_objectData.od_vertices.size()) / 2, GL_UNSIGNED_INT, NULL);
+        else
+            glDrawArrays(cf_drawMode, 0, 36);
 
         c_sh.unbind();
         c_vao.unbind();
@@ -520,7 +647,10 @@ namespace AWS
             glUniformMatrix4fv(glGetUniformLocation(c_sh.GetID(), "modelTransform"), 1, GL_FALSE, glm::value_ptr(c_transform));
         }
 
-        glDrawElements(cf_drawMode, sizeof(ct_vertices) / 2, GL_UNSIGNED_INT, NULL);
+        if(!c_texturesOn)
+            glDrawElements(cf_drawMode, (sizeof(float) * c_objectData.od_vertices.size()) / 2, GL_UNSIGNED_INT, NULL);
+        else
+            glDrawArrays(cf_drawMode, 0, 36);
 
         c_sh.unbind();
         c_vao.unbind();
@@ -610,20 +740,20 @@ namespace AWS
     {
         if(cf_x != 0.0f || cf_y != 0.0f)
         {
-            for(int i = 0; i < 8; i++)
+            for(int i = 0; i < 24; i++)
             {
-                if(ct_texture[i * 2] > 0.0f)
+                if(c_textureObjectData.od_textureCoordinates[i * 2] > 0.0f)
                 {
-                    ct_texture[i * 2] = cf_x;
+                    c_textureObjectData.od_textureCoordinates[i * 2] = cf_x;
                 }
 
-                if(ct_texture[i * 2 + 1] > 0.0f)
+                if(c_textureObjectData.od_textureCoordinates[i * 2 + 1] > 0.0f)
                 {
-                    ct_texture[i * 2 + 1] = cf_y;
+                    c_textureObjectData.od_textureCoordinates[i * 2 + 1] = cf_y;
                 }
             }
 
-            c_vbo[2].bind(ct_texture, sizeof(ct_texture), 2, 2);
+            c_vbo[1].bind(c_textureObjectData.od_textureCoordinates.data(), sizeof(float) * c_textureObjectData.od_textureCoordinates.size(), 2, 2);
         }
     }
 

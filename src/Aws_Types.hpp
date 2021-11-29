@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <string>
+#include <vector>
 
 namespace AWS
 {
@@ -29,220 +30,6 @@ namespace AWS
 
     const std::string cubeVS = "data/shaders/cube/cubeVS.glsl";
     const std::string cubeFS = "data/shaders/cube/cubeFS.glsl";
-
-    struct Aws_ObjectData
-    {
-        std::vector<float> od_vertices{1.0f};
-        std::vector<float> od_color{1.0f};
-        std::vector<unsigned int> od_indices{1};
-        std::vector<unsigned int> od_indicesTex{1};
-        std::vector<unsigned int> od_indicesNor{1};
-        std::vector<float> od_textureCoordinates{1.0f};
-        std::vector<float> od_normals{1.0f};
-
-        Aws_ObjectData()
-        {
-            od_vertices[0] = {0.0f};
-            od_color[0] = {0.0f};
-            od_indices[0] = {0};
-            od_textureCoordinates[0] = {0.0f};
-            od_normals[0] = {0.0f};
-            od_indicesTex[0] = {0};
-            od_indicesNor[0] = {0};
-        }
-
-        Aws_ObjectData(const std::vector<float> & odf_vertices, const std::vector<float> & odf_color, const std::vector<unsigned int> & odf_indices, const std::vector<float> & odf_textureCoords, const std::vector<float> & odf_normals, const std::vector<unsigned int> & odf_indicesTexture, const std::vector<unsigned int> & odf_indicesNormal)
-        {
-            this->od_vertices.clear();
-            this->od_color.clear();
-            this->od_indices.clear();
-            this->od_textureCoordinates.clear();
-            this->od_normals.clear();
-            this->od_indicesTex.clear();
-            this->od_indicesNor.clear();
-
-            od_vertices.resize(odf_vertices.size());
-            od_vertices = odf_vertices;
-            od_color.resize(odf_color.size());
-            od_color = odf_color;
-            od_indices.resize(odf_indices.size());
-            od_indices = odf_indices;
-            od_textureCoordinates.resize(odf_textureCoords.size());
-            od_textureCoordinates = odf_textureCoords;
-            od_normals.resize(odf_normals.size());
-            od_normals = odf_normals;
-            od_indicesTex.resize(odf_indicesTexture.size());
-            od_indicesTex = odf_indicesTexture;
-            od_indicesNor.resize(odf_indicesNormal.size());
-            od_indicesNor = odf_indicesNormal;
-        }
-
-        Aws_ObjectData& operator=(const Aws_ObjectData & objData)
-        {
-            this->od_vertices.clear();
-            this->od_color.clear();
-            this->od_indices.clear();
-            this->od_textureCoordinates.clear();
-            this->od_normals.clear();
-            this->od_indicesTex.clear();
-            this->od_indicesNor.clear();
-
-            this->od_vertices.resize(objData.od_vertices.size());
-            this->od_vertices = objData.od_vertices;
-            this->od_color.resize(objData.od_color.size());
-            this->od_color = objData.od_color;
-            this->od_indices.resize(objData.od_indices.size());
-            this->od_indices = objData.od_indices;
-            this->od_textureCoordinates.resize(objData.od_textureCoordinates.size());
-            this->od_textureCoordinates = objData.od_textureCoordinates;
-            this->od_normals.resize(objData.od_normals.size());
-            this->od_normals = objData.od_normals;
-            this->od_indicesTex.resize(objData.od_indicesTex.size());
-            this->od_indicesTex = objData.od_indicesTex;
-            this->od_indicesNor.resize(objData.od_indicesNor.size());
-            this->od_indicesNor = objData.od_indicesNor;
-
-            return *this;
-        }
-    };
-
-    typedef Aws_ObjectData ObjectData;
-
-    const ObjectData square(
-        {
-            1.0f, 1.0f, 0.0f,
-            -1.0f, 1.0f, 0.0f,
-            1.0f, -1.0f, 0.0f,
-            -1.0f, -1.0f, 0.0f
-        },
-        {
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f
-        },
-        {
-            0, 1, 2,
-            1, 2, 3
-        },
-        {
-            1.0f, 1.0f,
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f
-        },
-        {
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f
-        },
-        {
-            1
-        },
-        {
-            1
-        }
-    );
-
-    const ObjectData cube(
-        {
-            1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f
-        },
-        {
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f
-        },
-        {
-            0, 1, 2,
-            1, 2, 3,
-            4, 5, 6,
-            5, 6, 7,
-            0, 2, 4,
-            2, 4, 6,
-            1, 3, 5,
-            3, 5, 7,
-            0, 1, 4,
-            1, 4, 5,
-            2, 3, 6,
-            3, 6, 7
-        },
-        {
-            1.0f, 1.0f,
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 1.0f,
-
-            1.0f, 1.0f,
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f
-        },
-        {
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f
-        },
-        {
-            1
-        },
-        {
-            1
-        }
-    );
 
     struct Aws_vec
     {
@@ -276,6 +63,14 @@ namespace AWS
          * @param w 
          */
         Aws_vec(const float &x, const float &y, const float &z, const float &w) { vx = x; vy = y; vz = z; vw = w; }
+
+        /**
+         * @brief 
+         * 
+         * @param vec1 
+         * @return Aws_vec& 
+         */
+        Aws_vec& operator=(const Aws_vec & vec1) { this->vx = vec1.vx; this->vy = vec1.vy; this->vz = vec1.vz; this->vz = vec1.vz; return *this; }
     };
 
     typedef Aws_vec vec;
@@ -312,6 +107,8 @@ namespace AWS
          * @param w 
          */
         Aws_dvec(const double &x, const double &y, const double &z, const double &w) { vx = x; vy = y; vz = z; vw = w; }
+
+        Aws_dvec& operator=(const Aws_dvec & vec1) { this->vx = vec1.vx; this->vy = vec1.vy; this->vz = vec1.vz; this->vz = vec1.vz; return *this; }
     };
 
     typedef Aws_dvec dvec;
@@ -402,4 +199,359 @@ namespace AWS
         vec Y = vec(0.0f, 1.0f, 0.0f);
         vec Z = vec(0.0f, 0.0f, 1.0f);
     } Orientation;
+
+    struct Aws_ObjectTransformData
+    {
+        float odt_px = 0.0f;
+        float odt_py = 0.0f;
+        float odt_pz = 0.0f;
+        float odt_sx = 0.0f;
+        float odt_sy = 0.0f;
+        float odt_sz = 0.0f;
+        float odt_rx = 0.0f;
+        float odt_ry = 0.0f;
+        float odt_rz = 0.0f;
+
+        Aws_ObjectTransformData operator=(const Aws_ObjectTransformData & otdf_objectTransformData)
+        {
+            this->odt_px = otdf_objectTransformData.odt_px;
+            this->odt_py = otdf_objectTransformData.odt_py;
+            this->odt_pz = otdf_objectTransformData.odt_pz;
+            this->odt_sx = otdf_objectTransformData.odt_sx;
+            this->odt_sy = otdf_objectTransformData.odt_sy;
+            this->odt_sz = otdf_objectTransformData.odt_sz;
+            this->odt_rx = otdf_objectTransformData.odt_rx;
+            this->odt_ry = otdf_objectTransformData.odt_ry;
+            this->odt_rz = otdf_objectTransformData.odt_rz;
+
+            return *this;
+        }
+    };
+
+    typedef Aws_ObjectTransformData ObjectTransformData;
+
+    struct Aws_ObjectData
+    {
+        ObjectTransformData od_objectTranformData;
+
+        std::vector<float> od_vertices{1.0f};
+        std::vector<unsigned int> od_indices{1};
+        std::vector<unsigned int> od_indicesTex{1};
+        std::vector<unsigned int> od_indicesNor{1};
+        std::vector<float> od_textureCoordinates{1.0f};
+        std::vector<float> od_normals{1.0f};
+
+        Aws_ObjectData()
+        {
+            od_vertices[0] = {0.0f};
+            od_indices[0] = {0};
+            od_textureCoordinates[0] = {0.0f};
+            od_normals[0] = {0.0f};
+            od_indicesTex[0] = {0};
+            od_indicesNor[0] = {0};
+        }
+
+        Aws_ObjectData(const std::vector<float> & odf_vertices, const std::vector<unsigned int> & odf_indices, const std::vector<float> & odf_textureCoords, const std::vector<float> & odf_normals, const std::vector<unsigned int> & odf_indicesTexture, const std::vector<unsigned int> & odf_indicesNormal)
+        {
+            this->od_vertices.clear();
+            this->od_indices.clear();
+            this->od_textureCoordinates.clear();
+            this->od_normals.clear();
+            this->od_indicesTex.clear();
+            this->od_indicesNor.clear();
+
+            od_vertices.resize(odf_vertices.size());
+            od_vertices = odf_vertices;
+            od_indices.resize(odf_indices.size());
+            od_indices = odf_indices;
+            od_textureCoordinates.resize(odf_textureCoords.size());
+            od_textureCoordinates = odf_textureCoords;
+            od_normals.resize(odf_normals.size());
+            od_normals = odf_normals;
+            od_indicesTex.resize(odf_indicesTexture.size());
+            od_indicesTex = odf_indicesTexture;
+            od_indicesNor.resize(odf_indicesNormal.size());
+            od_indicesNor = odf_indicesNormal;
+        }
+
+        Aws_ObjectData& operator=(const Aws_ObjectData & objData)
+        {
+            this->od_vertices.clear();
+            this->od_indices.clear();
+            this->od_textureCoordinates.clear();
+            this->od_normals.clear();
+            this->od_indicesTex.clear();
+            this->od_indicesNor.clear();
+
+            this->od_vertices.resize(objData.od_vertices.size());
+            this->od_vertices = objData.od_vertices;
+            this->od_indices.resize(objData.od_indices.size());
+            this->od_indices = objData.od_indices;
+            this->od_textureCoordinates.resize(objData.od_textureCoordinates.size());
+            this->od_textureCoordinates = objData.od_textureCoordinates;
+            this->od_normals.resize(objData.od_normals.size());
+            this->od_normals = objData.od_normals;
+            this->od_indicesTex.resize(objData.od_indicesTex.size());
+            this->od_indicesTex = objData.od_indicesTex;
+            this->od_indicesNor.resize(objData.od_indicesNor.size());
+            this->od_indicesNor = objData.od_indicesNor;
+
+            return *this;
+        }
+    };
+
+    typedef Aws_ObjectData ObjectData;
+
+    const ObjectData square(
+        {
+            1.0f, 1.0f, 0.0f,
+            -1.0f, 1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,
+            -1.0f, -1.0f, 0.0f
+        },
+        {
+            0, 1, 2,
+            1, 2, 3
+        },
+        {
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f
+        },
+        {
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f
+        },
+        {
+            1
+        },
+        {
+            1
+        }
+    );
+
+    const ObjectData cube(
+        {
+            1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f, -1.0f, 1.0f,
+            -1.0f, -1.0f, 1.0f,
+            1.0f, 1.0f, -1.0f,
+            -1.0f, 1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f
+        },
+        {
+            0, 1, 2,
+            1, 2, 3,
+            4, 5, 6,
+            5, 6, 7,
+            0, 2, 4,
+            2, 4, 6,
+            1, 3, 5,
+            3, 5, 7,
+            0, 1, 4,
+            1, 4, 5,
+            2, 3, 6,
+            3, 6, 7
+        },
+        {
+            0.0f
+        },
+        {
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f
+        },
+        {
+            0
+        },
+        {
+            0
+        }
+    );
+
+    const ObjectData cubeTextured(
+        {
+            //front
+            1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f, -1.0f, 1.0f,
+            //front 2
+            -1.0f, 1.0f, 1.0f,
+            1.0f, -1.0f, 1.0f,
+            -1.0f, -1.0f, 1.0f,
+
+            //back
+            1.0f, 1.0f, -1.0f,
+            -1.0f, 1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            //back 2
+            -1.0f, 1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+
+            //up
+            1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, -1.0f,
+            //up 2
+            -1.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, -1.0f,
+            -1.0f, 1.0f, -1.0f,
+
+            //down
+            1.0f, -1.0f, 1.0f,
+            -1.0f, -1.0f, 1.0f,
+            1.0f, -1.0f, -1.0f,
+            //down 2
+            -1.0f, -1.0f, 1.0f,
+            1.0f, -1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+
+            //right
+            1.0f, 1.0f, 1.0f,
+            1.0f, -1.0f, 1.0f,
+            1.0f, 1.0f, -1.0f,
+            //right 2
+            1.0f, -1.0f, 1.0f,
+            1.0f, 1.0f, -1.0f,
+            1.0f, -1.0f, -1.0f,
+
+            //left
+            -1.0f, 1.0f, 1.0f,
+            -1.0f, -1.0f, 1.0f,
+            -1.0f, 1.0f, -1.0f,
+            //left 2
+            -1.0f, -1.0f, 1.0f,
+            -1.0f, 1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+        },
+        {
+            0
+        },
+        {
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f
+        },
+        {
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f
+        },
+        {
+            0
+        },
+        {
+            0
+        }
+    );
 }

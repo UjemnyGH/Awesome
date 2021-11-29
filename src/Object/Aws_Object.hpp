@@ -46,7 +46,6 @@ namespace AWS
         mesh_objectData.od_normals = mesh.GetData().modv_normal;
         mesh_objectData.od_textureCoordinates = mesh.GetData().modv_textureCoords;
         mesh_objectData.od_vertices = mesh.GetData().modv_vertices;
-        mesh_objectData.od_color = mesh.GetData().modv_vertices;
 
         return mesh_objectData;
     }
@@ -57,7 +56,7 @@ namespace AWS
         Shader o_sh;
 
         VAO o_vao;
-        VBO o_vbo[4];
+        VBO o_vbo[3];
         EBO o_ebo;
 
         Texture o_tex;
@@ -142,13 +141,6 @@ namespace AWS
          * @return float* 
          */
         float* GetTextureCoords() { return o_objectData.od_textureCoordinates.data(); }
-
-        /**
-         * @brief Get the Color object
-         * 
-         * @return float* 
-         */
-        float* GetColor() { return o_objectData.od_color.data(); }
 
         /**
          * @brief Get the Normals object
@@ -244,10 +236,7 @@ namespace AWS
         o_vbo[0].bind(o_objectData.od_vertices.data(), sizeof(float) * o_objectData.od_vertices.size(), 0, 3);
 
         o_vbo[1].create();
-        o_vbo[1].bind(o_objectData.od_color.data(), sizeof(float) * o_objectData.od_color.size(), 1, 4);
-
         o_vbo[2].create();
-        o_vbo[3].create();
 
         o_ebo.create();
         o_ebo.bind(o_objectData.od_indices.data(), sizeof(unsigned int) * o_objectData.od_indices.size());
@@ -323,9 +312,8 @@ namespace AWS
         o_objectData = of_objectData;
 
         o_vbo[0].bind(o_objectData.od_vertices.data(), sizeof(float) * o_objectData.od_vertices.size(), 0, 3);
-        o_vbo[1].bind(o_objectData.od_color.data(), sizeof(float) * o_objectData.od_color.size(), 1, 4);
-        o_vbo[2].bind(o_objectData.od_textureCoordinates.data(), sizeof(float) * o_objectData.od_textureCoordinates.size(), 2, 2);
-        o_vbo[3].bind(o_objectData.od_normals.data(), sizeof(float) * o_objectData.od_normals.size(), 3, 3);
+        o_vbo[1].bind(o_objectData.od_textureCoordinates.data(), sizeof(float) * o_objectData.od_textureCoordinates.size(), 2, 2);
+        o_vbo[2].bind(o_objectData.od_normals.data(), sizeof(float) * o_objectData.od_normals.size(), 3, 3);
         o_ebo.bind(o_objectData.od_indices.data(), sizeof(unsigned int) * o_objectData.od_indices.size());
     }
 
@@ -377,16 +365,6 @@ namespace AWS
 
         o_vao.unbind();
         o_sh.unbind();
-
-        /*for(unsigned int i = 0; i < (1 * o_objectData.od_vertices.size()) / 3; i++)
-        {
-            o_objectData.od_color[i * 4] = of_r;
-            o_objectData.od_color[i * 4 + 1] = of_g;
-            o_objectData.od_color[i * 4 + 2] = of_b;
-            o_objectData.od_color[i * 4 + 3] = of_a;
-        }
-
-        o_vbo[1].bind(o_objectData.od_color.data(), sizeof(float) * o_objectData.od_color.size(), 1, 4);*/
     }
 
     void Aws_Object::SetTexture(const std::string & texturePath, int of_wrapping)
@@ -421,7 +399,7 @@ namespace AWS
                 }
             }
 
-            o_vbo[2].bind(o_objectData.od_textureCoordinates.data(), sizeof(float) * o_objectData.od_textureCoordinates.size(), 2, 2);
+            o_vbo[1].bind(o_objectData.od_textureCoordinates.data(), sizeof(float) * o_objectData.od_textureCoordinates.size(), 2, 2);
         }
     }
 

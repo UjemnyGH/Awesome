@@ -421,8 +421,8 @@ namespace AWS
                 ss >> x >> y >> z;
 
                 m_objectData.od_vertices.push_back(x);
-                m_objectData.od_color.push_back(y);
-                m_objectData.od_color.push_back(z);
+                m_objectData.od_vertices.push_back(y);
+                m_objectData.od_vertices.push_back(z);
             }
             else if(line.find("vt ") == 0)
             {

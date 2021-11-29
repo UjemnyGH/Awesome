@@ -119,8 +119,9 @@ void Game::initialize()
     sq.Create(AWS::ShadeType::solid, "data/texture/awesome.png", GL_TEXTURE_2D, AWS::textureVS, AWS::textureFS);
     sq2.Create("data/texture/awesome.png", AWS::textureVS, AWS::textureFS);
     sq3.Create(AWS::ShadeType::solid);
-    object.Create();
+    object.Create(AWS::ShadeType::solid, AWS::textureVS, AWS::textureFS);
     object.SetObjectData(AWS::LoadMesh("data/models/cubeAndBallobj.obj"));
+    object.SetTexture("data/texture/awesome.png");
 }
 
 float w = 0.0f;
