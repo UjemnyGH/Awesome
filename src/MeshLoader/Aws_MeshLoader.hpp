@@ -249,21 +249,6 @@ namespace AWS
                 ml_meshObjectData.mod_smoothShading = smoothLevel;
             }
         }
-        
-        //mem leak
-        /*MeshObjectData* new_meshData = new MeshObjectData;
-
-        *new_meshData = ml_meshObjectData;
-
-        for(int i = 0; i < (new_meshData->modv_indicesTexture[(1 * new_meshData->modv_textureCoords.size()) / 2]); i++)
-        {
-            new_meshData->modv_textureCoords[1 * ml_meshObjectData.modv_indicesTexture[i * 2]] = ml_meshObjectData.modv_textureCoords[1 * ml_meshObjectData.modv_indicesTexture[i * 2]];
-            new_meshData->modv_textureCoords[(1 * ml_meshObjectData.modv_indicesTexture[i * 2]) + 1] = ml_meshObjectData.modv_textureCoords[(1 * ml_meshObjectData.modv_indicesTexture[i * 2]) + 1];
-        }
-
-        ml_meshObjectData = *new_meshData;
-
-        delete[] new_meshData;*/
     }
 
     void Aws_MeshLoader::LoadMeshQuads(const std::string & meshPath)

@@ -10,7 +10,7 @@ compile:
 	echo "Other files compiling with engine (OTHER= to change): ${OTHER}"
 	echo ""
 
-	g++ -o ${NAME} src/Buffers/${PR}Buffer.cpp ${OTHER} -lGL -lGLEW -lglut -lglfw -lpthread -lsfml-system -lsfml-audio
+	g++ -o ${NAME} src/Buffers/${PR}Buffer.cpp ${OTHER} -ldl -lGL -lGLEW -lglut -lglfw -lpthread -lsfml-system -lsfml-audio
 #src/BatchRenderer/${PR}BatchRenderer.cpp
 	echo ">-- Compilation end --<"
 

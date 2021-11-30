@@ -8,8 +8,9 @@ public:
     virtual void initialize() override;
 };
 
-AWS::Cube *sq = new AWS::Cube;
+AWS::Cube sq;
 AWS::Cube sq2;
+AWS::Object *object = new AWS::Object;
 
 AWS::Time gTime;
 float lastCubeRecall = 0.0f;
@@ -83,13 +84,15 @@ void processInput(GLFWwindow* window)
     {
         if(lastCubeRecall + 1.0f < gTime.GetTime())
         {
-            sq->Terminate();
+            object->Terminate();
 
-            delete sq;
+            delete object;
 
-            sq = new AWS::Cube;
+            object = new AWS::Object;
 
-            sq->Create(AWS::ShadeType::solid, "testVS.glsl", "testFS.glsl");
+            object->Create(AWS::ShadeType::solid, "testVS.glsl", "testFS.glsl");
+            object->SetObjectData(AWS::TransformToTextureData(AWS::LoadMesh("data/models/terrainTest1.obj")));
+            object->SetTexture("data/texture/awesome.png");
 
             lastCubeRecall = gTime.GetTime();
         }
@@ -151,9 +154,13 @@ void Window::initialize()
     glfwSetFramebufferSizeCallback(Window::getWindowPointer(), framebufferCall);
     glfwSetCursorPosCallback(Window::getWindowPointer(), CameraRotation);
 
-    sq->Create(AWS::ShadeType::solid, AWS::colorVS, AWS::colorFS);
+    sq.Create(AWS::ShadeType::solid, AWS::colorVS, AWS::colorFS);
     sq2.Create(AWS::ShadeType::solid);
     //sq2.Create(AWS::ShadeType::shade, AWS::shadeColorVS, AWS::shadeColorFS);
+
+    object->Create(AWS::ShadeType::solid, "testVS.glsl", "testFS.glsl");
+    object->SetObjectData(AWS::TransformToTextureData(AWS::LoadMesh("data/models/terrainTest1.obj")));
+    object->SetTexture("data/texture/awesome.png");
 }
 
 void Window::mainLoop()
@@ -166,17 +173,17 @@ void Window::mainLoop()
 
     playerCam.SetPosition(player.x, player.y, player.z);
 
-    sq->SetColor(0.0f, 1.0f, 1.0f, 1.0f);
+    sq.SetColor(0.0f, 1.0f, 1.0f, 1.0f);
 
-    glUseProgram(sq->GetShaderID());
+    glUseProgram(sq.GetShaderID());
 
-    glUniform1f(glGetUniformLocation(sq->GetShaderID(), "time"), gTime.GetTime());
-    glUniform1f(glGetUniformLocation(sq->GetShaderID(), "deltaTime"), gTime.GetDeltaTime());
-    glUniform3f(glGetUniformLocation(sq->GetShaderID(), "cameraPosition"), playerCam.GetPosition().x, playerCam.GetPosition().y, playerCam.GetPosition().z);
+    glUniform1f(glGetUniformLocation(sq.GetShaderID(), "time"), gTime.GetTime());
+    glUniform1f(glGetUniformLocation(sq.GetShaderID(), "deltaTime"), gTime.GetDeltaTime());
+    glUniform3f(glGetUniformLocation(sq.GetShaderID(), "cameraPosition"), playerCam.GetPosition().x, playerCam.GetPosition().y, playerCam.GetPosition().z);
 
     glUseProgram(0);
 
-    sq->DrawCube(GL_TRIANGLES, projection, view);
+    sq.DrawCube(GL_TRIANGLES, projection, view);
 
     sq2.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     sq2.SetScale(0.5f, 0.5f, 0.5f);
@@ -191,4 +198,9 @@ void Window::mainLoop()
 
     glUseProgram(0);*/
     sq2.DrawCube(GL_TRIANGLES, projection, view);
+
+    object->SetPosition(0.0f, 0.0f, 0.0f);
+    object->SetScale(1.0f, 1.0f, 1.0f);
+    object->SetColor(0.0f, 0.3f, 0.0f, 1.0f);
+    object->DrawObject(GL_TRIANGLES, projection, view);
 }

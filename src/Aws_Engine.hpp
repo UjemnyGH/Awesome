@@ -9,9 +9,9 @@
 //#include "BatchRenderer/Aws_BatchRenderer.hpp"
 //#include "Text/Aws_Text.hpp"
 #include "Aws_Types.hpp"
-#include "Mesh/Aws_Mesh.hpp"
 #include "Object/Aws_Object.hpp"
 #include "MeshLoader/Aws_MeshLoader.hpp"
+#include "MeshCollider/Aws_MeshCollider.hpp"
 
 #include <iostream>
 #include <future>

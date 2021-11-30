@@ -175,9 +175,7 @@ namespace AWS
                 1.0f, 1.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
-                0.0f, 0.0f,
 
-                1.0f, 1.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
                 0.0f, 0.0f,
@@ -185,9 +183,7 @@ namespace AWS
                 1.0f, 1.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
-                0.0f, 0.0f,
 
-                1.0f, 1.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
                 0.0f, 0.0f,
@@ -195,9 +191,31 @@ namespace AWS
                 1.0f, 1.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
+
+                0.0f, 1.0f,
+                1.0f, 0.0f,
                 0.0f, 0.0f,
 
                 1.0f, 1.0f,
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f,
+
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+                0.0f, 0.0f,
+
+                1.0f, 1.0f,
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+
                 0.0f, 1.0f,
                 1.0f, 0.0f,
                 0.0f, 0.0f
@@ -351,6 +369,20 @@ namespace AWS
          * @param cf_view glm::lookAt
          */
         void DrawCube(const unsigned int &cf_drawMode, glm::mat4x4 cf_projection, glm::mat4x4 cf_view);
+
+        /**
+         * @brief Get the Textured Object Data object
+         * 
+         * @return ObjectData 
+         */
+        ObjectData GetTexturedObjectData() { return c_textureObjectData; }
+
+        /**
+         * @brief Get the Object Data object
+         * 
+         * @return ObjectData 
+         */
+        ObjectData GetObjectData() { return c_objectData; }
 
         /**
          * @brief Get the Position object
@@ -600,6 +632,16 @@ namespace AWS
 
     void Aws_Cube::DrawCube(const unsigned int &cf_drawMode)
     {
+        c_textureObjectData.od_objectTranformData.odt_px = c_objectData.od_objectTranformData.odt_px = ct_psr[0][0];
+        c_textureObjectData.od_objectTranformData.odt_py = c_objectData.od_objectTranformData.odt_py = ct_psr[0][1];
+        c_textureObjectData.od_objectTranformData.odt_pz = c_objectData.od_objectTranformData.odt_pz = ct_psr[0][2];
+        c_textureObjectData.od_objectTranformData.odt_sx = c_objectData.od_objectTranformData.odt_sx = ct_psr[1][0];
+        c_textureObjectData.od_objectTranformData.odt_sy = c_objectData.od_objectTranformData.odt_sy = ct_psr[1][1];
+        c_textureObjectData.od_objectTranformData.odt_sz = c_objectData.od_objectTranformData.odt_sz = ct_psr[1][2];
+        c_textureObjectData.od_objectTranformData.odt_rx = c_objectData.od_objectTranformData.odt_rx = ct_psr[2][0];
+        c_textureObjectData.od_objectTranformData.odt_ry = c_objectData.od_objectTranformData.odt_ry = ct_psr[2][1];
+        c_textureObjectData.od_objectTranformData.odt_rz = c_objectData.od_objectTranformData.odt_rz = ct_psr[2][2];
+
         c_sh.bind();
         c_vao.bind();
         if(c_texturesOn)
@@ -629,6 +671,16 @@ namespace AWS
 
     void Aws_Cube::DrawCube(const unsigned int &cf_drawMode, glm::mat4x4 cf_projection, glm::mat4x4 cf_view)
     {
+        c_textureObjectData.od_objectTranformData.odt_px = c_objectData.od_objectTranformData.odt_px = ct_psr[0][0];
+        c_textureObjectData.od_objectTranformData.odt_py = c_objectData.od_objectTranformData.odt_py = ct_psr[0][1];
+        c_textureObjectData.od_objectTranformData.odt_pz = c_objectData.od_objectTranformData.odt_pz = ct_psr[0][2];
+        c_textureObjectData.od_objectTranformData.odt_sx = c_objectData.od_objectTranformData.odt_sx = ct_psr[1][0];
+        c_textureObjectData.od_objectTranformData.odt_sy = c_objectData.od_objectTranformData.odt_sy = ct_psr[1][1];
+        c_textureObjectData.od_objectTranformData.odt_sz = c_objectData.od_objectTranformData.odt_sz = ct_psr[1][2];
+        c_textureObjectData.od_objectTranformData.odt_rx = c_objectData.od_objectTranformData.odt_rx = ct_psr[2][0];
+        c_textureObjectData.od_objectTranformData.odt_ry = c_objectData.od_objectTranformData.odt_ry = ct_psr[2][1];
+        c_textureObjectData.od_objectTranformData.odt_rz = c_objectData.od_objectTranformData.odt_rz = ct_psr[2][2];
+
         c_sh.bind();
         c_vao.bind();
         if(c_texturesOn)
@@ -740,7 +792,7 @@ namespace AWS
     {
         if(cf_x != 0.0f || cf_y != 0.0f)
         {
-            for(int i = 0; i < 24; i++)
+            for(int i = 0; i < (1 * c_textureObjectData.od_textureCoordinates.size()) / 2; i++)
             {
                 if(c_textureObjectData.od_textureCoordinates[i * 2] > 0.0f)
                 {

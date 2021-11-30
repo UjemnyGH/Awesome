@@ -50,6 +50,40 @@ namespace AWS
         return mesh_objectData;
     }
 
+    ObjectData TransformToTextureData(const ObjectData tdf_objectData)
+    {
+        ObjectData td_objectData = tdf_objectData;
+
+        td_objectData.od_textureCoordinates.clear();
+
+        for(unsigned int i = 0; i < (1 * tdf_objectData.od_textureCoordinates.size()) / 6; i++)
+        {
+            td_objectData.od_textureCoordinates.push_back(tdf_objectData.od_textureCoordinates[(1 * tdf_objectData.od_indicesTex[i * 6])]);
+            td_objectData.od_textureCoordinates.push_back(tdf_objectData.od_textureCoordinates[(1 * tdf_objectData.od_indicesTex[i * 6]) + 1]);
+
+            td_objectData.od_textureCoordinates.push_back(tdf_objectData.od_textureCoordinates[(1 * tdf_objectData.od_indicesTex[i * 6]) + 2]);
+            td_objectData.od_textureCoordinates.push_back(tdf_objectData.od_textureCoordinates[(1 * tdf_objectData.od_indicesTex[i * 6]) + 3]);
+
+            td_objectData.od_textureCoordinates.push_back(tdf_objectData.od_textureCoordinates[(1 * tdf_objectData.od_indicesTex[i * 6]) + 4]);
+            td_objectData.od_textureCoordinates.push_back(tdf_objectData.od_textureCoordinates[(1 * tdf_objectData.od_indicesTex[i * 6]) + 5]);
+        }
+
+        td_objectData.od_normals.clear();
+
+        for(unsigned int i = 0; i < (1 * tdf_objectData.od_normals.size()) / 3; i++)
+        {
+            td_objectData.od_normals.push_back(tdf_objectData.od_normals[tdf_objectData.od_indicesNor[i]]);
+            td_objectData.od_normals.push_back(tdf_objectData.od_normals[tdf_objectData.od_indicesNor[i + 1]]);
+            td_objectData.od_normals.push_back(tdf_objectData.od_normals[tdf_objectData.od_indicesNor[i + 2]]);
+
+            td_objectData.od_normals.push_back(tdf_objectData.od_normals[tdf_objectData.od_indicesNor[i]]);
+            td_objectData.od_normals.push_back(tdf_objectData.od_normals[tdf_objectData.od_indicesNor[i + 1]]);
+            td_objectData.od_normals.push_back(tdf_objectData.od_normals[tdf_objectData.od_indicesNor[i + 3]]);
+        }
+
+        return td_objectData;
+    }
+
     class Aws_Object
     {
     private:
@@ -99,6 +133,13 @@ namespace AWS
          * @param view glm::lookat
          */
         void DrawObject(unsigned int of_drawType, glm::mat4 projection, glm::mat4 view);
+
+        /**
+         * @brief Zero all uniforms speufied in data
+         * 
+         * @param of_data names of uniforms
+         */
+        void ZeroData(const std::vector<std::string> & of_data);
 
         /**
          * @brief Get the Position object
@@ -155,6 +196,13 @@ namespace AWS
          * @return unsigned int 
          */
         unsigned int GetShaderID() { return o_sh.GetID(); }
+
+        /**
+         * @brief Get the Object Data object
+         * 
+         * @return ObjectData 
+         */
+        ObjectData GetObjectData() { return o_objectData; }
 
         /**
          * @brief Set the Object Data object
@@ -236,18 +284,22 @@ namespace AWS
         o_vbo[0].bind(o_objectData.od_vertices.data(), sizeof(float) * o_objectData.od_vertices.size(), 0, 3);
 
         o_vbo[1].create();
+        o_vbo[1].bind(o_objectData.od_textureCoordinates.data(), sizeof(float) * o_objectData.od_textureCoordinates.size(), 2, 2);
+
         o_vbo[2].create();
+        o_vbo[2].bind(o_objectData.od_normals.data(), sizeof(float) * o_objectData.od_normals.size(), 3, 3);
 
         o_ebo.create();
         o_ebo.bind(o_objectData.od_indices.data(), sizeof(unsigned int) * o_objectData.od_indices.size());
 
         o_tex.create();
+        o_tex.bind({"data/texture/awesome.png"}, GL_REPEAT, GL_TEXTURE_2D);
 
         o_sh.bind();
 
         glUniform1i(glGetUniformLocation(o_sh.GetID(), "tex"), 0);
         glUniform4f(glGetUniformLocation(o_sh.GetID(), "iCol"), 1.0f, 1.0f, 1.0f, 1.0f);
-
+        
         o_sh.unbind();
 
         o_vao.unbind();
@@ -255,6 +307,16 @@ namespace AWS
 
     void Aws_Object::DrawObject(unsigned int of_drawType)
     {
+        o_objectData.od_objectTranformData.odt_px = ot_psr[0][0];
+        o_objectData.od_objectTranformData.odt_py = ot_psr[0][1];
+        o_objectData.od_objectTranformData.odt_pz = ot_psr[0][2];
+        o_objectData.od_objectTranformData.odt_sx = ot_psr[1][0];
+        o_objectData.od_objectTranformData.odt_sy = ot_psr[1][1];
+        o_objectData.od_objectTranformData.odt_sz = ot_psr[1][2];
+        o_objectData.od_objectTranformData.odt_rx = ot_psr[2][0];
+        o_objectData.od_objectTranformData.odt_ry = ot_psr[2][1];
+        o_objectData.od_objectTranformData.odt_rz = ot_psr[2][2];
+
         o_sh.bind();
         o_vao.bind();
 
@@ -282,6 +344,16 @@ namespace AWS
 
     void Aws_Object::DrawObject(unsigned int of_drawType, glm::mat4 projection, glm::mat4 view)
     {
+        o_objectData.od_objectTranformData.odt_px = ot_psr[0][0];
+        o_objectData.od_objectTranformData.odt_py = ot_psr[0][1];
+        o_objectData.od_objectTranformData.odt_pz = ot_psr[0][2];
+        o_objectData.od_objectTranformData.odt_sx = ot_psr[1][0];
+        o_objectData.od_objectTranformData.odt_sy = ot_psr[1][1];
+        o_objectData.od_objectTranformData.odt_sz = ot_psr[1][2];
+        o_objectData.od_objectTranformData.odt_rx = ot_psr[2][0];
+        o_objectData.od_objectTranformData.odt_ry = ot_psr[2][1];
+        o_objectData.od_objectTranformData.odt_rz = ot_psr[2][2];
+
         o_sh.bind();
         o_vao.bind();
 
@@ -302,6 +374,20 @@ namespace AWS
         }
 
         glDrawElements(of_drawType, 2 * o_objectData.od_vertices.size(), GL_UNSIGNED_INT, NULL);
+
+        o_sh.unbind();
+        o_vao.unbind();
+    }
+
+    void Aws_Object::ZeroData(const std::vector<std::string> & of_data)
+    {
+        o_vao.bind();
+        o_sh.bind();
+
+        for(int i = 0; i < of_data.size(); i++)
+        {
+            glUniform3f(glGetUniformLocation(o_sh.GetID(), of_data[i].c_str()), 0.0f, 0.0f, 0.0f);
+        }
 
         o_sh.unbind();
         o_vao.unbind();
@@ -372,9 +458,10 @@ namespace AWS
         o_textureOn = true;
 
         o_vao.bind();
-        o_sh.bind();
 
         o_tex.bind({texturePath}, of_wrapping, GL_TEXTURE_2D);
+
+        o_sh.bind();
 
         glUniform1i(glGetUniformLocation(o_sh.GetID(), "tex"), 0);
 

@@ -15,9 +15,11 @@ Game window;
 PlayerCam PC;
 AWS::Cube sq;
 AWS::Cube sq3;
+AWS::Cube sq4;
 AWS::Square sq2;
 AWS::Time gtime;
 AWS::Object object;
+AWS::CollisionHandler ch;
 
 glm::mat4x4 proj;
 
@@ -26,6 +28,8 @@ glm::vec3 pos;
 
 float lastX = 400, lastY = 300;
 float yaw, pitch;
+
+float sq4pos = 4.0f;
 
 //sf::SoundBuffer buffer;
 //sf::Sound sound;
@@ -46,6 +50,7 @@ int main()
     window.createWindow(1280, 1080, "Window", NULL);
 
     sq.Terminate();
+    object.Terminate();
 
     return 0;
 }
@@ -108,6 +113,15 @@ void processInput(GLFWwindow *window)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
+    if(glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS)
+    {
+        sq4pos += 0.01f;
+    }
+    else if(glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS)
+    {
+        sq4pos -= 0.01f;
+    }
+
     right = glm::normalize(glm::cross(PC.GetFront(), PC.GetUp()));
 }
 
@@ -115,13 +129,14 @@ void Game::initialize()
 {
     glfwSetFramebufferSizeCallback(Game::getWindowPointer(), reshape);
     glfwSetCursorPosCallback(Game::getWindowPointer(), mouse);
+    glfwSwapInterval(1);
 
     sq.Create(AWS::ShadeType::solid, "data/texture/awesome.png", GL_TEXTURE_2D, AWS::textureVS, AWS::textureFS);
     sq2.Create("data/texture/awesome.png", AWS::textureVS, AWS::textureFS);
     sq3.Create(AWS::ShadeType::solid);
-    object.Create(AWS::ShadeType::solid, AWS::textureVS, AWS::textureFS);
-    object.SetObjectData(AWS::LoadMesh("data/models/cubeAndBallobj.obj"));
-    object.SetTexture("data/texture/awesome.png");
+    sq4.Create(AWS::ShadeType::solid);
+    object.Create(AWS::ShadeType::solid, "data/shaders/diffuse/color/diffuseVS.glsl", "data/shaders/diffuse/color/diffuseFS.glsl");
+    object.SetObjectData(AWS::cube);
 }
 
 float w = 0.0f;
@@ -136,9 +151,23 @@ void Game::mainLoop()
 
     PC.SetPosition(pos.x, pos.y, pos.z);
 
-    sq.SetColor(1.0f, 1.0f, 1.0f, 0.5f);
+    sq.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
     sq.SetPosition(5.0f, 5.0f, 5.0f);
     sq.DrawCube(GL_TRIANGLES, proj, view);
+
+    sq4.SetPosition(sq4pos, sq4pos, sq4pos);
+    sq4.SetScale(1.0f, 1.0f, 1.0f);
+
+    if(ch.CollisionCheck(sq.GetObjectData(), {sq4.GetObjectData()})[0])
+    {
+        sq4.SetColor(0.0f, 1.0f, 0.0f, 1.0f);
+    }
+    else
+    {
+        sq4.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+    }
+
+    sq4.DrawCube(GL_TRIANGLES, proj, view);
 
     w += 1.0f;
 
@@ -155,11 +184,19 @@ void Game::mainLoop()
 
     sq3.SetPosition(PC.GetPosition().x, PC.GetPosition().y, PC.GetPosition().z);
     sq3.SetScale(100.0f, 100.0f, 100.0f);
-    sq3.SetColor(tan(PC.GetPosition().x), sin(PC.GetPosition().y), cos(PC.GetPosition().z), 1.0f);
+    sq3.SetColor(0.0f, 0.0f, 0.4f, 1.0f);
     sq3.DrawCube(GL_TRIANGLES, proj, view);
 
     object.SetPosition(0.0f, 0.0f, 0.0f);
     object.SetScale(1.0f, 1.0f, 1.0f);
-    object.SetColor(w / 360.0f, w / 360.0f, w / 360.0f, 1.0f);
+
+    glUseProgram(object.GetShaderID());
+
+    glUniform3f(glGetUniformLocation(object.GetShaderID(), "lig_col"), 1.0f, 1.0f, 1.0f);
+    glUniform3f(glGetUniformLocation(object.GetShaderID(), "lig_pos"), 0.0f, 5.0f, 0.0f);
+
+    glUseProgram(0);
+
+    object.SetColor(0.0f, 0.3f, 0.0f, 1.0f);
     object.DrawObject(GL_TRIANGLES, proj, view);
 }

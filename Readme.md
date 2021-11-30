@@ -9,21 +9,19 @@ https://github.com/UjemnyGH/Awesome
 
 ### To shader:
     - location = 0 --- Position
-    - location = 1 --- Texture Coordinates
-    - location = 2 --- Shade Normals
+    - location = 2 --- Texture Coordinates
+    - location = 3 --- Shade Normals
 
 ### NOTE:
-> Now you can only load obj models with this face parameter patern: "f v1/vt1/vn1 v2/vt2/vn2 v3/vt3/vn3 v4/vt4/vn4"
+> Now you can only load obj models with this face parameter patern: "f v1/vt1/vn1 v2/vt2/vn2 v3/vt3/vn3 v4/vt4/vn4",
+> For now only AABB collisions work
 
 ### REPAIR:
 > Cube texturing,
 > Text,
 > Batch rendering,
-> Memory leak in MeshLoader::LoadMesh
-
-### TOEND:
-> Mesh collider
+> Diffuse shader and light shader (I don`t know why that dosn`t working)
 
 ### TODO:
 > Write more shaders,
-> Change saving position, scale and rotation in data
+> Half rebuild Aws_Square
