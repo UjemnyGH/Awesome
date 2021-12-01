@@ -20,7 +20,7 @@ https://github.com/UjemnyGH/Awesome
 > Cube texturing,
 > Text,
 > Batch rendering,
-> Diffuse shader and light shader (I don`t know why that dosn`t working)
+> Diffuse shader and light shader (I dont know why that doesnt working)
 
 ### TODO:
 > Write more shaders,
