@@ -1,5 +1,6 @@
 #include "src/Aws_Engine.hpp"
 #include "src/Aws_Types.hpp"
+#include <SFML/Audio.hpp>
 
 class Window : public AWS::Window
 {
@@ -8,8 +9,12 @@ public:
     virtual void initialize() override;
 };
 
+sf::SoundBuffer katBuff;
+sf::Sound kat;
+
 AWS::Cube sq;
 AWS::Cube sq2;
+AWS::Cube background;
 AWS::Object *object = new AWS::Object;
 
 AWS::Time gTime;
@@ -35,6 +40,16 @@ int Wwidth = 800, Wheight = 600;
 
 int main()
 {
+    if(!katBuff.loadFromFile("data/audio/kat.wav"))
+    {
+        std::cout << "Error music";
+    }
+
+    kat.setBuffer(katBuff);
+    kat.setLoop(true);
+
+    kat.play();
+
     window.createWindow(1280, 1080, "Window", nullptr);
 
     return 0;
@@ -146,7 +161,7 @@ void framebufferCall(GLFWwindow* window, int width, int height)
     Wwidth = width;
     Wheight = height;
 
-    projection = glm::perspectiveFov(70.0f, (float)width, (float)height, 0.001f, 100.0f);
+    projection = glm::perspectiveFov(70.0f, (float)width, (float)height, 0.001f, 1000.0f);
 }
 
 void Window::initialize()
@@ -161,6 +176,8 @@ void Window::initialize()
     object->Create(AWS::ShadeType::solid, "testVS.glsl", "testFS.glsl");
     object->SetObjectData(AWS::TransformToTextureData(AWS::LoadMesh("data/models/terrainTest1.obj")));
     object->SetTexture("data/texture/awesome.png");
+
+    background.Create(AWS::ShadeType::solid, "data/texture/stalin.png", GL_TEXTURE_2D, AWS::textureVS, AWS::textureFS);
 }
 
 void Window::mainLoop()
@@ -203,4 +220,10 @@ void Window::mainLoop()
     object->SetScale(1.0f, 1.0f, 1.0f);
     object->SetColor(0.0f, 0.3f, 0.0f, 1.0f);
     object->DrawObject(GL_TRIANGLES, projection, view);
+
+    background.SetColor(1.0f, 0.0f, 0.0f, 1.0f);
+    background.SetScale(100.0f, 100.0f, 100.0f);
+    background.SetPosition(playerCam.GetPosition().x, playerCam.GetPosition().y ,playerCam.GetPosition().z);
+
+    background.DrawCube(GL_TRIANGLES, projection, view);
 }

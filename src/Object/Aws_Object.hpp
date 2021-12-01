@@ -307,16 +307,6 @@ namespace AWS
 
     void Aws_Object::DrawObject(unsigned int of_drawType)
     {
-        o_objectData.od_objectTranformData.odt_px = ot_psr[0][0];
-        o_objectData.od_objectTranformData.odt_py = ot_psr[0][1];
-        o_objectData.od_objectTranformData.odt_pz = ot_psr[0][2];
-        o_objectData.od_objectTranformData.odt_sx = ot_psr[1][0];
-        o_objectData.od_objectTranformData.odt_sy = ot_psr[1][1];
-        o_objectData.od_objectTranformData.odt_sz = ot_psr[1][2];
-        o_objectData.od_objectTranformData.odt_rx = ot_psr[2][0];
-        o_objectData.od_objectTranformData.odt_ry = ot_psr[2][1];
-        o_objectData.od_objectTranformData.odt_rz = ot_psr[2][2];
-
         o_sh.bind();
         o_vao.bind();
 
@@ -344,16 +334,6 @@ namespace AWS
 
     void Aws_Object::DrawObject(unsigned int of_drawType, glm::mat4 projection, glm::mat4 view)
     {
-        o_objectData.od_objectTranformData.odt_px = ot_psr[0][0];
-        o_objectData.od_objectTranformData.odt_py = ot_psr[0][1];
-        o_objectData.od_objectTranformData.odt_pz = ot_psr[0][2];
-        o_objectData.od_objectTranformData.odt_sx = ot_psr[1][0];
-        o_objectData.od_objectTranformData.odt_sy = ot_psr[1][1];
-        o_objectData.od_objectTranformData.odt_sz = ot_psr[1][2];
-        o_objectData.od_objectTranformData.odt_rx = ot_psr[2][0];
-        o_objectData.od_objectTranformData.odt_ry = ot_psr[2][1];
-        o_objectData.od_objectTranformData.odt_rz = ot_psr[2][2];
-
         o_sh.bind();
         o_vao.bind();
 
@@ -405,41 +385,41 @@ namespace AWS
 
     void Aws_Object::SetPosition(float of_x, float of_y, float of_z)
     {
-        ot_psr[0][0] = of_x;
-        ot_psr[0][1] = of_y;
-        ot_psr[0][2] = of_z;
+        o_objectData.od_objectTranformData.odt_px = of_x;
+        o_objectData.od_objectTranformData.odt_py = of_y;
+        o_objectData.od_objectTranformData.odt_pz = of_z;
 
-        o_transform = glm::translate(glm::mat4(1.0), glm::vec3(ot_psr[0][0], ot_psr[0][1], ot_psr[0][2]));
-        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][0]), glm::vec3(1.0f, 0.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][1]), glm::vec3(0.0f, 1.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][2]), glm::vec3(0.0f, 0.0f, 1.0f));
-        o_transform = glm::scale(o_transform, glm::vec3(ot_psr[1][0], ot_psr[1][1], ot_psr[1][2]));
+        o_transform = glm::translate(glm::mat4(1.0), glm::vec3(o_objectData.od_objectTranformData.odt_px, o_objectData.od_objectTranformData.odt_py, o_objectData.od_objectTranformData.odt_pz));
+        o_transform = glm::rotate(o_transform, glm::radians(o_objectData.od_objectTranformData.odt_rx), glm::vec3(1.0f, 0.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(o_objectData.od_objectTranformData.odt_ry), glm::vec3(0.0f, 1.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(o_objectData.od_objectTranformData.odt_rz), glm::vec3(0.0f, 0.0f, 1.0f));
+        o_transform = glm::scale(o_transform, glm::vec3(o_objectData.od_objectTranformData.odt_sx, o_objectData.od_objectTranformData.odt_sy, o_objectData.od_objectTranformData.odt_sz));
     }
 
     void Aws_Object::SetScale(float of_x, float of_y, float of_z)
     {
-        ot_psr[1][0] = of_x;
-        ot_psr[1][1] = of_y;
-        ot_psr[1][2] = of_z;
+        o_objectData.od_objectTranformData.odt_sx = of_x;
+        o_objectData.od_objectTranformData.odt_sy = of_y;
+        o_objectData.od_objectTranformData.odt_sz = of_z;
 
-        o_transform = glm::translate(glm::mat4(1.0), glm::vec3(ot_psr[0][0], ot_psr[0][1], ot_psr[0][2]));
-        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][0]), glm::vec3(1.0f, 0.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][1]), glm::vec3(0.0f, 1.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][2]), glm::vec3(0.0f, 0.0f, 1.0f));
-        o_transform = glm::scale(o_transform, glm::vec3(ot_psr[1][0], ot_psr[1][1], ot_psr[1][2]));
+        o_transform = glm::translate(glm::mat4(1.0), glm::vec3(o_objectData.od_objectTranformData.odt_px, o_objectData.od_objectTranformData.odt_py, o_objectData.od_objectTranformData.odt_pz));
+        o_transform = glm::rotate(o_transform, glm::radians(o_objectData.od_objectTranformData.odt_rx), glm::vec3(1.0f, 0.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(o_objectData.od_objectTranformData.odt_ry), glm::vec3(0.0f, 1.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(o_objectData.od_objectTranformData.odt_rz), glm::vec3(0.0f, 0.0f, 1.0f));
+        o_transform = glm::scale(o_transform, glm::vec3(o_objectData.od_objectTranformData.odt_sx, o_objectData.od_objectTranformData.odt_sy, o_objectData.od_objectTranformData.odt_sz));
     }
 
     void Aws_Object::SetRotation(float of_x, float of_y, float of_z)
     {
-        ot_psr[2][0] = of_x;
-        ot_psr[2][1] = of_y;
-        ot_psr[2][2] = of_z;
+        o_objectData.od_objectTranformData.odt_rx = of_x;
+        o_objectData.od_objectTranformData.odt_ry = of_y;
+        o_objectData.od_objectTranformData.odt_rz = of_z;
 
-        o_transform = glm::translate(glm::mat4(1.0), glm::vec3(ot_psr[0][0], ot_psr[0][1], ot_psr[0][2]));
-        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][0]), glm::vec3(1.0f, 0.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][1]), glm::vec3(0.0f, 1.0f, 0.0f));
-        o_transform = glm::rotate(o_transform, glm::radians(ot_psr[2][2]), glm::vec3(0.0f, 0.0f, 1.0f));
-        o_transform = glm::scale(o_transform, glm::vec3(ot_psr[1][0], ot_psr[1][1], ot_psr[1][2]));
+        o_transform = glm::translate(glm::mat4(1.0), glm::vec3(o_objectData.od_objectTranformData.odt_px, o_objectData.od_objectTranformData.odt_py, o_objectData.od_objectTranformData.odt_pz));
+        o_transform = glm::rotate(o_transform, glm::radians(o_objectData.od_objectTranformData.odt_rx), glm::vec3(1.0f, 0.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(o_objectData.od_objectTranformData.odt_ry), glm::vec3(0.0f, 1.0f, 0.0f));
+        o_transform = glm::rotate(o_transform, glm::radians(o_objectData.od_objectTranformData.odt_rz), glm::vec3(0.0f, 0.0f, 1.0f));
+        o_transform = glm::scale(o_transform, glm::vec3(o_objectData.od_objectTranformData.odt_sx, o_objectData.od_objectTranformData.odt_sy, o_objectData.od_objectTranformData.odt_sz));
     }
 
     void Aws_Object::SetColor(float of_r, float of_g, float of_b, float of_a)

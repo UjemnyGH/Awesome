@@ -158,7 +158,7 @@ void Game::mainLoop()
     sq4.SetPosition(sq4pos, sq4pos, sq4pos);
     sq4.SetScale(1.0f, 1.0f, 1.0f);
 
-    if(ch.CollisionCheck(sq.GetObjectData(), {sq4.GetObjectData()})[0])
+    if(ch.CollisionCheck(sq.GetObjectData(), {sq4.GetObjectData()}))
     {
         sq4.SetColor(0.0f, 1.0f, 0.0f, 1.0f);
     }

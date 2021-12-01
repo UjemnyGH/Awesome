@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Aws_Types.hpp"
+#include "../Object/Aws_Object.hpp"
 
 namespace AWS
 {
@@ -8,31 +9,46 @@ namespace AWS
     {
         std::vector<bool> isColliding;
         
-        std::vector<bool> CollisionCheck(const ObjectData& chf_objectData1, const std::vector<ObjectData>& chf_objectData2 = { ObjectData() });
+        void CollisionCheck(const ObjectData& chf_objectData1, const std::vector<ObjectData>& chf_objectData2 = { ObjectData() });
+        bool CollisionCheck(const ObjectData& chf_objectData1, const ObjectData& chf_objectData2);
+        void CollisionClear() { isColliding.clear(); }
     };
 
-    std::vector<bool> Aws_CollisionHandler::CollisionCheck(const ObjectData& chf_objectData1, const std::vector<ObjectData>& chf_objectData2)
+    void Aws_CollisionHandler::CollisionCheck(const ObjectData& chf_objectData1, const std::vector<ObjectData>& chf_objectData2)
     {
-        isColliding.clear();
-
         for(unsigned int i = 0; i < (1 * chf_objectData2.size()); i++)
         {
-            bool collisionX = chf_objectData1.od_objectTranformData.odt_px + chf_objectData1.od_objectTranformData.odt_sx * 2
+            bool collisionX = chf_objectData1.od_objectTranformData.odt_px + chf_objectData1.od_objectTranformData.odt_sx
                  >= chf_objectData2[i].od_objectTranformData.odt_px && chf_objectData2[i].od_objectTranformData.odt_px + 
                 chf_objectData2[i].od_objectTranformData.odt_sx * 2 >= chf_objectData1.od_objectTranformData.odt_px;
 
-            bool collisionY = chf_objectData1.od_objectTranformData.odt_py + chf_objectData1.od_objectTranformData.odt_sy * 2
+            bool collisionY = chf_objectData1.od_objectTranformData.odt_py + chf_objectData1.od_objectTranformData.odt_sy
                  >= chf_objectData2[i].od_objectTranformData.odt_py && chf_objectData2[i].od_objectTranformData.odt_py + 
                 chf_objectData2[i].od_objectTranformData.odt_sy * 2 >= chf_objectData1.od_objectTranformData.odt_py;
 
-            bool collisionZ = chf_objectData1.od_objectTranformData.odt_pz + chf_objectData1.od_objectTranformData.odt_sz * 2
+            bool collisionZ = chf_objectData1.od_objectTranformData.odt_pz + chf_objectData1.od_objectTranformData.odt_sz
                  >= chf_objectData2[i].od_objectTranformData.odt_pz && chf_objectData2[i].od_objectTranformData.odt_pz + 
                 chf_objectData2[i].od_objectTranformData.odt_sz * 2 >= chf_objectData1.od_objectTranformData.odt_pz;
 
             isColliding.push_back(collisionX && collisionY && collisionZ);
         }
+    }
 
-        return isColliding;
+    bool Aws_CollisionHandler::CollisionCheck(const ObjectData& chf_objectData1, const ObjectData& chf_objectData2)
+    {
+        bool collisionX = chf_objectData1.od_objectTranformData.odt_px + chf_objectData1.od_objectTranformData.odt_sx * 2
+             >= chf_objectData2.od_objectTranformData.odt_px && chf_objectData2.od_objectTranformData.odt_px + 
+            chf_objectData2.od_objectTranformData.odt_sx * 2 >= chf_objectData1.od_objectTranformData.odt_px;
+
+        bool collisionY = chf_objectData1.od_objectTranformData.odt_py + chf_objectData1.od_objectTranformData.odt_sy * 2
+             >= chf_objectData2.od_objectTranformData.odt_py && chf_objectData2.od_objectTranformData.odt_py + 
+            chf_objectData2.od_objectTranformData.odt_sy * 2 >= chf_objectData1.od_objectTranformData.odt_py;
+
+        bool collisionZ = chf_objectData1.od_objectTranformData.odt_pz + chf_objectData1.od_objectTranformData.odt_sz * 2
+             >= chf_objectData2.od_objectTranformData.odt_pz && chf_objectData2.od_objectTranformData.odt_pz + 
+            chf_objectData2.od_objectTranformData.odt_sz * 2 >= chf_objectData1.od_objectTranformData.odt_pz;
+
+        return collisionX && collisionY && collisionZ;
     }
 
     typedef Aws_CollisionHandler CollisionHandler;
