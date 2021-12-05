@@ -19,6 +19,7 @@ AWS::Cube sq4;
 AWS::Square sq2;
 AWS::Time gtime;
 AWS::Object object;
+AWS::Object object2;
 AWS::CollisionHandler ch;
 
 glm::mat4x4 proj;
@@ -46,6 +47,11 @@ int main()
     sound.setLoop(true);
     sound.setVolume(70.0f);
     sound.play();*/
+
+    /*for(unsigned int i = 0; i < (1 * cb.od_vertices.size()) / 3; i++)
+    {
+        std::cout << cb.od_vertices[i * 3] << ' ' << cb.od_vertices[i * 3 + 1] << ' ' << cb.od_vertices[i * 3 + 2] << std::endl;
+    }*/
 
     window.createWindow(1280, 1080, "Window", NULL);
 
@@ -135,8 +141,24 @@ void Game::initialize()
     sq2.Create("data/texture/awesome.png", AWS::textureVS, AWS::textureFS);
     sq3.Create(AWS::ShadeType::solid);
     sq4.Create(AWS::ShadeType::solid);
-    object.Create(AWS::ShadeType::solid, "data/shaders/diffuse/color/diffuseVS.glsl", "data/shaders/diffuse/color/diffuseFS.glsl");
+
+    object.Create(AWS::ShadeType::solid, AWS::textureVS, AWS::textureFS);
     object.SetObjectData(AWS::cube);
+    object.SetTexture("data/texture/cubeTestImage.png");
+
+    object2.Create(AWS::ShadeType::shade, AWS::shadeColorVS, AWS::shadeColorFS);
+    
+    glUseProgram(object2.GetShaderID());
+
+    glUniform3f(glGetUniformLocation(object2.GetShaderID(), "view_Pos"), 0.0f, 0.0f, 0.0f);
+    glUniform3f(glGetUniformLocation(object2.GetShaderID(), "lig_pos"), 0.0f, 10.0f, 0.0f);
+    glUniform3f(glGetUniformLocation(object2.GetShaderID(), "lig_col"), 1.0f, 1.0f, 1.0f);
+    glUniform1f(glGetUniformLocation(object2.GetShaderID(), "ambientV"), 0.1f);
+    glUniform1f(glGetUniformLocation(object2.GetShaderID(), "specularV"), 0.5f);
+
+    glUseProgram(0);
+
+    object2.SetObjectData(AWS::LoadMesh("data/models/cube.obj"));
 }
 
 float w = 0.0f;
@@ -189,14 +211,20 @@ void Game::mainLoop()
 
     object.SetPosition(0.0f, 0.0f, 0.0f);
     object.SetScale(1.0f, 1.0f, 1.0f);
+    object.SetColor(0.0f, 0.3f, 0.0f, 1.0f);
+    object.DrawObject(GL_TRIANGLES, proj, view, true);
 
-    glUseProgram(object.GetShaderID());
+    object2.SetPosition(10.0f, 10.0f, 0.0f);
 
-    glUniform3f(glGetUniformLocation(object.GetShaderID(), "lig_col"), 1.0f, 1.0f, 1.0f);
-    glUniform3f(glGetUniformLocation(object.GetShaderID(), "lig_pos"), 0.0f, 5.0f, 0.0f);
+    glUseProgram(object2.GetShaderID());
+
+    glUniform3f(glGetUniformLocation(object2.GetShaderID(), "view_Pos"), 0.0f, 0.0f, 0.0f);
+    glUniform3f(glGetUniformLocation(object2.GetShaderID(), "lig_pos"), 0.0f, 10.0f, 0.0f);
+    glUniform3f(glGetUniformLocation(object2.GetShaderID(), "lig_col"), 1.0f, 1.0f, 1.0f);
+    glUniform1f(glGetUniformLocation(object2.GetShaderID(), "ambientV"), 0.1f);
+    glUniform1f(glGetUniformLocation(object2.GetShaderID(), "specularV"), 0.5f);
 
     glUseProgram(0);
 
-    object.SetColor(0.0f, 0.3f, 0.0f, 1.0f);
-    object.DrawObject(GL_TRIANGLES, proj, view);
+    object2.DrawObject(GL_TRIANGLES, proj, view);
 }

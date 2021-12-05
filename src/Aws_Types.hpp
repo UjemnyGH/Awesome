@@ -25,6 +25,9 @@ namespace AWS
     const std::string shadeColorVS = "data/shaders/shades/color/shadeColorVS.glsl";
     const std::string shadeColorFS = "data/shaders/shades/color/shadeColorFS.glsl";
 
+    const std::string diffuseVS = "data/shaders/diffuse/color/diffuseVS.glsl";
+    const std::string diffuseFS = "data/shaders/diffuse/color/diffuseFS.glsl";
+
     const std::string textureVS = "data/shaders/texture/textureVS.glsl";
     const std::string textureFS = "data/shaders/texture/textureFS.glsl";
 
@@ -241,6 +244,8 @@ namespace AWS
         std::vector<float> od_textureCoordinates{1.0f};
         std::vector<float> od_normals{1.0f};
 
+        bool arrayOn = false;
+
         Aws_ObjectData()
         {
             od_vertices[0] = {0.0f};
@@ -260,17 +265,11 @@ namespace AWS
             this->od_indicesTex.clear();
             this->od_indicesNor.clear();
 
-            od_vertices.resize(odf_vertices.size());
             od_vertices = odf_vertices;
-            od_indices.resize(odf_indices.size());
             od_indices = odf_indices;
-            od_textureCoordinates.resize(odf_textureCoords.size());
             od_textureCoordinates = odf_textureCoords;
-            od_normals.resize(odf_normals.size());
             od_normals = odf_normals;
-            od_indicesTex.resize(odf_indicesTexture.size());
             od_indicesTex = odf_indicesTexture;
-            od_indicesNor.resize(odf_indicesNormal.size());
             od_indicesNor = odf_indicesNormal;
         }
 
@@ -283,17 +282,11 @@ namespace AWS
             this->od_indicesTex.clear();
             this->od_indicesNor.clear();
 
-            this->od_vertices.resize(objData.od_vertices.size());
             this->od_vertices = objData.od_vertices;
-            this->od_indices.resize(objData.od_indices.size());
             this->od_indices = objData.od_indices;
-            this->od_textureCoordinates.resize(objData.od_textureCoordinates.size());
             this->od_textureCoordinates = objData.od_textureCoordinates;
-            this->od_normals.resize(objData.od_normals.size());
             this->od_normals = objData.od_normals;
-            this->od_indicesTex.resize(objData.od_indicesTex.size());
             this->od_indicesTex = objData.od_indicesTex;
-            this->od_indicesNor.resize(objData.od_indicesNor.size());
             this->od_indicesNor = objData.od_indicesNor;
 
             return *this;

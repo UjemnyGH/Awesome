@@ -11,7 +11,8 @@ in vec2 ioTex;
 
 void main()
 {
-    oCol = dot(vec4(ioPos.xyz, 1.0), vec4(iCol.xyz, 1.0)) * iCol * vec4(1.0, 1.0, 1.0, 1.0);
+    vec3 res = dot(vec3(ioPos.xyz), vec3(iCol.xyz)) * vec3(iCol.xyz) * vec3(1.0, 1.0, 1.0);
+    oCol = vec4(res.xyz, 1.0);
     //oCol = distance(vec4(1.0, dot(ioPos, iCol) - noise1(iCol), 1.0, 1.0), iCol) * iCol * vec4(1.0, 1.0, 1.0, 1.0);
 
     //oCol = texture(tex, ioTex) * vec4(cross(vec3(ioPos.x, ioTex.y, ioPos.z), vec3(ioTex.x, iCol.y, iCol.z)), 1.0);

@@ -43,7 +43,7 @@ namespace AWS
         GLFWwindow* getWindowPointer() { return window; }
     };
 
-    void AWS::Aws_Window::createWindow(int width, int height, std::string title, GLFWmonitor* fullscreen)
+    void Aws_Window::createWindow(int width, int height, std::string title, GLFWmonitor* fullscreen)
     {
         glfwInit();
 

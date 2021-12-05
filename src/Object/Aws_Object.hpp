@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include "../Buffers/Aws_Buffer.hpp"
 #include "../MeshLoader/Aws_MeshLoader.hpp"
+#include "../MeshLoader/Obj_Wavefront_Loader.hpp"
 #include "../Aws_Types.hpp"
 #include <vector>
 #include <glm/gtc/matrix_transform.hpp>
@@ -27,34 +28,54 @@ namespace AWS
      * @brief As name says load mesh
      * 
      * @param meshPath path to mesh
+     * @param array true - glDrawArrays
      * @return ObjectData 
      */
-    ObjectData LoadMesh(const std::string & meshPath, bool quads = false)
+    ObjectData LoadMesh(const std::string & meshPath, bool array = false)
     {
         ObjectData mesh_objectData;
 
-        MeshLoader mesh;
+        Obj::MeshData m_data;
+        Obj::BufferMeshData b_data;
 
-        if(!quads)
-            mesh.LoadMesh(meshPath);
+        if(!array)
+        {
+            m_data = Obj::LoadMesh(meshPath, true);
+
+            mesh_objectData.od_normals = m_data.normals;
+            mesh_objectData.od_textureCoordinates = m_data.textureCoordinates;
+            mesh_objectData.od_vertices = m_data.vertices;
+
+            mesh_objectData.od_indices = m_data.indices;
+            mesh_objectData.od_indicesNor = m_data.indicesNormals;
+            mesh_objectData.od_indicesTex = m_data.indicesTexture;
+
+            mesh_objectData.arrayOn = false;
+        }
         else
-            mesh.LoadMeshQuads(meshPath);
+        {
+            b_data = Obj::LoadMeshBuffer(meshPath);
 
-        mesh_objectData.od_indices = mesh.GetData().modv_indices;
-        mesh_objectData.od_indicesNor = mesh.GetData().modv_indicesNormal;
-        mesh_objectData.od_indicesTex = mesh.GetData().modv_indicesTexture;
-        mesh_objectData.od_normals = mesh.GetData().modv_normal;
-        mesh_objectData.od_textureCoordinates = mesh.GetData().modv_textureCoords;
-        mesh_objectData.od_vertices = mesh.GetData().modv_vertices;
+            mesh_objectData.od_normals = b_data.normals;
+            mesh_objectData.od_textureCoordinates = b_data.textureCoordinates;
+            mesh_objectData.od_vertices = b_data.vertices;
+
+            mesh_objectData.arrayOn = true;
+        }
 
         return mesh_objectData;
     }
 
-    ObjectData TransformToTextureData(const ObjectData tdf_objectData)
+    ObjectData TransformToTextureData(const ObjectData & tdf_objectData)
     {
-        ObjectData td_objectData = tdf_objectData;
+        ObjectData td_objectData;
 
-        td_objectData.od_textureCoordinates.clear();
+        for(unsigned int i = 0; i < (1 * tdf_objectData.od_vertices.size()) / 3; i++)
+        {
+            td_objectData.od_vertices.push_back(tdf_objectData.od_vertices[(1 * tdf_objectData.od_indices[i * 3])]);
+            td_objectData.od_vertices.push_back(tdf_objectData.od_vertices[(1 * tdf_objectData.od_indices[i * 3 + 1])]);
+            td_objectData.od_vertices.push_back(tdf_objectData.od_vertices[(1 * tdf_objectData.od_indices[i * 3 + 2])]);
+        }
 
         for(unsigned int i = 0; i < (1 * tdf_objectData.od_textureCoordinates.size()) / 6; i++)
         {
@@ -67,8 +88,6 @@ namespace AWS
             td_objectData.od_textureCoordinates.push_back(tdf_objectData.od_textureCoordinates[(1 * tdf_objectData.od_indicesTex[i * 6]) + 4]);
             td_objectData.od_textureCoordinates.push_back(tdf_objectData.od_textureCoordinates[(1 * tdf_objectData.od_indicesTex[i * 6]) + 5]);
         }
-
-        td_objectData.od_normals.clear();
 
         for(unsigned int i = 0; i < (1 * tdf_objectData.od_normals.size()) / 3; i++)
         {
@@ -115,6 +134,7 @@ namespace AWS
          * @param of_shadeType type of shade(AWS::ShadeType::solid default)
          * @param of_vertName vertex shader path
          * @param of_fragName fragment shader path
+         * @param arrays true - glDrawArrays, false - glDrawElements
          */
         void Create(unsigned int of_shadeType = AWS::ShadeType::solid, std::string of_vertName = AWS::colorVS, std::string of_fragName = AWS::colorFS);
 
@@ -122,6 +142,7 @@ namespace AWS
          * @brief Draw object on screen
          * 
          * @param of_drawType draw mode (GL_POINTS, GL_LINES, GL_TRIANGLES ...)
+         * @param of_textures Arrays or elements draw
          */
         void DrawObject(unsigned int of_drawType);
 
@@ -131,6 +152,7 @@ namespace AWS
          * @param of_drawType draw mode (GL_POINTS, GL_LINES, GL_TRIANGLES ...)
          * @param projection glm::perspective
          * @param view glm::lookat
+         * @param of_textures Arrays or elements draw
          */
         void DrawObject(unsigned int of_drawType, glm::mat4 projection, glm::mat4 view);
 
@@ -289,8 +311,11 @@ namespace AWS
         o_vbo[2].create();
         o_vbo[2].bind(o_objectData.od_normals.data(), sizeof(float) * o_objectData.od_normals.size(), 3, 3);
 
-        o_ebo.create();
-        o_ebo.bind(o_objectData.od_indices.data(), sizeof(unsigned int) * o_objectData.od_indices.size());
+        if(!o_objectData.arrayOn)
+        {
+            o_ebo.create();
+            o_ebo.bind(o_objectData.od_indices.data(), sizeof(unsigned int) * o_objectData.od_indices.size());
+        }
 
         o_tex.create();
         o_tex.bind({"data/texture/awesome.png"}, GL_REPEAT, GL_TEXTURE_2D);
@@ -299,6 +324,12 @@ namespace AWS
 
         glUniform1i(glGetUniformLocation(o_sh.GetID(), "tex"), 0);
         glUniform4f(glGetUniformLocation(o_sh.GetID(), "iCol"), 1.0f, 1.0f, 1.0f, 1.0f);
+
+        glUniform3f(glGetUniformLocation(o_sh.GetID(), "view_Pos"), 0.0f, 0.0f, 0.0f);
+        glUniform3f(glGetUniformLocation(o_sh.GetID(), "lig_pos"), 0.0f, 0.0f, 0.0f);
+        glUniform3f(glGetUniformLocation(o_sh.GetID(), "lig_col"), 1.0f, 1.0f, 1.0f);
+        glUniform1f(glGetUniformLocation(o_sh.GetID(), "ambientV"), 0.1f);
+        glUniform1f(glGetUniformLocation(o_sh.GetID(), "specularV"), 0.5f);
         
         o_sh.unbind();
 
@@ -326,7 +357,10 @@ namespace AWS
             glUniformMatrix4fv(glGetUniformLocation(o_sh.GetID(), "modelTransform"), 1, GL_FALSE, glm::value_ptr(o_transform));
         }
 
-        glDrawElements(of_drawType, 2 * o_objectData.od_vertices.size(), GL_UNSIGNED_INT, NULL);
+        if(!o_objectData.arrayOn)
+            glDrawElements(of_drawType, 2 * o_objectData.od_vertices.size(), GL_UNSIGNED_INT, NULL);
+        else
+            glDrawArrays(of_drawType, 0, 2 * o_objectData.od_vertices.size());
 
         o_sh.unbind();
         o_vao.unbind();
@@ -353,7 +387,10 @@ namespace AWS
             glUniformMatrix4fv(glGetUniformLocation(o_sh.GetID(), "modelTransform"), 1, GL_FALSE, glm::value_ptr(o_transform));
         }
 
-        glDrawElements(of_drawType, 2 * o_objectData.od_vertices.size(), GL_UNSIGNED_INT, NULL);
+        if(!o_objectData.arrayOn)
+            glDrawElements(of_drawType, 2 * o_objectData.od_vertices.size(), GL_UNSIGNED_INT, NULL);
+        else
+            glDrawArrays(of_drawType, 0, 2 * o_objectData.od_vertices.size());
 
         o_sh.unbind();
         o_vao.unbind();
@@ -376,11 +413,15 @@ namespace AWS
     void Aws_Object::SetObjectData(ObjectData of_objectData)
     {
         o_objectData = of_objectData;
+        o_objectData.arrayOn = of_objectData.arrayOn;
 
         o_vbo[0].bind(o_objectData.od_vertices.data(), sizeof(float) * o_objectData.od_vertices.size(), 0, 3);
         o_vbo[1].bind(o_objectData.od_textureCoordinates.data(), sizeof(float) * o_objectData.od_textureCoordinates.size(), 2, 2);
         o_vbo[2].bind(o_objectData.od_normals.data(), sizeof(float) * o_objectData.od_normals.size(), 3, 3);
-        o_ebo.bind(o_objectData.od_indices.data(), sizeof(unsigned int) * o_objectData.od_indices.size());
+        if(!o_objectData.arrayOn)
+            o_ebo.bind(o_objectData.od_indices.data(), sizeof(unsigned int) * o_objectData.od_indices.size());
+        else
+            o_ebo.terminate();
     }
 
     void Aws_Object::SetPosition(float of_x, float of_y, float of_z)
@@ -441,11 +482,6 @@ namespace AWS
 
         o_tex.bind({texturePath}, of_wrapping, GL_TEXTURE_2D);
 
-        o_sh.bind();
-
-        glUniform1i(glGetUniformLocation(o_sh.GetID(), "tex"), 0);
-
-        o_sh.unbind();
         o_vao.unbind();
     }
 

@@ -33,35 +33,35 @@ void main()
 }*/
 
 #version 430 core
-out vec4 FragColor;
+out vec4 oCol;
 
-in vec3 Normal;  
-in vec3 FragPos;  
+in vec3 ioPos;
+in vec3 ioNorm;
   
-uniform vec3 lightPos;
-uniform vec3 viewPos;
-uniform vec3 lightColor;
-uniform vec3 objectColor;
+uniform vec3 view_Pos;
+uniform vec3 lig_pos;
+uniform vec3 lig_col;
+uniform vec4 iCol;
+uniform float ambientV;
+uniform float specularV;
 
 void main()
 {
     // ambient
-    float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * lightColor;
+    vec3 ambient = ambientV * lig_col;
   	
     // diffuse 
-    vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(lightPos - FragPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
+    vec3 norm = normalize(ioNorm);
+    vec3 lightDir = normalize(lig_pos - ioPos);
+    float diff = max(dot(norm, lightDir), 0);
+    vec3 diffuse = diff * lig_col;
     
     // specular
-    float specularStrength = 0.5;
-    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 viewDir = normalize(viewPos - ioPos);
     vec3 reflectDir = reflect(-lightDir, norm);  
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    vec3 specular = specularStrength * spec * lightColor;  
+    vec3 specular = specularV * spec * lig_col;  
         
-    vec3 result = (ambient + diffuse + specular) * objectColor;
-    FragColor = vec4(result, 1.0);
+    vec3 result = (ambient + diffuse + specular) * vec3(iCol.xyz);
+    cCol = vec4(result.xyz, iCol.w);
 } 

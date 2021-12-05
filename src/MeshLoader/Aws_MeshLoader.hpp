@@ -74,15 +74,22 @@ namespace AWS
     {
     private:
         MeshObjectData ml_meshObjectData;
+        MeshObjectData ml_workObjectData;
 
     public:
         /**
          * @brief Load mesh from file
          * 
-         * @param meshPath 
+         * @param meshPath path to mesh obj
          */
-        void LoadMesh(const std::string & meshPath);
-        void LoadMeshQuads(const std::string & meshPath);
+        void LoadMesh(const std::string & mlf_meshPath);
+
+        /**
+         * @brief Load mesh from file with glDrawArray setup
+         * 
+         * @param meshPath path to mesh obj
+         */
+        void LoadArrayMesh(const std::string & mlf_meshPath);
 
         /**
          * @brief Get the Data object
@@ -93,11 +100,11 @@ namespace AWS
         
     };
 
-    void Aws_MeshLoader::LoadMesh(const std::string & meshPath)
+    void Aws_MeshLoader::LoadMesh(const std::string & mlf_meshPath)
     {
         std::ifstream f;
     
-        f.open(meshPath, std::ios::binary);
+        f.open(mlf_meshPath, std::ios::binary);
 
         if(!f)
         {
@@ -174,7 +181,6 @@ namespace AWS
                 ml_meshObjectData.modv_indicesTexture.push_back(texX - 1);
                 ml_meshObjectData.modv_indicesTexture.push_back(texY - 1);
                 ml_meshObjectData.modv_indicesTexture.push_back(texZ - 1);
-
 
                 ml_meshObjectData.modv_indicesTexture.push_back(texX - 1);
                 ml_meshObjectData.modv_indicesTexture.push_back(texZ - 1);
@@ -251,11 +257,11 @@ namespace AWS
         }
     }
 
-    void Aws_MeshLoader::LoadMeshQuads(const std::string & meshPath)
+    void Aws_MeshLoader::LoadArrayMesh(const std::string & mlf_meshPath)
     {
         std::ifstream f;
     
-        f.open(meshPath, std::ios::binary);
+        f.open(mlf_meshPath, std::ios::binary);
 
         if(!f)
         {
@@ -274,9 +280,9 @@ namespace AWS
                 float x, y, z;
                 ss >> x >> y >> z;
 
-                ml_meshObjectData.modv_vertices.push_back(x);
-                ml_meshObjectData.modv_vertices.push_back(y);
-                ml_meshObjectData.modv_vertices.push_back(z);
+                ml_workObjectData.modv_vertices.push_back(x);
+                ml_workObjectData.modv_vertices.push_back(y);
+                ml_workObjectData.modv_vertices.push_back(z);
             }
             else if(line.find("vt ") == 0)
             {
@@ -284,9 +290,9 @@ namespace AWS
                 float u, v, w;
                 ss >> u >> v >> w;
 
-                ml_meshObjectData.modv_textureCoords.push_back(u);
-                ml_meshObjectData.modv_textureCoords.push_back(v);
-                ml_meshObjectData.modv_textureCoords.push_back(w);
+                ml_workObjectData.modv_textureCoords.push_back(u);
+                ml_workObjectData.modv_textureCoords.push_back(v);
+                ml_workObjectData.modv_textureCoords.push_back(w);
             }
             else if(line.find("vn ") == 0)
             {
@@ -294,9 +300,9 @@ namespace AWS
                 float x, y, z;
                 ss >> x >> y >> z;
 
-                ml_meshObjectData.modv_normal.push_back(x);
-                ml_meshObjectData.modv_normal.push_back(y);
-                ml_meshObjectData.modv_normal.push_back(z);
+                ml_workObjectData.modv_normal.push_back(x);
+                ml_workObjectData.modv_normal.push_back(y);
+                ml_workObjectData.modv_normal.push_back(z);
             }
             else if(line.find("f ") == 0)
             {
@@ -321,20 +327,71 @@ namespace AWS
 
                 ss >> indX >> texX >> norX >> indY >> texY >> norY >> indZ >> texZ >> norZ >> indW >> texW >> norW;
 
-                ml_meshObjectData.modv_indices.push_back(indX - 1);
-                ml_meshObjectData.modv_indices.push_back(indY - 1);
-                ml_meshObjectData.modv_indices.push_back(indZ - 1);
-                ml_meshObjectData.modv_indices.push_back(indW - 1);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indX - 1]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indX]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indX + 1]);
 
-                ml_meshObjectData.modv_indicesTexture.push_back(texX - 1);
-                ml_meshObjectData.modv_indicesTexture.push_back(texY - 1);
-                ml_meshObjectData.modv_indicesTexture.push_back(texZ - 1);
-                ml_meshObjectData.modv_indicesTexture.push_back(texW - 1);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indY - 1]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indY]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indY + 1]);
 
-                ml_meshObjectData.modv_indicesNormal.push_back(norX - 1);
-                ml_meshObjectData.modv_indicesNormal.push_back(norY - 1);
-                ml_meshObjectData.modv_indicesNormal.push_back(norZ - 1);
-                ml_meshObjectData.modv_indicesNormal.push_back(norW - 1);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indZ - 1]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indZ]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indZ + 1]);
+
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indX - 1]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indX]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indX + 1]);
+
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indZ - 1]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indZ]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indZ + 1]);
+
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indX - 1]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indZ - 1]);
+                ml_meshObjectData.modv_vertices.push_back(ml_workObjectData.modv_vertices[indW - 1]);
+
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texX - 1]);
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texX]);
+
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texY - 1]);
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texY]);
+
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texZ - 1]);
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texZ]);
+
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texX - 1]);
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texX]);
+
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texZ - 1]);
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texZ]);
+
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texW - 1]);
+                ml_meshObjectData.modv_textureCoords.push_back(ml_workObjectData.modv_textureCoords[texW]);
+
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norX - 1]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norX]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norX + 1]);
+
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norY - 1]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norY]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norY + 1]);
+
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norZ - 1]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norZ]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norZ + 1]);
+
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norX - 1]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norX]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norX + 1]);
+
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norZ - 1]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norZ]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norZ + 1]);
+
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norW - 1]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norW]);
+                ml_meshObjectData.modv_normal.push_back(ml_workObjectData.modv_normal[norW + 1]);
             }
             else if(line.find("mtllib "))
             {

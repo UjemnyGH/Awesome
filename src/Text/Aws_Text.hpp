@@ -1,6 +1,9 @@
 #pragma once
 
+#define GLEW_STATIC
+#include <GL/glew.h>
 #include "../Buffers/Aws_Buffer.hpp"
+#include "../stb_image/stb_easy_font.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
@@ -12,112 +15,45 @@ namespace AWS
     {
     private:
         Shader sh;
-
         VAO vao;
-        VBO vbo[3];
-        EBO ebo;
-
-        Texture tex;
-
-        std::string textToRender;
-
-        float* vertices;
-        unsigned int* indices;
-        float* textureCoords;
-
-        const unsigned int cindices[2 * 3] = {
-            0, 1, 2,
-            1, 2, 3
-        };
-
-        float position[3] = { 0.0f, 0.0f, 0.0f};
-        float scale[3] = { 1.0f, 1.0f, 1.0f};
-        float rotation[3] = { 0.0f, 0.0f, 0.0f};
-
-        const float ctextureCoords[2 * 4] = {
-            1.0f, 1.0f,
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f
-        };
-
-        const float onePixel = 1.0f / 512.0f;
-
-        float textColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
-
-        const float psrConst[3 * 4] = {
-            1.0f, 1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f
-        };
 
     public:
-        /**
-         * @brief create text object
-         * 
-         */
-        void create();
-
-        /**
-         * @brief Set the Position object
-         * 
-         * @param x 
-         * @param y 
-         * @param z 
-         */
-        void SetPosition(float x, float y, float z);
-
-        /**
-         * @brief Set the Scale object
-         * 
-         * @param x 
-         * @param y 
-         * @param z 
-         */
-        void SetScale(float x, float y, float z);
-
-        /**
-         * @brief Set the Rotation object
-         * 
-         * @param x 
-         * @param y 
-         * @param z 
-         */
-        void SetRotation(float x, float y, float z);
-
-        /**
-         * @brief Set the Color object
-         * 
-         * @param r 
-         * @param g 
-         * @param b 
-         * @param a 
-         */
-        void SetColor(const float r, const float g, const float b, const float a);
-
-        /**
-         * @brief change text
-         * 
-         * @param text 
-         */
-        void Text(const std::string text);
-
-        /**
-         * @brief draw
-         * 
-         * @param drawMode 
-         */
-        void draw();
-
-        /**
-         * @brief draw
-         * 
-         * @param drawMode 
-         * @param camera 
-         */
-        void draw(glm::mat4x4 camera);
+        void Create();
+        void DrawText(float tr_x, float tr_y, char* tr_text, float tr_r, float tr_g, float tr_b);
+        void DrawText(float tr_x, float tr_y, char* tr_text, float tr_r, float tr_g, float tr_b, const glm::mat4 & tr_projection, const glm::mat4 & view);
     };
+
+    void Aws_TextRenderer::Create()
+    {
+        sh.create(AWS::colorVS, AWS::colorFS);
+
+        vao.create();
+        vao.bind();
+
+        vao.unbind();
+    }
+
+    void Aws_TextRenderer::DrawText(float tr_x, float tr_y, char* tr_text, float tr_r, float tr_g, float tr_b)
+    {
+        static char t_buffer[99999];
+        int num_triangles;
+
+        num_triangles = stb_easy_font_print(tr_x, tr_y, tr_text, NULL, t_buffer, sizeof(t_buffer));
+
+        vao.bind();
+        sh.bind();
+
+        glUniform4f(glGetUniformLocation(sh.GetID(), "iCol"), tr_r, tr_g, tr_b, 1.0f);
+
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 16, t_buffer);
+        glEnableVertexAttribArray(0);
+
+        glDrawArrays(GL_TRIANGLES, 0, num_triangles * 3);
+
+        sh.unbind();
+        vao.unbind();
+        
+    }
 
     typedef Aws_TextRenderer TextRenderer;
 }

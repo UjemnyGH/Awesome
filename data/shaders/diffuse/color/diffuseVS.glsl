@@ -12,8 +12,8 @@ uniform mat4 projectionTransform;
 
 void main()
 {
-    gl_Position = projectionTransform * viewTransform * modelTransform * vec4(iPos, 1.0);
+    ioPos = vec3(modelTransform * vec3(iPos.xyz));
+    ioNorm = mat3(transpose(modelTransform)) * iNorm;
 
-    ioPos = vec3(modelTransform * vec4(iPos, 1.0));
-    ioNorm = iNorm;
+    gl_Position = projectionTransform * viewTransform * vec4(ioPos.xyz, 1.0);
 }
