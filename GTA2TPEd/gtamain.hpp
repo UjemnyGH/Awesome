@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Awesome/src/Aws_Engine.hpp"
-#include "../Awesome/src/Aws_Types.hpp"
+#include "../src/Aws_Engine.hpp"
+#include "../src/Aws_Types.hpp"
 
 AWS::Time gTime;
 

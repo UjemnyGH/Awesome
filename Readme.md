@@ -17,13 +17,14 @@ https://github.com/UjemnyGH/Awesome
 > For now only AABB collisions work
 
 ### REPAIR:
-> Mesh loading ( SetObjectData in Object ),
-> Mesh colliders,
 > Diffuse shader and light shader (I dont know why that doesnt working),
 > Batch rendering,
 > Text,
+> Mesh colliders,
 
 ### TODO:
+> Raycasting
 > Write more shaders,
 > Half rebuild Aws_Square
 > BVH, glTF, FBX Mesh loading
+> UI

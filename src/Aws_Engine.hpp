@@ -12,6 +12,7 @@
 #include "Object/Aws_Object.hpp"
 #include "MeshLoader/Aws_MeshLoader.hpp"
 #include "MeshCollider/Aws_MeshCollider.hpp"
+#include "Raycast/Aws_Raycast.hpp"
 
 #include <iostream>
 #include <future>

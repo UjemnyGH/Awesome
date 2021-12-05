@@ -34,6 +34,19 @@ namespace AWS
     const std::string cubeVS = "data/shaders/cube/cubeVS.glsl";
     const std::string cubeFS = "data/shaders/cube/cubeFS.glsl";
 
+    int windowWidth = 800;
+    int windowHeight = 600;
+    float windowMouseX = 1.0f;
+    float windowMouseY = 1.0f;
+
+    void SetWindowAndMouseParameters(const int & width, const int & height, const float & mouseX, const float & mouseY)
+    {
+        windowWidth = width;
+        windowHeight = height;
+        windowMouseX = mouseX;
+        windowMouseY = mouseY;
+    }
+
     struct Aws_vec
     {
         float vx = 0.0f, vy = 0.0f, vz = 0.0f, vw = 0.0f;

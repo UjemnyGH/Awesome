@@ -13,6 +13,7 @@ PlayerUI ui;
 GTAWindow window;
 Player player;
 AWS::Cube testCube[40];
+AWS::Cube iiiiiicube;
 AWS::Square grass;
 AWS::CubeCollider grassCollider;
 AWS::CubeCollider playerCollider;
@@ -108,14 +109,16 @@ void GTAWindow::initialize()
 
     for(int i = 0; i < 40; i++)
     {
-        testCube[i].Create(AWS::ShadeType::solid, "../GTA2TPEd/data/textures/brickWindow1_lod1.png", GL_TEXTURE_2D, AWS::textureVS, AWS::textureFS);
+        testCube[i].Create(AWS::ShadeType::solid, "GTA2TPEd/data/textures/brickWindow1_lod1.png", GL_TEXTURE_2D, AWS::textureVS, AWS::textureFS);
         //testCube[i].Create(AWS::ShadeType::solid, AWS::colorVS, AWS::colorFS);
     }
 
-    grass.Create("../GTA2TPEd/data/textures/grass1.png", AWS::textureVS, AWS::textureFS);
+    iiiiiicube.Create(AWS::ShadeType::solid);
+
+    grass.Create("GTA2TPEd/data/textures/grass1.png", AWS::textureVS, AWS::textureFS);
 
     //ui
-    ui.crosshair.Create("../GTA2TPEd/data/textures/crossHair1.png", AWS::textureVS, AWS::textureFS);
+    ui.crosshair.Create("GTA2TPEd/data/textures/crossHair1.png", AWS::textureVS, AWS::textureFS);
 }
 
 void GTAWindow::mainLoop()
@@ -131,6 +134,10 @@ void GTAWindow::mainLoop()
     grassCollider.SetRotation(0.0f, -0.05f, 0.0f);
     grassCollider.SetScale(500.0f, 0.1f, 500.0f);
     playerCollider.SetPosition(playerPos.x, playerPos.y - 0.1f, playerPos.z);
+
+    iiiiiicube.SetPosition(10.0f, 100000.0f, -10.0f);
+    iiiiiicube.SetScale(10.0f, 100000.0f, 10.0f);
+    iiiiiicube.DrawCube(GL_TRIANGLES, proj, view);
 
     for(int i = 0; i < 40; i++)
     {   
@@ -150,7 +157,7 @@ void GTAWindow::mainLoop()
 
         testCube[i].DrawCube(GL_TRIANGLES, proj, view);
 
-        playerCollisionHandler.CollisionCheck(playerCollider.GetObjectData(), {grassCollider.GetObjectData(), testCube[i].GetObjectData()});
+        playerCollisionHandler.CollisionCheck(playerCollider.GetObjectData(), {grassCollider.GetObjectData(), testCube[i].GetObjectData(), iiiiiicube.GetObjectData()});
     }
 
     grass.SetColor(0.0f, 0.3f, 0.0f, 1.0f);

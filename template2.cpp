@@ -9,6 +9,9 @@ Window window;
 int lastX = 400, lastY = 300;
 float yaw, pitch;
 
+int wid = 800, hei = 600;
+float mouseX, mouseY;
+
 glm::vec3 pos;
 glm::vec3 right;
 
@@ -16,8 +19,10 @@ glm::mat4 proj;
 
 //
 
-AWS::Cube cube;
-AWS::Cube background;
+const float gravity = 1.0f;
+float deltaTime;
+float velocity = 0.0f;
+
 AWS::Object object;
 
 int main()
@@ -33,11 +38,17 @@ void reshape(GLFWwindow* gwindow, int w, int h)
 {
     glViewport(0, 0, w, h);
 
+    wid = w;
+    hei = h;
+
     proj = glm::perspectiveFov(70.0f, (float)w, (float)h, 0.001f, 1000.0f);
 }
 
 void mouse(GLFWwindow* window, double xpos, double ypos)
 {
+    mouseX = xpos;
+    mouseY = ypos;
+
     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
     {
         float xoffset = xpos - lastX;
@@ -64,20 +75,27 @@ void mouse(GLFWwindow* window, double xpos, double ypos)
 
 void processInput(GLFWwindow *window)
 {
-    const float cameraSpeed = 3.0f * gTime.GetDeltaTime();
+    const float cameraSpeed = 3.0f * deltaTime;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        pos += camera.GetFront() * cameraSpeed;
+        pos += glm::vec3(camera.GetFront().x, 0.0f, camera.GetFront().z) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        pos -= camera.GetFront() * cameraSpeed;
+        pos -= glm::vec3(camera.GetFront().x, 0.0f, camera.GetFront().z) * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         pos += right * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         pos -= right * cameraSpeed;
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        pos.y += 0.1f * cameraSpeed;
+    {
+        //pos.y += 0.1f * cameraSpeed;
+        pos.y += 0.05f;
+
+    }
     if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-        pos.y -= 0.1f * cameraSpeed;
+    {
+        //pos.y -= 0.1f * cameraSpeed;
+        pos.y = 1.0f;
+    }
     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
     {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -90,55 +108,42 @@ void processInput(GLFWwindow *window)
     right = glm::normalize(glm::cross(camera.GetFront(), camera.GetUp()));
 }
 
-AWS::ObjectData ob = AWS::LoadMesh("data/models/car1.obj", true);
-
 void Window::initialize()
 {
     glfwSetFramebufferSizeCallback(Window::getWindowPointer(), reshape);
     glfwSetCursorPosCallback(Window::getWindowPointer(), mouse);
     glfwSwapInterval(1);
 
-    cube.Create(AWS::ShadeType::solid, "data/texture/awesome.png", GL_TEXTURE_2D, AWS::textureVS, AWS::textureFS);
-    background.Create(AWS::ShadeType::solid);
-    object.Create(AWS::ShadeType::solid, AWS::textureVS, AWS::textureFS);
-    object.SetObjectData(ob);
-    object.SetTexture("data/texture/car1.png");
-
-    for(int i = 0; i < ob.od_vertices.size() / 3; i++)
-    {
-        std::cout << "Vertices " << ob.od_vertices[i * 3] << ' ' << ob.od_vertices[i * 3 + 1] << ' ' << ob.od_vertices[i * 3 + 2] << "\t\t" << i << std::endl;
-        if(!ob.arrayOn)
-            std::cout << ob.od_indices[i * 3] << ' ' << ob.od_indices[i * 3 + 1] << ' ' << ob.od_indices[i * 3 + 2] << std::endl;
-    }
+    object.Create(AWS::ShadeType::solid, "testVS.glsl", "testFS.glsl");
+    object.SetObjectData(AWS::LoadMesh("data/models/terrainTest1.obj", true));
 }
 
 void Window::mainLoop()
 {
+    deltaTime = gTime.GetDeltaTime();
+
+    AWS::SetWindowAndMouseParameters(wid, hei, mouseX, mouseY);
+
     processInput(Window::getWindowPointer());
 
     glm::mat4x4 view = glm::lookAt(camera.GetPosition(), camera.GetPosition() + camera.GetFront(), camera.GetUp());
 
-    //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    bool ray = AWS::CheckRayVertices(pos.x, pos.y, pos.z, pos.x, pos.y - 1.0f, pos.z, proj, view, object.GetObjectData());
+
+    if(ray)
+    {
+        velocity = 0.0f;
+        printf("Work: %d\n", gTime.GetTime());
+    }
+    else
+    {
+        velocity = -1.0f;
+    }
+
+    pos.y += gravity * velocity * deltaTime;
 
     camera.SetPosition(pos.x, pos.y, pos.z);
 
-    glUseProgram(object.GetShaderID());
-
-    glUniform3f(glGetUniformLocation(object.GetShaderID(), "view_Pos"), pos.x, pos.y, pos.z);
-    glUniform3f(glGetUniformLocation(object.GetShaderID(), "lig_pos"), 1.0f, 2.0f, 0.0f);
-    glUniform3f(glGetUniformLocation(object.GetShaderID(), "lig_col"), 1.0f, 1.0f, 1.0f);
-    glUniform1f(glGetUniformLocation(object.GetShaderID(), "ambientV"), 0.1f);
-    glUniform1f(glGetUniformLocation(object.GetShaderID(), "specularV"), 0.5f);
-
-    glUseProgram(0);
-
+    object.SetColor(0.0f, 1.0f, 0.0f, 1.0f);
     object.DrawObject(GL_TRIANGLES, proj, view);
-
-    cube.SetPosition(2.0f, 2.0f, 4.0);
-    cube.DrawCube(GL_TRIANGLES, proj, view);
-
-    background.SetScale(100.0f, 100.0f, 100.0f);
-    background.SetPosition(pos.x, pos.y, pos.z);
-    background.SetColor(0.0f, 0.0f, 0.3f, 1.0);
-    background.DrawCube(GL_TRIANGLES, proj, view);
 }
