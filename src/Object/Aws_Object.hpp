@@ -220,6 +220,13 @@ namespace AWS
         unsigned int GetShaderID() { return o_sh.GetID(); }
 
         /**
+         * @brief Get the Texture ID object
+         * 
+         * @return unsigned int 
+         */
+        unsigned int GetTextureID() { return o_tex.GetID(); }
+
+        /**
          * @brief Get the Object Data object
          * 
          * @return ObjectData 

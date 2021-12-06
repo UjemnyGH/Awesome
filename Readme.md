@@ -21,10 +21,11 @@ https://github.com/UjemnyGH/Awesome
 > Batch rendering,
 > Text,
 > Mesh colliders,
+> Memory leak in static object editor,
 
 ### TODO:
-> Raycasting
+> Raycasting,
 > Write more shaders,
-> Half rebuild Aws_Square
-> BVH, glTF, FBX Mesh loading
-> UI
+> Half rebuild Aws_Square,
+> BVH, glTF, FBX Mesh loading,
+> UI,
