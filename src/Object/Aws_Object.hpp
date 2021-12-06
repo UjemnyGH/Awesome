@@ -325,7 +325,7 @@ namespace AWS
         }
 
         o_tex.create();
-        o_tex.bind({"data/texture/awesome.png"}, GL_REPEAT, GL_TEXTURE_2D);
+        o_tex.bind({"data/texture/white.png"}, GL_REPEAT, GL_TEXTURE_2D);
 
         o_sh.bind();
 

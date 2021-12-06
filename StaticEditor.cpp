@@ -32,6 +32,7 @@ struct EditorObjectData
 {
     AWS::Object object;
     std::string objectPath;
+    std::string objectTexture;
 
     float p[3];
     float s[3];
@@ -221,7 +222,7 @@ void EditorWindow::mainLoop()
     {
         objects[objectNumber].object.SetObjectData(AWS::LoadMesh(std::string(pathObj), true));
     }
-    else if (setObjectDataFromPath && f.bad() || f.fail())
+    else if (setObjectDataFromPath && f.fail())
     {
         ImGui::SameLine();
         ImGui::Text("Object dont load mesh from path : %s", pathObj);
@@ -232,18 +233,21 @@ void EditorWindow::mainLoop()
     //set texture from path
     ImGui::InputText("Path to texture", pathTexture, 256);
 
-    f.open(std::string(pathTexture), std::ios::binary);
+    objects[objectNumber].objectTexture = std::string(pathTexture);
 
-    bool setTextureFromPath = ImGui::Button("Set texture");
+    f.open(objects[objectNumber].objectTexture, std::ios::binary);
+
+    bool setTextureFromPath = false;
+    setTextureFromPath = ImGui::Button("Set texture");
 
     if (setTextureFromPath && !f.bad() && !f.fail())
     {
-        objects[objectNumber].object.SetTexture(std::string(pathTexture));
+        objects[objectNumber].object.SetTexture(objects[objectNumber].objectTexture);
     }
-    else if (setTextureFromPath && f.bad() || f.fail())
+    else if (setTextureFromPath && f.fail())
     {
         ImGui::SameLine();
-        ImGui::Text("Object dont load texture from path : %s", pathTexture);
+        ImGui::Text("Object dont load texture from path : %s", objects[objectNumber].objectTexture);
     }
 
     f.close();

@@ -106,7 +106,7 @@ void processInput(GLFWwindow* window)
             object = new AWS::Object;
 
             object->Create(AWS::ShadeType::solid, "testVS.glsl", "testFS.glsl");
-            object->SetObjectData(AWS::TransformToTextureData(AWS::LoadMesh("data/models/terrainTest1.obj")));
+            object->SetObjectData(AWS::TransformToTextureData(AWS::LoadMesh("data/models/terrainTest1.obj", true)));
             object->SetTexture("data/texture/awesome.png");
 
             lastCubeRecall = gTime.GetTime();
@@ -174,7 +174,7 @@ void Window::initialize()
     //sq2.Create(AWS::ShadeType::shade, AWS::shadeColorVS, AWS::shadeColorFS);
 
     object->Create(AWS::ShadeType::solid, "testVS.glsl", "testFS.glsl");
-    object->SetObjectData(AWS::TransformToTextureData(AWS::LoadMesh("data/models/terrainTest1.obj")));
+    object->SetObjectData(AWS::TransformToTextureData(AWS::LoadMesh("data/models/terrainTest1.obj", true)));
     object->SetTexture("data/texture/awesome.png");
 
     background.Create(AWS::ShadeType::solid, "data/texture/stalin.png", GL_TEXTURE_2D, AWS::textureVS, AWS::textureFS);

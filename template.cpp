@@ -212,7 +212,7 @@ void Game::mainLoop()
     object.SetPosition(0.0f, 0.0f, 0.0f);
     object.SetScale(1.0f, 1.0f, 1.0f);
     object.SetColor(0.0f, 0.3f, 0.0f, 1.0f);
-    object.DrawObject(GL_TRIANGLES, proj, view, true);
+    object.DrawObject(GL_TRIANGLES, proj, view);
 
     object2.SetPosition(10.0f, 10.0f, 0.0f);
 
