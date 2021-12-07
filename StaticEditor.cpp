@@ -28,21 +28,8 @@ std::ifstream f;
 ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 //Objects
-struct EditorObjectData
-{
-    AWS::Object object;
-    std::string objectPath;
-    std::string objectTexture;
 
-    float p[3];
-    float s[3];
-    float r[3];
-    float col[4];
-};
-
-EditorObjectData objects[32767];
-
-AWS::Square testSq;
+static AWS::EditorObjectData objects[32767];
 
 int main()
 {
@@ -160,8 +147,6 @@ void EditorWindow::initialize()
 
     ImGui_ImplGlfw_InitForOpenGL(EditorWindow::getWindowPointer(), true);
     ImGui_ImplOpenGL3_Init("#version 430 core");
-
-    testSq.Create();
 }
 
 void EditorWindow::mainLoop()
@@ -186,6 +171,8 @@ void EditorWindow::mainLoop()
     static char pathTexture[256];
     static bool checkboxToShading;
 
+    static char scenePath[256];
+
     ImGui::Begin("Add object");
 
     //set index of object
@@ -198,34 +185,40 @@ void EditorWindow::mainLoop()
     ImGui::ColorEdit4("Color: ", objects[objectNumber].col);
 
     //add object
-    if (ImGui::Button("Add object") && objectCounter < 32767 && objects[objectNumber].object.GetObjectData().od_vertices.size() > 1)
-    {
-        objects[objectNumber].object.Create(AWS::ShadeType::solid, AWS::textureVS, AWS::textureFS);
+    bool addObj = ImGui::Button("Add object");
 
-        objectCounter++;
-    }
-    else
+    if (addObj && objectCounter < 32767 /*&& objects[objectNumber].object.GetObjectData().od_vertices.size() > 1*/)
     {
         objects[objectNumber].object.Terminate();
 
         objects[objectNumber].object.Create(AWS::ShadeType::solid, AWS::textureVS, AWS::textureFS);
+
+        objectCounter++;
     }
+    /*else if(addObj && objects[objectNumber].object.GetObjectData().od_vertices.size() < 1)
+    {
+        objects[objectNumber].object.Terminate();
+
+        objects[objectNumber].object.Create(AWS::ShadeType::solid, AWS::textureVS, AWS::textureFS);
+    }*/
 
     //set mesh form path
     ImGui::InputText("Path to mesh data", pathObj, 256);
 
-    f.open(std::string(pathObj), std::ios::binary);
+    objects[objectNumber].objectPath = std::string(pathObj);
+
+    f.open(objects[objectNumber].objectPath, std::ios::binary);
 
     bool setObjectDataFromPath = ImGui::Button("Set mesh");
 
     if (setObjectDataFromPath && !f.bad() && !f.fail())
     {
-        objects[objectNumber].object.SetObjectData(AWS::LoadMesh(std::string(pathObj), true));
+        objects[objectNumber].object.SetObjectData(AWS::LoadMesh(objects[objectNumber].objectPath, true));
     }
     else if (setObjectDataFromPath && f.fail())
     {
         ImGui::SameLine();
-        ImGui::Text("Object dont load mesh from path : %s", pathObj);
+        ImGui::Text("Object dont load mesh from path : %s", objects[objectNumber].objectPath.c_str());
     }
 
     f.close();
@@ -233,15 +226,14 @@ void EditorWindow::mainLoop()
     //set texture from path
     ImGui::InputText("Path to texture", pathTexture, 256);
 
-    objects[objectNumber].objectTexture = std::string(pathTexture);
-
-    f.open(objects[objectNumber].objectTexture, std::ios::binary);
+    f.open(pathTexture, std::ios::binary);
 
     bool setTextureFromPath = false;
     setTextureFromPath = ImGui::Button("Set texture");
 
     if (setTextureFromPath && !f.bad() && !f.fail())
     {
+        objects[objectNumber].objectTexture = std::string(pathTexture);
         objects[objectNumber].object.SetTexture(objects[objectNumber].objectTexture);
     }
     else if (setTextureFromPath && f.fail())
@@ -259,6 +251,26 @@ void EditorWindow::mainLoop()
 
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
+    ImGui::NewLine();
+    ImGui::NewLine();
+    ImGui::NewLine();
+
+    ImGui::InputText("Scene file path", scenePath, 256);
+
+    if(ImGui::Button("Save"))
+    {
+        AWS::SaveScene(objects, std::string(scenePath), objectCounter);
+        ImGui::SameLine();
+    }
+    else if(ImGui::Button("Load"))
+    {
+        AWS::LoadScene(std::string(scenePath));
+
+        *objects = *AWS::editorObjectDataOnLoad;
+
+        objectCounter = AWS::objectCount;
+    }
+
     ImGui::End();
 
     for(unsigned int i = 0; i < objectCounter + 1; i++)
@@ -271,10 +283,6 @@ void EditorWindow::mainLoop()
     }
 
     editorView.SetPosition(editorViewPosition.x, editorViewPosition.y, editorViewPosition.z);
-
-    testSq.SetColor(0.0f, 0.0f, 0.0f, 1.0f);
-    testSq.SetScale(0.5f, 0.5f, 0.5f);
-    testSq.DrawSquare(GL_TRIANGLES, proj, view);
     
     //Must render last
     ImGui::Render();

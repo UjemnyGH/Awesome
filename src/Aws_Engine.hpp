@@ -13,6 +13,7 @@
 #include "MeshLoader/Aws_MeshLoader.hpp"
 #include "MeshCollider/Aws_MeshCollider.hpp"
 #include "Raycast/Aws_Raycast.hpp"
+#include "SceneLoader/Aws_SceneLoader.hpp"
 
 #include <iostream>
 #include <future>

@@ -1,0 +1,42 @@
+ObjectCount 4
+
+ObjectID 0
+Position 0.000000 0.000000 0.000000
+Scale 1.000000 1.000000 1.000000
+Rotation 0.000000 0.000000 0.000000
+Color 1.000000 0.000000 0.000000 1.000000
+Mesh data/models/terrainTest1.obj
+Texture data/texture/awesome.png
+
+ObjectID 1
+Position 0.000000 0.000000 3.000000
+Scale 2.000000 2.000000 2.000000
+Rotation 0.000000 0.000000 0.000000
+Color 0.000000 0.996078 0.000000 1.000000
+Mesh data/models/cube.obj
+Texture data/texture/awesome.png
+
+ObjectID 2
+Position 0.000000 0.000000 0.000000
+Scale 0.000000 0.000000 0.000000
+Rotation 0.000000 0.000000 0.000000
+Color 0.000000 0.000000 0.000000 0.000000
+Mesh 
+Texture 
+
+ObjectID 3
+Position 0.000000 0.000000 0.000000
+Scale 0.000000 0.000000 0.000000
+Rotation 0.000000 0.000000 0.000000
+Color 0.000000 0.000000 0.000000 0.000000
+Mesh 
+Texture 
+
+ObjectID 4
+Position 0.000000 0.000000 0.000000
+Scale 0.000000 0.000000 0.000000
+Rotation 0.000000 0.000000 0.000000
+Color 0.000000 0.000000 0.000000 0.000000
+Mesh 
+Texture 
+
