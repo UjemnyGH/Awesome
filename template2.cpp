@@ -114,8 +114,9 @@ void Window::initialize()
     glfwSetCursorPosCallback(Window::getWindowPointer(), mouse);
     glfwSwapInterval(1);
 
-    object.Create(AWS::ShadeType::solid, "testVS.glsl", "testFS.glsl");
+    object.Create(AWS::ShadeType::shade, "testVS.glsl", "testFS.glsl");
     object.SetObjectData(AWS::LoadMesh("data/models/terrainTest1.obj", true));
+    object.SetTexture("data/texture/image3.png");
 }
 
 void Window::mainLoop()
@@ -145,5 +146,14 @@ void Window::mainLoop()
     camera.SetPosition(pos.x, pos.y, pos.z);
 
     object.SetColor(0.0f, 1.0f, 0.0f, 1.0f);
+
+    glUseProgram(object.GetShaderID());
+
+    glUniform3f(glGetUniformLocation(object.GetShaderID(), "viewPos"), camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
+    glUniform3f(glGetUniformLocation(object.GetShaderID(), "lig_pos"), 1.0f, -2.0f, 1.0f);
+    glUniform3f(glGetUniformLocation(object.GetShaderID(), "lig_col"), 1.0f, 1.0f, 1.0f);
+    glUniform1f(glGetUniformLocation(object.GetShaderID(), "ambientV"), 0.1f);
+    glUniform1f(glGetUniformLocation(object.GetShaderID(), "specularV"), 1.0f);
+
     object.DrawObject(GL_TRIANGLES, proj, view);
 }

@@ -9,44 +9,44 @@ namespace AWS
     {
         std::vector<bool> isColliding;
         
-        void CollisionCheck(const ObjectData& chf_objectData1, const std::vector<ObjectData>& chf_objectData2 = { ObjectData() });
-        bool CollisionCheck(const ObjectData& chf_objectData1, const ObjectData& chf_objectData2);
+        void CollisionCheck(const ObjectData& chf_objectData1, const std::vector<ObjectData>& chf_objectData2 = { ObjectData() }, float x = 0.8f, float y = 1.0f, float z = 0.8f);
+        bool CollisionCheck(const ObjectData& chf_objectData1, const ObjectData& chf_objectData2, float x, float y, float z);
         void CollisionClear() { isColliding.clear(); }
     };
 
-    void Aws_CollisionHandler::CollisionCheck(const ObjectData& chf_objectData1, const std::vector<ObjectData>& chf_objectData2)
+    void Aws_CollisionHandler::CollisionCheck(const ObjectData& chf_objectData1, const std::vector<ObjectData>& chf_objectData2, float x, float y, float z)
     {
         for(unsigned int i = 0; i < (1 * chf_objectData2.size()); i++)
         {
             bool collisionX = chf_objectData1.od_objectTranformData.odt_px + chf_objectData1.od_objectTranformData.odt_sx
-                 >= chf_objectData2[i].od_objectTranformData.odt_px - (chf_objectData2[i].od_objectTranformData.odt_sx * 0.8f) && chf_objectData2[i].od_objectTranformData.odt_px + 
+                 >= chf_objectData2[i].od_objectTranformData.odt_px - (chf_objectData2[i].od_objectTranformData.odt_sx * x) && chf_objectData2[i].od_objectTranformData.odt_px + 
                 chf_objectData2[i].od_objectTranformData.odt_sx >= chf_objectData1.od_objectTranformData.odt_px;
 
             bool collisionY = chf_objectData1.od_objectTranformData.odt_py + chf_objectData1.od_objectTranformData.odt_sy
-                 >= chf_objectData2[i].od_objectTranformData.odt_py - (chf_objectData2[i].od_objectTranformData.odt_sy * 1.0f) && chf_objectData2[i].od_objectTranformData.odt_py + 
+                 >= chf_objectData2[i].od_objectTranformData.odt_py - (chf_objectData2[i].od_objectTranformData.odt_sy * y) && chf_objectData2[i].od_objectTranformData.odt_py + 
                 chf_objectData2[i].od_objectTranformData.odt_sy >= chf_objectData1.od_objectTranformData.odt_py;
 
             bool collisionZ = chf_objectData1.od_objectTranformData.odt_pz + chf_objectData1.od_objectTranformData.odt_sz
-                 >= chf_objectData2[i].od_objectTranformData.odt_pz - (chf_objectData2[i].od_objectTranformData.odt_sz * 0.8f) && chf_objectData2[i].od_objectTranformData.odt_pz + 
+                 >= chf_objectData2[i].od_objectTranformData.odt_pz - (chf_objectData2[i].od_objectTranformData.odt_sz * z) && chf_objectData2[i].od_objectTranformData.odt_pz + 
                 chf_objectData2[i].od_objectTranformData.odt_sz >= chf_objectData1.od_objectTranformData.odt_pz;
 
             isColliding.push_back(collisionX && collisionY && collisionZ);
         }
     }
 
-    bool Aws_CollisionHandler::CollisionCheck(const ObjectData& chf_objectData1, const ObjectData& chf_objectData2)
+    bool Aws_CollisionHandler::CollisionCheck(const ObjectData& chf_objectData1, const ObjectData& chf_objectData2, float x, float y, float z)
     {
         bool collisionX = chf_objectData1.od_objectTranformData.odt_px + chf_objectData1.od_objectTranformData.odt_sx
-             >= chf_objectData2.od_objectTranformData.odt_px - (chf_objectData2.od_objectTranformData.odt_sx * 0.8f) && chf_objectData2.od_objectTranformData.odt_px + 
+             >= chf_objectData2.od_objectTranformData.odt_px - (chf_objectData2.od_objectTranformData.odt_sx * x) && chf_objectData2.od_objectTranformData.odt_px + 
             chf_objectData2.od_objectTranformData.odt_sx >= chf_objectData1.od_objectTranformData.odt_px;
 
         bool collisionY = chf_objectData1.od_objectTranformData.odt_py + chf_objectData1.od_objectTranformData.odt_sy
-             >= chf_objectData2.od_objectTranformData.odt_py - (chf_objectData2.od_objectTranformData.odt_sy * 1.0f) && chf_objectData2.od_objectTranformData.odt_py + 
+             >= chf_objectData2.od_objectTranformData.odt_py - (chf_objectData2.od_objectTranformData.odt_sy * y) && chf_objectData2.od_objectTranformData.odt_py + 
             chf_objectData2.od_objectTranformData.odt_sy >= chf_objectData1.od_objectTranformData.odt_py;
 
         bool collisionZ = chf_objectData1.od_objectTranformData.odt_pz + chf_objectData1.od_objectTranformData.odt_sz
              >= chf_objectData2.od_objectTranformData.odt_pz && chf_objectData2.od_objectTranformData.odt_pz + 
-            chf_objectData2.od_objectTranformData.odt_sz - (chf_objectData2.od_objectTranformData.odt_sy * 0.8f) >= chf_objectData1.od_objectTranformData.odt_pz;
+            chf_objectData2.od_objectTranformData.odt_sz - (chf_objectData2.od_objectTranformData.odt_sy * z) >= chf_objectData1.od_objectTranformData.odt_pz;
 
         return collisionX && collisionY && collisionZ;
     }

@@ -22,8 +22,8 @@ namespace AWS
     const std::string colorVS = "data/shaders/color/colorVS.glsl";
     const std::string colorFS = "data/shaders/color/colorFS.glsl";
 
-    const std::string shadeColorVS = "data/shaders/shades/color/shadeColorVS.glsl";
-    const std::string shadeColorFS = "data/shaders/shades/color/shadeColorFS.glsl";
+    const std::string shadeTextureVS = "data/shaders/shades/texture/shadeColorVS.glsl";
+    const std::string shadeTextureFS = "data/shaders/shades/texture/shadeColorFS.glsl";
 
     const std::string diffuseVS = "data/shaders/diffuse/color/diffuseVS.glsl";
     const std::string diffuseFS = "data/shaders/diffuse/color/diffuseFS.glsl";

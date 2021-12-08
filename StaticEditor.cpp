@@ -173,6 +173,11 @@ void EditorWindow::mainLoop()
 
     static char scenePath[256];
 
+    static float lightPos[3];
+    static float lightCol[3];
+    static float lambient;
+    static float lspecular;
+
     ImGui::Begin("Add object");
 
     //set index of object
@@ -191,16 +196,22 @@ void EditorWindow::mainLoop()
     {
         objects[objectNumber].object.Terminate();
 
-        objects[objectNumber].object.Create(AWS::ShadeType::solid, AWS::textureVS, AWS::textureFS);
+        objects[objectNumber].object.Create(AWS::ShadeType::shade, AWS::shadeTextureVS, AWS::shadeTextureFS);
 
         objectCounter++;
     }
-    /*else if(addObj && objects[objectNumber].object.GetObjectData().od_vertices.size() < 1)
-    {
-        objects[objectNumber].object.Terminate();
 
-        objects[objectNumber].object.Create(AWS::ShadeType::solid, AWS::textureVS, AWS::textureFS);
-    }*/
+    bool addAllObj = ImGui::Button("Readd all objects");
+
+    if(addAllObj)
+    {
+        for(unsigned int i = 0; i < objectCounter; i++)
+        {
+            objects[i].object.Terminate();
+
+            objects[i].object.Create(AWS::ShadeType::shade, AWS::shadeTextureVS, AWS::shadeTextureFS);
+        }
+    }
 
     //set mesh form path
     ImGui::InputText("Path to mesh data", pathObj, 256);
@@ -253,6 +264,15 @@ void EditorWindow::mainLoop()
 
     ImGui::NewLine();
     ImGui::NewLine();
+    
+    ImGui::InputFloat3("Light position", lightPos);
+    ImGui::ColorEdit3("Light color", lightCol);
+
+    ImGui::InputFloat("Ambient", &lambient);
+    ImGui::InputFloat("Specular", &lspecular);
+
+    ImGui::NewLine();
+    ImGui::NewLine();
     ImGui::NewLine();
 
     ImGui::InputText("Scene file path", scenePath, 256);
@@ -266,9 +286,16 @@ void EditorWindow::mainLoop()
     {
         AWS::LoadScene(std::string(scenePath));
 
-        *objects = *AWS::editorObjectDataOnLoad;
-
         objectCounter = AWS::objectCount;
+
+        for(unsigned int i = 0; i < objectCounter; i++)
+        {
+            objects[i] = AWS::editorObjectDataOnLoad[i];
+
+            objects[objectNumber].object.Terminate();
+
+            objects[objectNumber].object.Create(AWS::ShadeType::shade, AWS::shadeTextureVS, AWS::shadeTextureFS);
+        }
     }
 
     ImGui::End();
@@ -279,6 +306,15 @@ void EditorWindow::mainLoop()
         objects[i].object.SetScale(objects[i].s[0], objects[i].s[1], objects[i].s[2]);
         objects[i].object.SetRotation(objects[i].r[0], objects[i].r[1], objects[i].r[2]);
         objects[i].object.SetColor(objects[i].col[0], objects[i].col[1], objects[i].col[2], objects[i].col[3]);
+
+        glUseProgram(objects[i].object.GetShaderID());
+
+        glUniform3f(glGetUniformLocation(objects[i].object.GetShaderID(), "viewPos"), editorView.GetPosition().x, editorView.GetPosition().y, editorView.GetPosition().z);
+        glUniform3f(glGetUniformLocation(objects[i].object.GetShaderID(), "lig_pos"), lightPos[0], lightPos[1], lightPos[2]);
+        glUniform3f(glGetUniformLocation(objects[i].object.GetShaderID(), "lig_col"), lightCol[0], lightCol[1], lightCol[2]);
+        glUniform1f(glGetUniformLocation(objects[i].object.GetShaderID(), "ambientV"), lambient);
+        glUniform1f(glGetUniformLocation(objects[i].object.GetShaderID(), "specularV"), lspecular);
+
         objects[i].object.DrawObject(GL_TRIANGLES, proj, view);
     }
 
