@@ -13,6 +13,31 @@ namespace AWS
         glm::vec3 rayEnd;
     };
 
+    float CheckRayPlane(float rayX, float rayY, float rayZ, float endRayX, float endRayY, float endRayZ, const ObjectData & obj_data)
+    {
+        float hit = 0.0;
+
+        for(unsigned int i = 0; i < obj_data.od_normals.size() / 3; i++)
+        {
+            float dotP = glm::dot(glm::vec3(rayX, rayY, rayZ), glm::vec3(obj_data.od_normals[i * 3], obj_data.od_normals[i * 3 + 1], obj_data.od_normals[i * 3 + 2]));
+
+            if(dotP == 0.0)
+            {
+                return hit;
+            }
+            
+            float distToHit = glm::dot(glm::vec3(obj_data.od_objectTranformData.odt_px, obj_data.od_objectTranformData.odt_py, obj_data.od_objectTranformData.odt_pz) - glm::vec3(endRayX, endRayY, endRayZ), glm::vec3(obj_data.od_normals[i * 3], obj_data.od_normals[i * 3 + 1], obj_data.od_normals[i * 3 + 2])) / dotP;
+            if(distToHit < 0.0)
+            {
+                return hit;
+            }
+            
+            hit = distToHit;
+        }
+
+        return hit;
+    }
+
     bool CheckRayVertices(float rayX, float rayY, float rayZ, float endRayX, float endRayY, float endRayZ, glm::mat4 projection, glm::mat4 view, const ObjectData & obj_data)
     {
         RayData ray_data;
@@ -30,7 +55,6 @@ namespace AWS
             obj_data.od_vertices[i * 3 + 2] <= ray_data.rayEnd.z)
             {
                 return true;
-                break;
             }
         }
 

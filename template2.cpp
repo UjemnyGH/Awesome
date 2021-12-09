@@ -129,12 +129,12 @@ void Window::mainLoop()
 
     glm::mat4x4 view = glm::lookAt(camera.GetPosition(), camera.GetPosition() + camera.GetFront(), camera.GetUp());
 
-    bool ray = AWS::CheckRayVertices(pos.x, pos.y, pos.z, pos.x, pos.y - 1.0f, pos.z, proj, view, object.GetObjectData());
+    float ray = AWS::CheckRayPlane(pos.x, pos.y, pos.z, pos.x, pos.y, pos.z, object.GetObjectData());
 
-    if(ray)
+    if(ray < 0.1f)
     {
         velocity = 0.0f;
-        printf("Work: %d\n", gTime.GetTime());
+        printf("Work: %d, \t ray length: %f\n", gTime.GetTime(), ray);
     }
     else
     {

@@ -13,12 +13,12 @@ public:
 class Player
 {
 private:
-    AWS::Camera playerCamera;
     glm::vec2 rotation;
     int w, h;
     float sensitivity = 0.15f;
 
 public:
+    AWS::Camera playerCamera;
     void initCam( int width, int height)
     {
         w = width;
@@ -43,6 +43,19 @@ public:
 
         rotation.x += xoff;
         rotation.y += yoff;
+
+        if(rotation.y > 89.0f)
+            rotation.y = 89.0f;
+        if(rotation.y < -89.0f)
+            rotation.y = -89.0f;
+
+        playerCamera.SetRotation(rotation.x, rotation.y, 0.0f);
+    }
+
+    void SetThirdRotation(float x, float y, float offset, float deltaTime)
+    {
+        rotation.x += (x + offset) * deltaTime * sensitivity;
+        rotation.y += (y + offset) * deltaTime * sensitivity;
 
         if(rotation.y > 89.0f)
             rotation.y = 89.0f;

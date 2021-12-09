@@ -332,7 +332,7 @@ namespace AWS
         glUniform1i(glGetUniformLocation(o_sh.GetID(), "tex"), 0);
         glUniform4f(glGetUniformLocation(o_sh.GetID(), "iCol"), 1.0f, 1.0f, 1.0f, 1.0f);
 
-        glUniform3f(glGetUniformLocation(o_sh.GetID(), "view_Pos"), 0.0f, 0.0f, 0.0f);
+        glUniform3f(glGetUniformLocation(o_sh.GetID(), "viewPos"), 0.0f, 0.0f, 0.0f);
         glUniform3f(glGetUniformLocation(o_sh.GetID(), "lig_pos"), 0.0f, 0.0f, 0.0f);
         glUniform3f(glGetUniformLocation(o_sh.GetID(), "lig_col"), 1.0f, 1.0f, 1.0f);
         glUniform1f(glGetUniformLocation(o_sh.GetID(), "ambientV"), 0.1f);
