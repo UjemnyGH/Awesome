@@ -13,6 +13,19 @@ namespace AWS
         glm::vec3 rayEnd;
     };
 
+    /*float CheckRayPos(float rayX, float rayY, float rayZ, float endRayX, float endRayY, float endRayZ, const ObjectData & obj_data)
+    {
+        float rayLength = 0.0f;
+        unsigned int closestIndex = 0;
+
+        for(unsigned int i = 0; i < obj_data.od_vertices.size() / 3; i++)
+        {
+            
+        }
+
+        return rayLength;
+    }*/
+
     float CheckRayPlane(float rayX, float rayY, float rayZ, float endRayX, float endRayY, float endRayZ, const ObjectData & obj_data)
     {
         float hit = 0.0;
@@ -23,16 +36,21 @@ namespace AWS
 
             if(dotP == 0.0)
             {
-                return hit;
+                continue;
             }
             
             float distToHit = glm::dot(glm::vec3(obj_data.od_objectTranformData.odt_px, obj_data.od_objectTranformData.odt_py, obj_data.od_objectTranformData.odt_pz) - glm::vec3(endRayX, endRayY, endRayZ), glm::vec3(obj_data.od_normals[i * 3], obj_data.od_normals[i * 3 + 1], obj_data.od_normals[i * 3 + 2])) / dotP;
             if(distToHit < 0.0)
             {
-                return hit;
+                continue;
             }
             
             hit = distToHit;
+
+            if(hit > 0.0f)
+            {
+                break;
+            }
         }
 
         return hit;

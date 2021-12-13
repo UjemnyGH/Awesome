@@ -31,6 +31,12 @@ ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 static AWS::EditorObjectData objects[32767];
 
+//object data
+int objectCounter = 0;
+int objectNumber = 0;
+char pathObj[256];
+char pathTexture[256];
+
 int main()
 {
     editorWindow.createWindow(800, 600, "Awesome Static Object Editor", NULL);
@@ -165,12 +171,6 @@ void EditorWindow::mainLoop()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    static int objectCounter = 0;
-    static int objectNumber = 0;
-    static char pathObj[256];
-    static char pathTexture[256];
-    static bool checkboxToShading;
-
     static char scenePath[256];
 
     static float lightPos[3];
@@ -184,9 +184,12 @@ void EditorWindow::mainLoop()
     ImGui::InputInt("Object number", &objectNumber);
 
     //Set pos, scal, rot and color
-    ImGui::InputFloat3("Position: ", objects[objectNumber].p);
-    ImGui::InputFloat3("Scale: ", objects[objectNumber].s);
-    ImGui::InputFloat3("Rotation: ", objects[objectNumber].r);
+    ImGui::DragFloat3("Position: ", objects[objectNumber].p, 0.1f);
+    //ImGui::InputFloat3("Position: ", objects[objectNumber].p);
+    ImGui::DragFloat3("Scale: ", objects[objectNumber].s, 0.1f);
+    //ImGui::InputFloat3("Scale: ", objects[objectNumber].s);
+    ImGui::DragFloat3("Rotation: ", objects[objectNumber].r, 0.1f);
+    //ImGui::InputFloat3("Rotation: ", objects[objectNumber].r);
     ImGui::ColorEdit4("Color: ", objects[objectNumber].col);
 
     //add object
@@ -213,6 +216,8 @@ void EditorWindow::mainLoop()
         }
     }
 
+    ImGui::Text(objects[objectNumber].objectPath.c_str());
+
     //set mesh form path
     ImGui::InputText("Path to mesh data", pathObj, 256);
 
@@ -233,6 +238,8 @@ void EditorWindow::mainLoop()
     }
 
     f.close();
+
+    ImGui::Text(objects[objectNumber].objectTexture.c_str());
 
     //set texture from path
     ImGui::InputText("Path to texture", pathTexture, 256);
@@ -265,11 +272,14 @@ void EditorWindow::mainLoop()
     ImGui::NewLine();
     ImGui::NewLine();
     
-    ImGui::InputFloat3("Light position", lightPos);
+    ImGui::DragFloat3("Light position", lightPos, 0.1f);
+    //ImGui::InputFloat3("Light position", lightPos);
     ImGui::ColorEdit3("Light color", lightCol);
 
-    ImGui::InputFloat("Ambient", &lambient);
-    ImGui::InputFloat("Specular", &lspecular);
+    ImGui::DragFloat("Ambient", &lambient, 0.01f);
+    //ImGui::InputFloat("Ambient", &lambient);
+    ImGui::DragFloat("Specular", &lspecular, 0.01f);
+    //ImGui::InputFloat("Specular", &lspecular);
 
     ImGui::NewLine();
     ImGui::NewLine();
@@ -292,9 +302,9 @@ void EditorWindow::mainLoop()
         {
             objects[i] = AWS::editorObjectDataOnLoad[i];
 
-            objects[objectNumber].object.Terminate();
+            objects[i].object.Terminate();
 
-            objects[objectNumber].object.Create(AWS::ShadeType::shade, AWS::shadeTextureVS, AWS::shadeTextureFS);
+            objects[i].object.Create(AWS::ShadeType::shade, AWS::shadeTextureVS, AWS::shadeTextureFS);
         }
     }
 
@@ -323,4 +333,6 @@ void EditorWindow::mainLoop()
     //Must render last
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    glfwSwapInterval(1);
 }

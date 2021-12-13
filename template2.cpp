@@ -24,6 +24,9 @@ float deltaTime;
 float velocity = 0.0f;
 
 AWS::Object object;
+AWS::CollisionHandler ch;
+
+AWS::Cube cb[2];
 
 int main()
 {
@@ -117,6 +120,11 @@ void Window::initialize()
     object.Create(AWS::ShadeType::shade, "testVS.glsl", "testFS.glsl");
     object.SetObjectData(AWS::LoadMesh("data/models/terrainTest1.obj", true));
     object.SetTexture("data/texture/image3.png");
+
+    ch.DebugInit();
+
+    cb[0].Create(AWS::ShadeType::solid);
+    cb[1].Create(AWS::ShadeType::solid);
 }
 
 void Window::mainLoop()
@@ -129,17 +137,19 @@ void Window::mainLoop()
 
     glm::mat4x4 view = glm::lookAt(camera.GetPosition(), camera.GetPosition() + camera.GetFront(), camera.GetUp());
 
-    float ray = AWS::CheckRayPlane(pos.x, pos.y, pos.z, pos.x, pos.y, pos.z, object.GetObjectData());
+    /*float ray = 0.0f;
+    std::future<float> checkRayPlane = std::async(AWS::CheckRayPlane, pos.x, pos.y, pos.z, pos.x, pos.y, pos.z, object.GetObjectData());
+    ray = checkRayPlane.get();*/
 
-    if(ray < 0.1f)
+    /*if(ray < 0.1f)
     {
         velocity = 0.0f;
-        printf("Work: %d, \t ray length: %f\n", gTime.GetTime(), ray);
+        printf("Work: , \t ray length: %0.1f\n", gTime.GetTime() ray);
     }
     else
     {
         velocity = -1.0f;
-    }
+    }*/
 
     pos.y += gravity * velocity * deltaTime;
 
@@ -156,4 +166,29 @@ void Window::mainLoop()
     glUniform1f(glGetUniformLocation(object.GetShaderID(), "specularV"), 1.0f);
 
     object.DrawObject(GL_TRIANGLES, proj, view);
+
+    bool tr = ch.CollisionCheck(cb[0].GetObjectData(), cb[1].GetObjectData(), -1.0f, 1.0f, 1.0f);
+
+    cb[0].SetPosition(1.0f, 0.0f, 2.0f);
+    cb[0].SetRotation(45.0f, 0.0f, 0.0f);
+
+    cb[1].SetPosition(1.0f, 0.0f, 0.5f);
+    cb[1].SetRotation(0.0f, 0.0f, 10.0f);
+
+    if(tr)
+    {
+        cb[0].SetColor(0.0f, 0.0f, 0.0f, 0.2f);
+    }
+    else
+    {
+        cb[0].SetColor(1.0f, 0.0f, 0.0f, 0.3f);
+    }
+    
+    cb[0].SetScale(1.0f, 1.0f, 1.0f);
+    cb[0].DrawCube(GL_TRIANGLES, proj, view);
+
+    cb[1].SetScale(1.0f, 1.0f, 1.0f);
+    cb[1].DrawCube(GL_TRIANGLES, proj, view);
+
+    ch.DebugDraw(proj, view);
 }

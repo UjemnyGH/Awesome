@@ -10,8 +10,8 @@ namespace AWS
     struct Aws_EditorObjectData
     {
         Object object;
-        std::string objectPath;
-        std::string objectTexture;
+        std::string objectPath = "\0";
+        std::string objectTexture = "\0";
 
         float p[3];
         float s[3];
