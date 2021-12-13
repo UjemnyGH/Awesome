@@ -38,5 +38,9 @@ void main()
     vec3 specular = specularV * spec * lig_col; 
             
     vec3 result = (ambient + diffuse + specular) * vec3(iCol.xyz);
-    oCol = texture(tex, ioTex) * vec4(result, iCol.w);
+    vec4 outCol = texture(tex, ioTex) * vec4(result, iCol.w);
+    if(outCol.a < 0.1)
+        discard;
+
+    oCol = outCol;
 }
