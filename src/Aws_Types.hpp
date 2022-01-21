@@ -1,5 +1,8 @@
 #pragma once
 
+#define GLEW_STATIC
+
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
@@ -33,6 +36,37 @@ namespace AWS
 
     const std::string cubeVS = "data/shaders/cube/cubeVS.glsl";
     const std::string cubeFS = "data/shaders/cube/cubeFS.glsl";
+	
+	const char* vsAtlas =
+	"#version 450 core\n"
+	"uniform mat4 transform;\n"
+	"uniform mat4 projection;\n"
+	"uniform mat4 view;\n"
+	"layout(location = 0)in vec4 iPos;\n"
+	"layout(location = 1)in vec2 iTex;\n"
+	"layout(location = 2)in vec4 iCol;\n"
+	"out vec4 ioCol;\n"
+	"out vec2 ioTex;\n"
+	"void main()\n"
+	"{\n"
+	"gl_Position = (projection * view * transform) * iPos;\n"
+	"ioCol = iCol;\n"
+	"ioTex = iTex;\n"
+	"}\n";
+
+	const char* fsAtlas =
+	"#version 450 core\n"
+	"uniform sampler2D textures;\n"
+	"out vec4 oCol;\n"
+	"in vec4 ioCol;\n"
+	"in vec2 ioTex;\n"
+	"void main()\n"
+	"{\n"
+	"vec4 fragment;\n"
+	"fragment = texture(textures, ioTex) * ioCol;\n"
+	"if(fragment.w < 0.1) discard;\n"
+	"oCol = fragment;\n"
+	"}\n";
 
     int windowWidth = 800;
     int windowHeight = 600;
@@ -46,6 +80,81 @@ namespace AWS
         windowMouseX = mouseX;
         windowMouseY = mouseY;
     }
+	
+	unsigned int ShaderFromCode(const char* shader, int type)
+	{
+		unsigned int shad = glCreateShader(type);
+		glShaderSource(shad, 1, &shader, nullptr);
+		glCompileShader(shad);
+
+		return shad;
+	}
+
+	const double pixelInAtlas128 = 1.0 / 128.0;
+	const double sizeAtlas128 = (1.0 / 128.0) * 16.0;
+
+	struct TextureAtlasData
+	{
+		float x0;
+		float y0;
+
+		float x1;
+		float y1;
+
+		float x2;
+		float y2;
+
+		float x3;
+		float y3;
+
+		float x4;
+		float y4;
+
+		float x5;
+		float y5;
+
+		TextureAtlasData(float nx0, float ny0, float nx1, float ny1, float nx2, float ny2, float nx3, float ny3, float nx4, float ny4, float nx5, float ny5)
+		{
+			x0 = nx0;
+			y0 = ny0;
+
+			x1 = nx1;
+			y1 = ny1;
+
+			x2 = nx2;
+			y2 = ny2;
+
+			x3 = nx3;
+			y3 = ny3;
+
+			x4 = nx4;
+			y4 = ny4;
+
+			x5 = nx5;
+			y5 = ny5;
+		}
+
+		TextureAtlasData(const TextureAtlasData& TAD)
+		{
+			x0 = TAD.x0;
+			y0 = TAD.y0;
+
+			x1 = TAD.x1;
+			y1 = TAD.y1;
+
+			x2 = TAD.x2;
+			y2 = TAD.y2;
+
+			x3 = TAD.x3;
+			y3 = TAD.y3;
+
+			x4 = TAD.x4;
+			y4 = TAD.y4;
+
+			x5 = TAD.x5;
+			y5 = TAD.y5;
+		}
+	};
 
     struct Aws_vec
     {
